@@ -28,13 +28,17 @@ const Layout = () => {
           <AppBar position="static">
             <Toolbar disableGutters>
               <Avatar alt="Frogify logo" src={logo} sx={{mx: 1}} />
-              <Typography variant="h4">Frogify</Typography>
+              <Typography variant="h4" color="#1ed760">
+                Frogify
+              </Typography>
             </Toolbar>
           </AppBar>
           <main>
             <Outlet />
           </main>
-          <BottomNavigation sx={{width: '100%'}}>
+          <BottomNavigation
+            sx={{width: '100%', position: 'fixed', bottom: '0'}}
+          >
             <BottomNavigationAction
               component={Link}
               to="/"
