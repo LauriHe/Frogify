@@ -114,7 +114,7 @@ const RegisterForm = ({toggle}) => {
           variant="contained"
           type="submit"
         >
-          Register
+          Sign up
         </Button>
       </ValidatorForm>
     </Container>

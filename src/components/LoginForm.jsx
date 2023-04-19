@@ -60,7 +60,7 @@ const LoginForm = () => {
           variant="contained"
           type="submit"
         >
-          Login
+          Sign in
         </Button>
       </Box>
     </Container>
