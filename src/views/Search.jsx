@@ -1,5 +1,13 @@
+import MediaTable from '../components/MediaTable';
+import SearchBar from '../components/SearchBar';
+
 const Search = () => {
-  return <></>;
+  return (
+    <>
+      <SearchBar></SearchBar>
+      <MediaTable></MediaTable>
+    </>
+  );
 };
 
 export default Search;
