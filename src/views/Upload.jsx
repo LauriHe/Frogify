@@ -1,73 +1,128 @@
 import PropTypes from 'prop-types';
 import useForm from '../hooks/FormHooks';
-import {useMedia, useUser} from '../hooks/ApiHooks';
+import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {Box, Button, Grid} from '@mui/material';
 import {Container} from '@mui/system';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import {Avatar} from '@mui/material';
 import {useState} from 'react';
 import uploadIcon from '../assets/plus.svg';
+import {useNavigate} from 'react-router-dom';
+import { appId } from '../utils/variables';
 
-const submitSong = (postMedia, inputs) => {
-  postMedia(inputs.image)
-};
-
-const initValues = {
-  songTitle: '',
-  genres: '',
-  keywords: '',
-  artistTags: '',
-  image: undefined,
-};
-
-const Upload = () => {
-  const {postMedia} = useMedia();
-  const {handleSubmit, handleInputChange, inputs} = useForm(
-    () => submitSong(postMedia, inputs),
-    initValues
+const Upload = (props) => {
+  const [image, setImage] = useState(null);
+  const [audio, setAudio] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(
+    'https://placekitten.com/600/400'
   );
-  const [imageSource, setImageSource] = useState('');
+  // 'https://placehold.co/600x400?text=Choose-media'
+  const {postMedia, mediaArray} = useMedia();
+  const {postTag, getTag} = useTag();
 
-  const convertToBase64 = (file) => {
-    const fileReader = new FileReader();
-    fileReader.onload = (frEvent) => {
-      setImageSource(frEvent.target.result);
-    };
-    fileReader.readAsDataURL(file);
+  const navigate = useNavigate();
+
+  const initValues = {
+    songTitle: '',
+    genres: '',
+    keywords: '',
+    artistTags: ''
+    
   };
-  const uploadFile = (e) => {
-    if (e.target.files?.length) {
-      const name = e.target.name;
-      console.log(name);
-      const file = e.target.files[0];
-      handleInputChange({
-        target: {
-          name,
-          value: file,
+
+  const filterInitValues = {
+    brightness: 100,
+    contrast: 100,
+    saturation: 100,
+    sepia: 0,
+  };
+
+  const doUpload = async () => {
+    try {
+      const userToken = localStorage.getItem('userToken');
+      const dataImage = new FormData();
+      dataImage.append('title', inputs.songTitle);
+      dataImage.append('file', image);
+      console.log('NO HERE! DUMMY');
+      const uploadResultImage = await postMedia(dataImage, userToken);
+      
+      const tagResultImage = await postTag(
+        {
+          file_id: uploadResultImage.file_id,
+          tag: appId, 
         },
-      });
-      name === 'image' && convertToBase64(file);
+        userToken
+      );
+      const dataAudio = new FormData();
+      dataAudio.append('title', inputs.songTitle);
+      const allDataAudio = {
+        genres: inputs.genres,
+        keywords: inputs.keywords,
+        artistTags: inputs.artistTags,
+        imageId: uploadResultImage.file_id
+      };
+      dataAudio.append('description', JSON.stringify(allDataAudio));
+      dataAudio.append('file', audio);
+      
+      const uploadResultAudio = await postMedia(dataAudio, userToken);
+      
+      const tagResultAudio = await postTag(
+        {
+          file_id: uploadResultAudio.file_id,
+          tag: appId, 
+        },
+        userToken
+      );
+      console.log(uploadResultAudio);
+      navigate('/home');
+    } catch (error) {
+      alert(error.message);
     }
   };
+
+  const handleFileChange = (event) => {
+    event.persist();
+    if (event.target.name == 'audio') {
+      setAudio(event.target.files[0]);
+    } else {
+      setImage(event.target.files[0]);
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        setSelectedImage(reader.result);
+      });
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
+
+  const {inputs, handleSubmit, handleInputChange} = useForm(
+    doUpload,
+    initValues
+  );
+
+  const {inputs: filterInputs, handleInputChange: handleFilterChange} = useForm(
+    null,
+    filterInitValues
+  );
+
   return (
     <Grid columns={1}>
       <ValidatorForm onSubmit={handleSubmit} noValidate>
-      <h3>Add Files</h3>
-      
-        <Button variant="text" component="label">
-        <img src={uploadIcon} alt="home icon" height={50} />
+        <h3>Add Files</h3>
+
+        <Button variant="text" component="label" fullWidth>
+          <img src={uploadIcon} alt="home icon" height={50} />
           Upload Audio
           <input
             hidden
             accept="audio/*"
             multiple
             type="file"
-            name="audioFile"
-            onChange={uploadFile}
+            name="audio"
+            onChange={handleFileChange}
           />
         </Button>
-        <Button variant="text" component="label">
-          <img src={imageSource} height={50} />
+        <Button variant="text" component="label" fullWidth>
+          <img src={selectedImage} height={50} />
           Upload Image
           <input
             hidden
@@ -75,11 +130,10 @@ const Upload = () => {
             multiple
             type="file"
             name="image"
-            onChange={uploadFile}
+            onChange={handleFileChange}
           />
-          
         </Button>
-        
+
         <h3>Add Song Info</h3>
         <TextValidator
           className="inputRounded"
