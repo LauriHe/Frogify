@@ -1,12 +1,15 @@
 import PropTypes from 'prop-types';
 import useForm from '../hooks/FormHooks';
-import {useUser} from '../hooks/ApiHooks';
-import {Button, Grid} from '@mui/material';
+import {useMedia, useUser} from '../hooks/ApiHooks';
+import {Box, Button, Grid} from '@mui/material';
 import {Container} from '@mui/system';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
+import {Avatar} from '@mui/material';
+import {useState} from 'react';
+import uploadIcon from '../assets/plus.svg';
 
-const submitSong = (inputs) => {
-  console.log(inputs);
+const submitSong = (postMedia, inputs) => {
+  postMedia(inputs.image)
 };
 
 const initValues = {
@@ -18,53 +21,66 @@ const initValues = {
 };
 
 const Upload = () => {
+  const {postMedia} = useMedia();
   const {handleSubmit, handleInputChange, inputs} = useForm(
-    () => submitSong(inputs),
+    () => submitSong(postMedia, inputs),
     initValues
   );
+  const [imageSource, setImageSource] = useState('');
 
-  const uploadImage = (e) => {
-    console.log(e.target.files)
+  const convertToBase64 = (file) => {
     const fileReader = new FileReader();
     fileReader.onload = (frEvent) => {
-      console.log(frEvent.target.result);
+      setImageSource(frEvent.target.result);
+    };
+    fileReader.readAsDataURL(file);
+  };
+  const uploadFile = (e) => {
+    if (e.target.files?.length) {
+      const name = e.target.name;
+      console.log(name);
+      const file = e.target.files[0];
       handleInputChange({
         target: {
-          name: "image",
-          value: frEvent.target.result
-        }
-      })
+          name,
+          value: file,
+        },
+      });
+      name === 'image' && convertToBase64(file);
     }
-    if(e.target.files) {
-      fileReader.readAsDataURL(e.target.files[0])
-    }
-  }
-
+  };
   return (
-    <Grid>
+    <Grid columns={1}>
       <ValidatorForm onSubmit={handleSubmit} noValidate>
-        <Button variant="contained" component="label">
-          Upload
+      <h3>Add Files</h3>
+      
+        <Button variant="text" component="label">
+        <img src={uploadIcon} alt="home icon" height={50} />
+          Upload Audio
           <input
             hidden
             accept="audio/*"
             multiple
             type="file"
             name="audioFile"
-            onChange={handleInputChange}
+            onChange={uploadFile}
           />
         </Button>
-        <Button variant="contained" component="label">
-          Upload
+        <Button variant="text" component="label">
+          <img src={imageSource} height={50} />
+          Upload Image
           <input
             hidden
             accept="image/*"
             multiple
             type="file"
             name="image"
-            onChange={uploadImage}
+            onChange={uploadFile}
           />
+          
         </Button>
+        
+        <h3>Add Song Info</h3>
         <TextValidator
           className="inputRounded"
           fullWidth
