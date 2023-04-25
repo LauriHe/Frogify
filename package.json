@@ -15,8 +15,9 @@
     "@mui/material": "^5.12.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-material-ui-form-validator": "^3.0.1",
     "react-router-dom": "^6.10.0",
-    "react-material-ui-form-validator": "^3.0.1"
+    "ts-audio": "^0.7.4"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

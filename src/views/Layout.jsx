@@ -20,6 +20,7 @@ import profileIcon from '../assets/person.svg';
 import {useContext, useEffect} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
 import {useUser} from '../hooks/ApiHooks';
+import AudioPlayer from '../components/AudioPlayer';
 
 const Layout = () => {
   const theme = createTheme(themeOptions);
@@ -55,7 +56,7 @@ const Layout = () => {
           <AppBar position="static">
             <Toolbar disableGutters>
               <Avatar alt="Frogify logo" src={logo} sx={{mx: 1}} />
-              <Typography variant="h4" color="#1ed760">
+              <Typography variant="h4" color="secondary">
                 Frogify
               </Typography>
             </Toolbar>
@@ -63,6 +64,7 @@ const Layout = () => {
           <main>
             <Outlet />
           </main>
+          <AudioPlayer className="audioPlayer"></AudioPlayer>
           <BottomNavigation
             sx={{width: '100%', position: 'fixed', bottom: '0'}}
           >

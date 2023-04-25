@@ -8,7 +8,7 @@ import {Avatar} from '@mui/material';
 import {useState} from 'react';
 import uploadIcon from '../assets/plus.svg';
 import {useNavigate} from 'react-router-dom';
-import { appId } from '../utils/variables';
+import {appId} from '../utils/variables';
 
 const Upload = (props) => {
   const [image, setImage] = useState(null);
@@ -26,8 +26,7 @@ const Upload = (props) => {
     songTitle: '',
     genres: '',
     keywords: '',
-    artistTags: ''
-    
+    artistTags: '',
   };
 
   const filterInitValues = {
@@ -45,11 +44,11 @@ const Upload = (props) => {
       dataImage.append('file', image);
       console.log('NO HERE! DUMMY');
       const uploadResultImage = await postMedia(dataImage, userToken);
-      
+
       const tagResultImage = await postTag(
         {
           file_id: uploadResultImage.file_id,
-          tag: appId, 
+          tag: appId,
         },
         userToken
       );
@@ -59,17 +58,17 @@ const Upload = (props) => {
         genres: inputs.genres,
         keywords: inputs.keywords,
         artistTags: inputs.artistTags,
-        imageId: uploadResultImage.file_id
+        imageId: uploadResultImage.file_id,
       };
       dataAudio.append('description', JSON.stringify(allDataAudio));
       dataAudio.append('file', audio);
-      
+
       const uploadResultAudio = await postMedia(dataAudio, userToken);
-      
+
       const tagResultAudio = await postTag(
         {
           file_id: uploadResultAudio.file_id,
-          tag: appId, 
+          tag: appId,
         },
         userToken
       );

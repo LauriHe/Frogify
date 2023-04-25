@@ -6,10 +6,12 @@ import MediaRow from './MediaRow';
 const MediaTable = ({myFilesOnly = false}) => {
   const {mediaArray} = useMedia(myFilesOnly);
 
+  const audioArray = mediaArray.filter((item) => item.media_type === 'audio');
+
   return (
     <ImageList cols={1} gap={8} sx={{marginBottom: '3rem'}}>
-      {mediaArray.map((item, index) => {
-        return <MediaRow key={index} file={item} />;
+      {audioArray.map((item, index) => {
+        return <MediaRow key={index} file={item} mediaArray={mediaArray} />;
       })}
     </ImageList>
   );
