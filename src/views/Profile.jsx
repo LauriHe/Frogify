@@ -1,18 +1,8 @@
-import {
-  Apps,
-  FormatListBulleted,
-  Person,
-  PlayArrow,
-  Settings,
-} from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  IconButton,
-  Typography,
-  Card,
-  CardMedia,
-} from '@mui/material';
+import {Box, Button, IconButton, Typography, Grid} from '@mui/material';
+import userIcon from '../assets/person.svg';
+import appIcon from '../assets/app.svg';
+import settingIcon from '../assets/setting.svg';
+import listIcon from '../assets/list.svg';
 
 const Profile = () => {
   return (
@@ -22,52 +12,60 @@ const Profile = () => {
         sx={{
           display: 'flex',
           flexDirection: 'row',
-          flexWrap: 'nowrap',
-          justifyContent: 'space-around',
-          pt: 2,
-          pb: 2,
-          textAlign: 'center',
+          flexWrap: 'wrap',
         }}
       >
-        <Box sx={{width: '40%'}}>
-          <img src="http://placekitten.com/g/200/200"></img>
-        </Box>
+        <Grid container justifyContent="center" sx={{p: 2, width: '40%'}}>
+          <img
+            src="http://placekitten.com/g/200/200"
+            width={150}
+            style={{borderRadius: '50%'}}
+          />
+        </Grid>
 
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: 1,
-            gridTemplateRows: 'auto',
-            gridTemplateAreas: `
-            "name name icon"
-            "post followers following"`,
-          }}
-        >
-          <Typography component="h2" variant="h2" sx={{gridArea: 'name'}}>
-            UserName
-          </Typography>
-          <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-            sx={{p: 1, gridArea: 'icon'}}
+        <Grid container alignItems="center" sx={{width: '60%'}}>
+          <Grid
+            container
+            spacing={1}
+            direction="row"
+            alignItems="center"
+            justifyContent="center"
+            rowSpacing={2}
+            item
           >
-            <Settings fontSize="large" />
-          </IconButton>
-          <box sx={{gridArea: 'post'}}>
-            <Typography>000</Typography>
-            <Typography>POST</Typography>
-          </box>
-          <box sx={{gridArea: 'followers'}}>
-            <Typography>000</Typography>
-            <Typography>FOLLOWERS</Typography>
-          </box>
-          <box sx={{gridArea: 'following'}}>
-            <Typography>000</Typography>
-            <Typography>FOLLOWING</Typography>
-          </box>
-        </Box>
+            <Grid
+              item
+              container
+              direction="row"
+              justifyContent="center"
+              xs="12"
+            >
+              <Typography variant="h4">UserName</Typography>
+              <IconButton color="primary">
+                <img src={settingIcon} alt="setting icon" width={30} />
+              </IconButton>
+            </Grid>
+            {/* second row */}
+            <Grid item container alignItems="center" direction="column" xs={4}>
+              <Typography variant="h6">000</Typography>
+              <Typography variant="caption" color="grey">
+                Posts
+              </Typography>
+            </Grid>
+            <Grid item container alignItems="center" direction="column" xs={4}>
+              <Typography variant="h6">000</Typography>
+              <Typography variant="caption" color="grey">
+                Followers
+              </Typography>
+            </Grid>
+            <Grid item container alignItems="center" direction="column" xs={4}>
+              <Typography variant="h6">000</Typography>
+              <Typography variant="caption" color="grey">
+                Following
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
       </Box>
 
       {/* NavBar */}
@@ -81,9 +79,9 @@ const Profile = () => {
           borderBottom: 1,
         }}
       >
-        <Button sx={{p: 1}}>POSTS</Button>
-        <Button sx={{p: 1}}>HISTORY</Button>
-        <Button sx={{p: 1}}>LIKED</Button>
+        <Button sx={{p: 1}}>Posts</Button>
+        <Button sx={{p: 1}}>History</Button>
+        <Button sx={{p: 1}}>Liked</Button>
         <Box borderLeft={1}></Box>
         <IconButton
           color="primary"
@@ -91,7 +89,7 @@ const Profile = () => {
           component="label"
           sx={{p: 1}}
         >
-          <FormatListBulleted />
+          <img src={listIcon} alt="list icon" width={30} />
         </IconButton>
 
         <IconButton
@@ -100,58 +98,26 @@ const Profile = () => {
           component="label"
           sx={{p: 1}}
         >
-          <Apps />
+          <img src={appIcon} alt="app icon" width={30} />
         </IconButton>
       </Box>
 
       {/* Posts */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        {/* Card */}
-        <Card
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            borderBottom: 1,
-            p: 1,
-            m: 2,
-          }}
-        >
-          {/* Img */}
-          <CardMedia
-            component="img"
-            sx={{width: 151}}
-            image="http://placekitten.com/g/100/100"
-            alt="Live from space album cover"
-          />
-          {/* name and maker */}
-          <Box
-            sx={{
-              display: 'grid',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Typography component="div"> Name Of The Song</Typography>
-            <Typography component="div">
-              <Person />
-              Froggy Frog
+      <Box sx={{borderBottom: 1, pb: 1, pt: 1}}>
+        <Grid container gap={3} alignItems="center">
+          <img src="https://placekitten.com/200/300" width={100} height={100} />
+          <Box>
+            <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
+              SongName
             </Typography>
+            <Grid container alignItems="center" gap={1}>
+              <img src={userIcon} alt="user icon" width={30} />
+              <Typography variant="h6" component="h3" color="grey">
+                UserName
+              </Typography>
+            </Grid>
           </Box>
-          {/* PlayButton */}
-          <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-            sx={{p: '1.5rem'}}
-          >
-            <PlayArrow fontSize="large" />
-          </IconButton>
-        </Card>
+        </Grid>
       </Box>
     </>
   );
