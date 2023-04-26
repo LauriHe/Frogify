@@ -3,38 +3,19 @@ import PropTypes from 'prop-types';
 import {mediaUrl} from '../utils/variables';
 import commentIcon from '../assets/comment.svg';
 import likeIcon from '../assets/like.svg';
-import {useContext, useState} from 'react';
+import {useContext} from 'react';
 import {SongContext} from '../contexts/SongContext';
 
 const MediaRow = ({file, mediaArray}) => {
-  const {
-    currentSongEnded,
-    setCurrentSongEnded,
-    setCurrentSong,
-    setCurrentSongImage,
-  } = useContext(SongContext);
-  const [playing, setPlaying] = useState(false);
+  const {setCurrentSong, setCurrentSongImage} = useContext(SongContext);
 
   const image = mediaArray.find(
     (item) => item.file_id === JSON.parse(file.description).imageId
   );
 
-  if (currentSongEnded && playing) {
-    setPlaying(false);
-  }
-
-  const toggleAudio = () => {
-    if (playing === true) {
-      setCurrentSong(null);
-      setCurrentSongImage(null);
-      setPlaying(false);
-      setCurrentSongEnded(true);
-    } else {
-      setCurrentSong(file);
-      setCurrentSongImage(image);
-      setPlaying(true);
-      setCurrentSongEnded(false);
-    }
+  const playAudio = () => {
+    setCurrentSong(file);
+    setCurrentSongImage(image);
   };
 
   return (
@@ -50,7 +31,7 @@ const MediaRow = ({file, mediaArray}) => {
         <Box sx={{display: 'flex', margin: '.5rem', gap: '.5rem'}}>
           <img src={likeIcon} alt="home icon" width="30rem" />
           <img src={commentIcon} alt="home icon" width="30rem" />
-          <Button onClick={toggleAudio}>{playing ? 'stop' : 'play'}</Button>
+          <Button onClick={playAudio}>play</Button>
         </Box>
       </Box>
     </>

@@ -6,14 +6,16 @@ import {useMedia} from '../hooks/ApiHooks';
 
 const Search = () => {
   const {mediaArray} = useMedia();
-  const [searchArray, setSearchArray] = useState(mediaArray);
+  const audioArray = mediaArray.filter((item) => item.media_type === 'audio');
+  audioArray.reverse();
+  const [searchArray, setSearchArray] = useState(audioArray);
 
   const handleChange = (event) => {
     const searchTerm = event.target.value;
     if (searchTerm === '') {
-      setSearchArray(mediaArray);
+      setSearchArray(audioArray);
     } else {
-      const filteredArray = mediaArray.filter((file) => {
+      const filteredArray = audioArray.filter((file) => {
         return file.title.toLowerCase().includes(searchTerm.toLowerCase());
       });
       setSearchArray(filteredArray);
@@ -21,7 +23,9 @@ const Search = () => {
   };
 
   useEffect(() => {
-    setSearchArray(mediaArray);
+    setSearchArray(
+      mediaArray.filter((item) => item.media_type === 'audio').reverse()
+    );
   }, [mediaArray]);
 
   return (
@@ -42,7 +46,10 @@ const Search = () => {
           }}
         />
       </Container>
-      <MediaTableSearch searchArray={searchArray}></MediaTableSearch>
+      <MediaTableSearch
+        searchArray={searchArray}
+        mediaArray={mediaArray}
+      ></MediaTableSearch>
     </>
   );
 };

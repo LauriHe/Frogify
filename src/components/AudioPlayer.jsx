@@ -5,13 +5,8 @@ import {SongContext} from '../contexts/SongContext';
 import {mediaUrl} from '../utils/variables';
 
 const AudioPlayer = () => {
-  const {
-    currentSong,
-    currentSongImage,
-    setCurrentSongImage,
-    setCurrentSongEnded,
-    setCurrentSong,
-  } = useContext(SongContext);
+  const {currentSong, currentSongImage, setCurrentSongImage, setCurrentSong} =
+    useContext(SongContext);
   const [playing, setPlaying] = useState(false);
   const audioRef = useRef();
 
@@ -24,20 +19,22 @@ const AudioPlayer = () => {
     } else {
       audioRef.current.play();
       setPlaying(true);
-      setCurrentSongEnded(false);
     }
   };
 
   const closePlayer = () => {
     setCurrentSong(null);
     setCurrentSongImage(null);
-    setCurrentSongEnded(true);
   };
+
+  useEffect(() => {
+    audioRef.current.play();
+    setPlaying(true);
+  }, [currentSong]);
 
   useEffect(() => {
     audioRef.current.onended = () => {
       setPlaying(false);
-      setCurrentSongEnded(true);
     };
     toggleAudio();
   }, []);
