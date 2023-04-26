@@ -21,12 +21,13 @@ import {useContext, useEffect} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
 import {useUser} from '../hooks/ApiHooks';
 import AudioPlayer from '../components/AudioPlayer';
+import {SongContext} from '../contexts/SongContext';
 
 const Layout = () => {
   const theme = createTheme(themeOptions);
-
   const {user, setUser} = useContext(MediaContext);
   const {getUserByToken} = useUser();
+  const {currentSong} = useContext(SongContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -64,7 +65,7 @@ const Layout = () => {
           <main>
             <Outlet />
           </main>
-          <AudioPlayer className="audioPlayer"></AudioPlayer>
+          {currentSong && <AudioPlayer className="audioPlayer"></AudioPlayer>}
           <BottomNavigation
             sx={{width: '100%', position: 'fixed', bottom: '0'}}
           >

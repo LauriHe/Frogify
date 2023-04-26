@@ -3,33 +3,42 @@ import PropTypes from 'prop-types';
 import {mediaUrl} from '../utils/variables';
 import commentIcon from '../assets/comment.svg';
 import likeIcon from '../assets/like.svg';
-import {useRef, useState} from 'react';
+import {useContext, useState} from 'react';
+import {SongContext} from '../contexts/SongContext';
 
 const MediaRow = ({file, mediaArray}) => {
+  const {
+    currentSongEnded,
+    setCurrentSongEnded,
+    setCurrentSong,
+    setCurrentSongImage,
+  } = useContext(SongContext);
   const [playing, setPlaying] = useState(false);
-  const audioRef = useRef();
 
   const image = mediaArray.find(
     (item) => item.file_id === JSON.parse(file.description).imageId
   );
 
+  if (currentSongEnded && playing) {
+    setPlaying(false);
+  }
+
   const toggleAudio = () => {
     if (playing === true) {
-      audioRef.current.load();
+      setCurrentSong(null);
+      setCurrentSongImage(null);
       setPlaying(false);
+      setCurrentSongEnded(true);
     } else {
-      audioRef.current.play();
+      setCurrentSong(file);
+      setCurrentSongImage(image);
       setPlaying(true);
+      setCurrentSongEnded(false);
     }
-  };
-
-  audioRef.current.onended = () => {
-    setPlaying(false);
   };
 
   return (
     <>
-      <audio ref={audioRef} src={mediaUrl + file.filename} />
       <Box sx={{mb: '1rem'}}>
         <ImageListItem>
           <img
