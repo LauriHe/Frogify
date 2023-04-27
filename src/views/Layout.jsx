@@ -17,19 +17,31 @@ import homeIcon from '../assets/home.svg';
 import searchIcon from '../assets/search.svg';
 import uploadIcon from '../assets/plus.svg';
 import profileIcon from '../assets/person.svg';
-import {useContext, useEffect} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
 import {useUser} from '../hooks/ApiHooks';
 import AudioPlayer from '../components/AudioPlayer';
 import {SongContext} from '../contexts/SongContext';
+import {mediaUrl} from '../utils/variables';
 
 const Layout = () => {
   const theme = createTheme(themeOptions);
   const {user, setUser} = useContext(MediaContext);
   const {getUserByToken} = useUser();
-  const {currentSong} = useContext(SongContext);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const {
+    currentSong,
+    currentSongPlaying,
+    setCurrentSongPlaying,
+    currentSongTime,
+    setCurrentSongTime,
+    setCurrentSongLength,
+  } = useContext(SongContext);
+  const audioRef = useRef();
+  const playAnimationRef = useRef();
+  const [audioUrl, setAudioUrl] = useState(null);
 
   const getUserInfo = async () => {
     const userToken = localStorage.getItem('userToken');
@@ -44,6 +56,49 @@ const Layout = () => {
     }
     navigate('/');
   };
+
+  const repeat = () => {
+    setCurrentSongTime(audioRef.current.currentTime);
+    playAnimationRef.current = requestAnimationFrame(repeat);
+  };
+
+  useEffect(() => {
+    if (currentSong) {
+      setAudioUrl(currentSong ? mediaUrl + currentSong.filename : mediaUrl);
+      audioRef.current.onended = () => {
+        setCurrentSongPlaying(false);
+        setCurrentSongTime(0);
+        cancelAnimationFrame(playAnimationRef.current);
+      };
+      setCurrentSongPlaying(true);
+    } else {
+      cancelAnimationFrame(playAnimationRef.current);
+    }
+  }, [currentSong]);
+
+  useEffect(() => {
+    if (currentSong) {
+      if (currentSongPlaying) {
+        audioRef.current.play();
+        setCurrentSongLength(audioRef.current.duration);
+        playAnimationRef.current = requestAnimationFrame(repeat);
+      } else {
+        audioRef.current.pause();
+        cancelAnimationFrame(playAnimationRef.current);
+      }
+    }
+  }, [currentSongPlaying]);
+
+  useEffect(() => {
+    if (currentSong) {
+      if (
+        audioRef.current.currentTime - currentSongTime > 0.5 ||
+        currentSongTime > audioRef.current.currentTime
+      ) {
+        audioRef.current.currentTime = currentSongTime;
+      }
+    }
+  }, [currentSongTime]);
 
   useEffect(() => {
     getUserInfo();
@@ -65,7 +120,17 @@ const Layout = () => {
           <main>
             <Outlet />
           </main>
-          {currentSong && <AudioPlayer className="audioPlayer"></AudioPlayer>}
+          {currentSong &&
+          !(location.pathname === '/login') &&
+          !(location.pathname === '/upload') &&
+          !(location.pathname === '/player') ? (
+            <AudioPlayer className="audioPlayer"></AudioPlayer>
+          ) : null}
+          {currentSong &&
+          !(location.pathname === '/login') &&
+          !(location.pathname === '/upload') ? (
+            <audio ref={audioRef} src={audioUrl} />
+          ) : null}
           <BottomNavigation
             sx={{width: '100%', position: 'fixed', bottom: '0'}}
           >
