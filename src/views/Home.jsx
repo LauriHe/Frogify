@@ -1,5 +1,11 @@
+import MediaTable from '../components/MediaTable';
+
 const Home = () => {
-  return <></>;
+  return (
+    <>
+      <MediaTable></MediaTable>
+    </>
+  );
 };
 
 export default Home;
