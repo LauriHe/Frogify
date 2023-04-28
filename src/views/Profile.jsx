@@ -3,6 +3,7 @@ import userIcon from '../assets/person.svg';
 import appIcon from '../assets/app.svg';
 import settingIcon from '../assets/setting.svg';
 import listIcon from '../assets/list.svg';
+import dotsVerIcon from '../assets/dotsVertical.svg';
 
 const Profile = () => {
   return (
@@ -73,15 +74,15 @@ const Profile = () => {
         sx={{
           display: 'flex',
           flexDirection: 'row',
-          flexWrap: 'wrap',
+          flexWrap: 'noWrap',
           justifyContent: 'space-around',
           borderTop: 1,
           borderBottom: 1,
         }}
       >
-        <Button sx={{p: 1}}>Posts</Button>
-        <Button sx={{p: 1}}>History</Button>
-        <Button sx={{p: 1}}>Liked</Button>
+        <Button sx={{p: 1, color: 'white'}}>Posts</Button>
+        <Button sx={{p: 1, color: 'white'}}>History</Button>
+        <Button sx={{p: 1, color: 'white'}}>Liked</Button>
         <Box borderLeft={1}></Box>
         <IconButton
           color="primary"
@@ -104,7 +105,13 @@ const Profile = () => {
 
       {/* Posts */}
       <Box sx={{borderBottom: 1, pb: 1, pt: 1}}>
-        <Grid container gap={3} alignItems="center">
+        <Grid
+          container
+          justifyContent="space-between"
+          gap={3}
+          alignItems="center"
+          sx={{pr: 2}}
+        >
           <img src="https://placekitten.com/200/300" width={100} height={100} />
           <Box>
             <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
@@ -116,6 +123,16 @@ const Profile = () => {
                 UserName
               </Typography>
             </Grid>
+          </Box>
+          <Box>
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="label"
+              sx={{p: 1}}
+            >
+              <img src={dotsVerIcon} alt="dots icon" width={30} />
+            </IconButton>
           </Box>
         </Grid>
       </Box>
