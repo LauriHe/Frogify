@@ -8,7 +8,10 @@ import {Avatar} from '@mui/material';
 import {useState} from 'react';
 import uploadIcon from '../assets/plus.svg';
 import {useNavigate} from 'react-router-dom';
-import { appId } from '../utils/variables';
+import {appId} from '../utils/variables';
+
+import React from 'react'
+import { createRoot } from "react-dom/client";
 
 const Upload = (props) => {
   const [image, setImage] = useState(null);
@@ -26,8 +29,7 @@ const Upload = (props) => {
     songTitle: '',
     genres: '',
     keywords: '',
-    artistTags: ''
-    
+    artistTags: '',
   };
 
   const filterInitValues = {
@@ -43,13 +45,12 @@ const Upload = (props) => {
       const dataImage = new FormData();
       dataImage.append('title', inputs.songTitle);
       dataImage.append('file', image);
-      console.log('NO HERE! DUMMY');
       const uploadResultImage = await postMedia(dataImage, userToken);
-      
+
       const tagResultImage = await postTag(
         {
           file_id: uploadResultImage.file_id,
-          tag: appId, 
+          tag: appId,
         },
         userToken
       );
@@ -59,17 +60,17 @@ const Upload = (props) => {
         genres: inputs.genres,
         keywords: inputs.keywords,
         artistTags: inputs.artistTags,
-        imageId: uploadResultImage.file_id
+        imageId: uploadResultImage.file_id,
       };
       dataAudio.append('description', JSON.stringify(allDataAudio));
       dataAudio.append('file', audio);
-      
+
       const uploadResultAudio = await postMedia(dataAudio, userToken);
-      
+
       const tagResultAudio = await postTag(
         {
           file_id: uploadResultAudio.file_id,
-          tag: appId, 
+          tag: appId,
         },
         userToken
       );
@@ -106,81 +107,100 @@ const Upload = (props) => {
 
   return (
     <Grid columns={1}>
-      <ValidatorForm onSubmit={handleSubmit} noValidate>
-        <h3>Add Files</h3>
-
-        <Button variant="text" component="label" fullWidth>
-          <img src={uploadIcon} alt="home icon" height={50} />
-          Upload Audio
-          <input
+      <Box sx={{marginLeft: '3rem', marginRight: '3rem', display: 'flex', alignItems: 'center'}}>
+        <ValidatorForm onSubmit={handleSubmit} noValidate>
+          <h3>Add Files</h3>
+          
+          <Button variant="text" component="label" fullWidth>
+            <img src={uploadIcon} alt="upload icon" height={50} />
+            Upload Audio
+            <input
+              hidden
+              accept="audio/*"
+              multiple
+              type="file"
+              name="audio"
+              onChange={handleFileChange}
+            />
+          </Button>
+          <Button variant="text" component="label" fullWidth>
+            <img src={uploadIcon} alt="upload icon" height={50}/>
+            Upload Image
+            <input
+              hidden
+              accept="image/*"
+              multiple
+              type="file"
+              name="image"
+              onChange={handleFileChange}
+            />
+          </Button>
+          <Button
+            id='editBtn'
+            color="secondary"
             hidden
-            accept="audio/*"
-            multiple
-            type="file"
-            name="audio"
-            onChange={handleFileChange}
-          />
-        </Button>
-        <Button variant="text" component="label" fullWidth>
-          <img src={selectedImage} height={50} />
-          Upload Image
-          <input
-            hidden
-            accept="image/*"
-            multiple
-            type="file"
-            name="image"
-            onChange={handleFileChange}
-          />
-        </Button>
+            sx={{mt: 1, borderRadius: '10rem', left: '50%', transform: 'translate(-50%)', display: 'none'}}
+            
+            variant="text"
+          >
+            Edit Image
+          </Button>
 
-        <h3>Add Song Info</h3>
-        <TextValidator
-          className="inputRounded"
-          fullWidth
-          margin="dense"
-          name="songTitle"
-          label="Song Title"
-          onChange={handleInputChange}
-          value={inputs.songTitle}
-        />
-        <TextValidator
-          className="inputRounded"
-          fullWidth
-          margin="dense"
-          name="genres"
-          label="genres"
-          onChange={handleInputChange}
-          value={inputs.genres}
-        />
-        <TextValidator
-          className="inputRounded"
-          fullWidth
-          margin="dense"
-          name="keywords"
-          label="Keywords"
-          onChange={handleInputChange}
-          value={inputs.keywords}
-        />
-        <TextValidator
-          className="inputRounded"
-          fullWidth
-          margin="dense"
-          name="artistTags"
-          label="Tag other artists!"
-          onChange={handleInputChange}
-          value={inputs.artistTags}
-        />
-        <Button
-          color="secondary"
-          fullWidth
-          sx={{mt: 1, borderRadius: '10rem'}}
-          variant="contained"
-          type="submit"
-        >
-          Submit
-        </Button>
-      </ValidatorForm>
+          <h3 margin="dense">Add Song Info</h3>
+
+          <TextValidator
+            className="inputRounded"
+            fullWidth
+            margin="dense"
+            name="songTitle"
+            label="Song Title"
+            onChange={handleInputChange}
+            value={inputs.songTitle}
+            variant="standard"
+          />
+          <TextValidator
+            className="inputRounded"
+            fullWidth
+            margin="dense"
+            name="genres"
+            label="genres"
+            onChange={handleInputChange}
+            value={inputs.genres}
+            variant="standard"
+          />
+          <TextValidator
+            className="inputRounded"
+            fullWidth
+            margin="dense"
+            name="keywords"
+            label="Keywords"
+            onChange={handleInputChange}
+            value={inputs.keywords}
+            variant="standard"
+          />
+          <TextValidator
+            className="inputRounded"
+            fullWidth
+            margin="dense"
+            name="artistTags"
+            label="Tag other artists!"
+            onChange={handleInputChange}
+            value={inputs.artistTags}
+            variant="standard"
+            sx={{marginBottom: '2rem'}}
+          />
+
+          <Button
+            color="secondary"
+            fullWidth
+            sx={{mt: 1, borderRadius: '10rem'}}
+            variant="contained"
+            type="submit"
+          >
+            Submit
+          </Button>
+        </ValidatorForm>
+      </Box>
     </Grid>
   );
 };
