@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 
 const SongContext = React.createContext();
@@ -10,6 +10,7 @@ const SongProvider = ({children}) => {
   const [currentSongImage, setCurrentSongImage] = useState(null);
   const [currentSongTime, setCurrentSongTime] = useState(0);
   const [currentSongEnded, setCurrentSongEnded] = useState(true);
+  const audioRef = useRef();
   return (
     <SongContext.Provider
       value={{
@@ -25,6 +26,7 @@ const SongProvider = ({children}) => {
         setCurrentSongTime,
         currentSongEnded,
         setCurrentSongEnded,
+        audioRef,
       }}
     >
       {children}

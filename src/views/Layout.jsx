@@ -38,8 +38,11 @@ const Layout = () => {
     currentSongTime,
     setCurrentSongTime,
     setCurrentSongLength,
+    currentSongLength,
+    audioRef,
   } = useContext(SongContext);
-  const audioRef = useRef();
+
+  //const audioRef = useRef();
   const playAnimationRef = useRef();
   const [audioUrl, setAudioUrl] = useState(null);
 
@@ -80,14 +83,14 @@ const Layout = () => {
     if (currentSong) {
       if (currentSongPlaying) {
         audioRef.current.play();
-        setCurrentSongLength(audioRef.current.duration);
+        setCurrentSongLength(audioRef.current?.duration);
         playAnimationRef.current = requestAnimationFrame(repeat);
       } else {
         audioRef.current.pause();
         cancelAnimationFrame(playAnimationRef.current);
       }
     }
-  }, [currentSongPlaying]);
+  }, [currentSongPlaying, audioRef.current?.duration]);
 
   useEffect(() => {
     if (currentSong) {
@@ -103,7 +106,6 @@ const Layout = () => {
   useEffect(() => {
     getUserInfo();
   }, []);
-
   return (
     <>
       <ThemeProvider theme={theme}>

@@ -16,6 +16,7 @@ const AudioPlayer = () => {
     setCurrentSongImage,
     currentSongTime,
     currentSongLength,
+    audioRef,
   } = useContext(SongContext);
 
   const navigate = useNavigate();
@@ -57,7 +58,9 @@ const AudioPlayer = () => {
         <Box width="100%">
           <LinearProgress
             variant="determinate"
-            value={(currentSongTime / currentSongLength) * 100}
+            value={
+              (audioRef.current?.currentTime / audioRef.current?.duration) * 100
+            }
           />
         </Box>
         <Grid container justifyContent="space-between" alignContent="center">
