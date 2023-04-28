@@ -7,8 +7,7 @@ import {useContext} from 'react';
 import {SongContext} from '../contexts/SongContext';
 
 const MediaRow = ({file, mediaArray}) => {
-  const {setCurrentSong, setCurrentSongImage, setCurrentSongPlaying} =
-    useContext(SongContext);
+  const {setCurrentSong, setCurrentSongImage} = useContext(SongContext);
 
   const image = mediaArray.find(
     (item) => item.file_id === JSON.parse(file.description).imageId
@@ -17,7 +16,6 @@ const MediaRow = ({file, mediaArray}) => {
   const playAudio = () => {
     setCurrentSong(file);
     setCurrentSongImage(image);
-    setCurrentSongPlaying(false);
   };
 
   return (

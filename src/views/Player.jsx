@@ -1,20 +1,12 @@
 import {Box, Button, Grid, Slider, Typography} from '@mui/material';
-import {useContext} from 'react';
+import {useContext, useState} from 'react';
 import {SongContext} from '../contexts/SongContext';
 import {mediaUrl} from '../utils/variables';
 import {Navigate, useNavigate} from 'react-router-dom';
 
 const Player = () => {
-  const {
-    currentSongPlaying,
-    setCurrentSongPlaying,
-    currentSong,
-    currentSongImage,
-    currentSongTime,
-    setCurrentSongTime,
-    currentSongLength,
-    audioRef,
-  } = useContext(SongContext);
+  const {audioRef, currentSong, currentSongImage} = useContext(SongContext);
+  const [pausedByButton, setPausedByButton] = useState(false);
 
   const navigate = useNavigate();
 
@@ -23,20 +15,24 @@ const Player = () => {
   };
 
   const toggleAudio = () => {
-    if (currentSongPlaying) {
-      setCurrentSongPlaying(false);
+    if (audioRef.current.paused) {
+      audioRef.current.play();
+      setPausedByButton(false);
     } else {
-      setCurrentSongPlaying(true);
+      audioRef.current.pause();
+      setPausedByButton(true);
     }
   };
 
   const handleChange = (event, newValue) => {
-    setCurrentSongTime(newValue);
-    setCurrentSongPlaying(false);
+    audioRef.current.currentTime = newValue;
+    audioRef.current.pause();
   };
 
   const commitChange = (event, newValue) => {
-    setCurrentSongPlaying(true);
+    if (!pausedByButton) {
+      audioRef.current.play();
+    }
   };
 
   return (
@@ -66,16 +62,16 @@ const Player = () => {
             <Button>Like</Button>
           </Grid>
           <Slider
-            value={parseInt(currentSongTime)}
+            value={parseInt(audioRef.current.currentTime)}
             onChange={handleChange}
             onChangeCommitted={commitChange}
             width="100%"
             min={0}
-            max={currentSongLength}
+            max={audioRef.current.duration}
             step={0.5}
           />
           <Button onClick={toggleAudio}>
-            {currentSongPlaying ? 'Pause' : 'Play'}
+            {audioRef.current.paused ? 'Play' : 'Pause'}
           </Button>
         </Grid>
       ) : (

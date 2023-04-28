@@ -8,24 +8,20 @@ import '../style.scss';
 
 const AudioPlayer = () => {
   const {
-    currentSongPlaying,
-    setCurrentSongPlaying,
     currentSong,
     currentSongImage,
     setCurrentSong,
     setCurrentSongImage,
-    currentSongTime,
-    currentSongLength,
     audioRef,
   } = useContext(SongContext);
 
   const navigate = useNavigate();
 
   const toggleAudio = () => {
-    if (currentSongPlaying) {
-      setCurrentSongPlaying(false);
+    if (audioRef.current.paused) {
+      audioRef.current.play();
     } else {
-      setCurrentSongPlaying(true);
+      audioRef.current.pause();
     }
   };
 
@@ -87,7 +83,7 @@ const AudioPlayer = () => {
                 toggleAudio();
               }}
             >
-              {currentSongPlaying ? 'Pause' : 'Play'}
+              {audioRef.current?.paused ? 'Play' : 'Pause'}
             </Button>
           </Grid>
         </Grid>

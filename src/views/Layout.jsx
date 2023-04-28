@@ -31,20 +31,11 @@ const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const {
-    currentSong,
-    currentSongPlaying,
-    setCurrentSongPlaying,
-    currentSongTime,
-    setCurrentSongTime,
-    setCurrentSongLength,
-    currentSongLength,
-    audioRef,
-  } = useContext(SongContext);
-
-  //const audioRef = useRef();
-  const playAnimationRef = useRef();
+  const {currentSong, audioRef, progress, setProgress} =
+    useContext(SongContext);
   const [audioUrl, setAudioUrl] = useState(null);
+  const [audioReady, setAudioReady] = useState(false);
+  const playAnimationRef = useRef();
 
   const getUserInfo = async () => {
     const userToken = localStorage.getItem('userToken');
@@ -61,51 +52,35 @@ const Layout = () => {
   };
 
   const repeat = () => {
-    setCurrentSongTime(audioRef.current.currentTime);
+    setProgress(audioRef.current?.currentTime / audioRef.current?.duration);
     playAnimationRef.current = requestAnimationFrame(repeat);
   };
 
   useEffect(() => {
     if (currentSong) {
       setAudioUrl(currentSong ? mediaUrl + currentSong.filename : mediaUrl);
-      audioRef.current.onended = () => {
-        setCurrentSongPlaying(false);
-        setCurrentSongTime(0);
-        cancelAnimationFrame(playAnimationRef.current);
-      };
-      setCurrentSongPlaying(true);
+      setAudioReady(false);
+      audioRef.current?.load();
+      setTimeout(() => {
+        audioRef.current.play();
+        playAnimationRef.current = requestAnimationFrame(repeat);
+        setAudioReady(true);
+      }, 50);
     } else {
       cancelAnimationFrame(playAnimationRef.current);
     }
   }, [currentSong]);
 
   useEffect(() => {
-    if (currentSong) {
-      if (currentSongPlaying) {
-        audioRef.current.play();
-        setCurrentSongLength(audioRef.current?.duration);
-        playAnimationRef.current = requestAnimationFrame(repeat);
-      } else {
-        audioRef.current.pause();
-        cancelAnimationFrame(playAnimationRef.current);
-      }
+    if (progress === 1) {
+      audioRef.current.load();
     }
-  }, [currentSongPlaying, audioRef.current?.duration]);
-
-  useEffect(() => {
-    if (currentSong) {
-      if (
-        audioRef.current.currentTime - currentSongTime > 0.5 ||
-        currentSongTime > audioRef.current.currentTime
-      ) {
-        audioRef.current.currentTime = currentSongTime;
-      }
-    }
-  }, [currentSongTime]);
+  }, [progress]);
 
   useEffect(() => {
     getUserInfo();
   }, []);
+
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -123,6 +98,7 @@ const Layout = () => {
             <Outlet />
           </main>
           {currentSong &&
+          audioReady &&
           !(location.pathname === '/login') &&
           !(location.pathname === '/upload') &&
           !(location.pathname === '/player') ? (
