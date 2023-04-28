@@ -10,20 +10,37 @@ import uploadIcon from '../assets/plus.svg';
 import {useNavigate} from 'react-router-dom';
 import {appId} from '../utils/variables';
 
-import React from 'react'
-import { createRoot } from "react-dom/client";
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+import { useEffect } from 'react';
 
 const Upload = (props) => {
   const [image, setImage] = useState(null);
   const [audio, setAudio] = useState(null);
+
   const [selectedImage, setSelectedImage] = useState(
     'https://placekitten.com/600/400'
   );
   // 'https://placehold.co/600x400?text=Choose-media'
   const {postMedia, mediaArray} = useMedia();
   const {postTag, getTag} = useTag();
-
+  const [editImg, setEditImg] = useState(true);
+  const [editImgBtn, setEditImgBtn] = useState(true)
   const navigate = useNavigate();
+  const toggleEditImg = () => {
+    if (editImg) {
+      setEditImg(false);
+    } else {
+      setEditImg(true);
+    }
+  }
+  const toggleEditImgBtn = () => {
+    if (editImgBtn) {
+      setEditImgBtn(false);
+    } else {
+      setEditImgBtn(true);
+    }
+  }
 
   const initValues = {
     songTitle: '',
@@ -93,6 +110,7 @@ const Upload = (props) => {
       });
       reader.readAsDataURL(event.target.files[0]);
     }
+    toggleEditImgBtn
   };
 
   const {inputs, handleSubmit, handleInputChange} = useForm(
@@ -104,14 +122,25 @@ const Upload = (props) => {
     null,
     filterInitValues
   );
-
+  useEffect(() => {
+    setEditImgBtn(!editImgBtn);
+    console.log('is it work')
+  }, [image]);
+  console.log(editImgBtn)
   return (
     <Grid columns={1}>
-      <Box sx={{marginLeft: '3rem', marginRight: '3rem', display: 'flex', alignItems: 'center'}}>
+      <Box
+        sx={{
+          marginLeft: '3rem',
+          marginRight: '3rem',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         <ValidatorForm onSubmit={handleSubmit} noValidate>
           <h3>Add Files</h3>
-          
-          <Button variant="text" component="label" fullWidth>
+
+          {editImg&&<Button variant="text" component="label" fullWidth>
             <img src={uploadIcon} alt="upload icon" height={50} />
             Upload Audio
             <input
@@ -121,10 +150,11 @@ const Upload = (props) => {
               type="file"
               name="audio"
               onChange={handleFileChange}
+              
             />
-          </Button>
+          </Button>}
           <Button variant="text" component="label" fullWidth>
-            <img src={uploadIcon} alt="upload icon" height={50}/>
+            <img src={uploadIcon} alt="upload icon" height={50} />
             Upload Image
             <input
               hidden
@@ -133,18 +163,27 @@ const Upload = (props) => {
               type="file"
               name="image"
               onChange={handleFileChange}
+              
             />
           </Button>
-          <Button
-            id='editBtn'
+          {editImgBtn&&<Button
+            id="editBtn"
             color="secondary"
             hidden
-            sx={{mt: 1, borderRadius: '10rem', left: '50%', transform: 'translate(-50%)', display: 'none'}}
-            
+            sx={{
+              mt: 1,
+              borderRadius: '10rem',
+              left: '50%',
+              transform: 'translate(-50%)',
+              
+            }}
             variant="text"
+            onClick={toggleEditImg}
+            
           >
             Edit Image
-          </Button>
+          </Button>}
+          
 
           <h3 margin="dense">Add Song Info</h3>
 
