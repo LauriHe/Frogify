@@ -10,6 +10,7 @@ import {
 import userIcon from '../assets/person.svg';
 import settingIcon from '../assets/setting.svg';
 import dotsVerIcon from '../assets/dotsVertical.svg';
+import defaultProfile from '../assets/defaultProfile.jpg';
 /* Testing */
 import {useContext, useEffect, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
@@ -23,7 +24,7 @@ const Profile = () => {
   /* Profile picture and avatar */
   const {user} = useContext(MediaContext);
   const [avatar, setAvatar] = useState({
-    filename: 'https://placekitten.com/320',
+    filename: defaultProfile,
   });
   const {getTag} = useTag();
 
@@ -46,9 +47,36 @@ const Profile = () => {
 
   /* Posts */
   const {mediaArray} = useMedia(true);
-  const audioArray = mediaArray.filter((item) => item.media_type === 'audio');
-  audioArray.reverse();
 
+  const [active, setActive] = useState('posts');
+  const [listArray, setListArray] = useState(
+    mediaArray.filter((item) => item.media_type === 'audio').reverse()
+  );
+
+  console.log(mediaArray);
+  const listPosts = () => {
+    setActive('posts');
+    setListArray(
+      mediaArray.filter((item) => item.media_type === 'audio').reverse()
+    );
+  };
+
+  const listHistory = () => {
+    setActive('history');
+    setListArray(mediaArray.filter((item) => item.media_type === 'audio'));
+  };
+
+  const listLiked = () => {
+    setActive('liked');
+    setListArray(mediaArray.filter((item) => item.media_type === 'audio'));
+  };
+  /* Tykkäys nappi */
+
+  useEffect(() => {
+    setListArray(
+      mediaArray.filter((item) => item.media_type === 'audio').reverse()
+    );
+  }, [mediaArray]);
   /* Settings */
   const [setting, setSetting] = useState(false);
 
@@ -175,19 +203,36 @@ const Profile = () => {
             borderBottom: 1,
           }}
         >
-          <Button sx={{p: 1, color: 'white'}}>Posts</Button>
-          <Button sx={{p: 1, color: 'white'}}>History</Button>
-          <Button sx={{p: 1, color: 'white'}}>Liked</Button>
+          <Button
+            onClick={listPosts}
+            color={active === 'posts' ? 'secondary' : 'primary'}
+            sx={{p: 1}}
+          >
+            Posts
+          </Button>
+          <Button
+            onClick={listHistory}
+            color={active === 'history' ? 'secondary' : 'primary'}
+            sx={{p: 1}}
+          >
+            History
+          </Button>
+          <Button
+            onClick={listLiked}
+            color={active === 'liked' ? 'secondary' : 'primary'}
+            sx={{p: 1}}
+          >
+            Liked
+          </Button>
           {/* Change to divider */}
-          <Box borderLeft={1}></Box>
-
+          <Divider orientation="vertical" flexItem color="white" />
           <IconButton color="primary" onClick={toggleSetting}>
             <img src={settingIcon} alt="setting icon" width={30} />
           </IconButton>
         </Box>
 
         {/* Posts */}
-        {/* <Box sx={{borderBottom: 1, pb: 1, pt: 1}}>
+        {/*  <Box sx={{borderBottom: 1, pb: 1, pt: 1}}>
           <Grid
             container
             justifyContent="flex-start"
@@ -226,8 +271,7 @@ const Profile = () => {
 
         {mediaArray.length > 0 && (
           <MediaTableSearch
-            /* Toinen array */
-            searchArray={audioArray}
+            searchArray={listArray}
             mediaArray={mediaArray}
           ></MediaTableSearch>
         )}
@@ -281,7 +325,7 @@ const Profile = () => {
         )}
 
         {/* Picture settings */}
-
+        {/*
         {settingImg && (
           <Box
             sx={{
@@ -294,7 +338,6 @@ const Profile = () => {
             }}
           ></Box>
         )}
-
         {settingImg && (
           <Paper
             variant="outlined"
@@ -315,14 +358,16 @@ const Profile = () => {
               alignItems="center"
               width="100%"
             >
-              <Button fullWidth>Delete picture</Button>
+              <Button fullWidth>Modify song</Button>
+              <Divider flexItem></Divider>
+              <Button fullWidth>Delete song</Button>
               <Divider flexItem></Divider>
               <Button fullWidth onClick={toggleSettingImg}>
                 Cancel
               </Button>
             </Grid>
           </Paper>
-        )}
+        )} */}
       </Box>
     </>
   );
