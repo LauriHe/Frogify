@@ -24,12 +24,12 @@ const MediaRowSearch = ({file, mediaArray}) => {
   }, []);
 
   return (
-    <Box sx={{}}>
-      <Grid container gap={1} alignItems="center">
+    <Box>
+      <Grid container gap={3} alignItems="center" justifyContent="flex-start">
         <img
           src={mediaUrl + image.thumbnails.w640}
           alt={file.title}
-          width={200}
+          width={100}
         />
         <Box>
           <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
