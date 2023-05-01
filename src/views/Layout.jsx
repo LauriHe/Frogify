@@ -17,19 +17,25 @@ import homeIcon from '../assets/home.svg';
 import searchIcon from '../assets/search.svg';
 import uploadIcon from '../assets/plus.svg';
 import profileIcon from '../assets/person.svg';
-import {useContext, useEffect} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
 import {useUser} from '../hooks/ApiHooks';
 import AudioPlayer from '../components/AudioPlayer';
 import {SongContext} from '../contexts/SongContext';
+import {mediaUrl} from '../utils/variables';
 
 const Layout = () => {
   const theme = createTheme(themeOptions);
   const {user, setUser} = useContext(MediaContext);
   const {getUserByToken} = useUser();
-  const {currentSong} = useContext(SongContext);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const {currentSong, audioRef, progress, setProgress} =
+    useContext(SongContext);
+  const [audioUrl, setAudioUrl] = useState(null);
+  const [audioReady, setAudioReady] = useState(false);
+  const playAnimationRef = useRef();
 
   const getUserInfo = async () => {
     const userToken = localStorage.getItem('userToken');
@@ -44,6 +50,32 @@ const Layout = () => {
     }
     navigate('/');
   };
+
+  const repeat = () => {
+    setProgress(audioRef.current?.currentTime / audioRef.current?.duration);
+    playAnimationRef.current = requestAnimationFrame(repeat);
+  };
+
+  useEffect(() => {
+    if (currentSong) {
+      setAudioUrl(currentSong ? mediaUrl + currentSong.filename : mediaUrl);
+      setAudioReady(false);
+      audioRef.current?.load();
+      setTimeout(() => {
+        audioRef.current.play();
+        playAnimationRef.current = requestAnimationFrame(repeat);
+        setAudioReady(true);
+      }, 50);
+    } else {
+      cancelAnimationFrame(playAnimationRef.current);
+    }
+  }, [currentSong]);
+
+  useEffect(() => {
+    if (progress === 1) {
+      audioRef.current.load();
+    }
+  }, [progress]);
 
   useEffect(() => {
     getUserInfo();
@@ -65,7 +97,18 @@ const Layout = () => {
           <main>
             <Outlet />
           </main>
-          {currentSong && <AudioPlayer className="audioPlayer"></AudioPlayer>}
+          {currentSong &&
+          audioReady &&
+          !(location.pathname === '/login') &&
+          !(location.pathname === '/upload') &&
+          !(location.pathname === '/player') ? (
+            <AudioPlayer className="audioPlayer"></AudioPlayer>
+          ) : null}
+          {currentSong &&
+          !(location.pathname === '/login') &&
+          !(location.pathname === '/upload') ? (
+            <audio ref={audioRef} src={audioUrl} />
+          ) : null}
           <BottomNavigation
             sx={{width: '100%', position: 'fixed', bottom: '0'}}
           >
