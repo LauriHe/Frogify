@@ -1,16 +1,18 @@
 import {Box, Button, Grid, Slider, Typography} from '@mui/material';
-import {useContext, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {SongContext} from '../contexts/SongContext';
 import {mediaUrl} from '../utils/variables';
 import {Navigate, useNavigate} from 'react-router-dom';
 
 const Player = () => {
-  const {audioRef, currentSong, currentSongImage} = useContext(SongContext);
+  const {audioRef, currentSong, currentSongImage, bgColor, textColor} =
+    useContext(SongContext);
   const [pausedByButton, setPausedByButton] = useState(false);
 
   const navigate = useNavigate();
 
   const goToPreviousPage = () => {
+    document.querySelector('body').style.backgroundColor = null;
     navigate(-1);
   };
 
@@ -35,8 +37,17 @@ const Player = () => {
     }
   };
 
+  useEffect(() => {
+    document.querySelector('body').style.backgroundColor = bgColor;
+  }, []);
+
   return (
-    <Grid container justifyContent="center" width="100%">
+    <Grid
+      container
+      justifyContent="center"
+      width="100%"
+      sx={{color: textColor}}
+    >
       {currentSong ? (
         <Grid
           container
@@ -47,7 +58,9 @@ const Player = () => {
           gap={1}
         >
           <Grid width="100%" container alignItems="center" gap={5}>
-            <Button onClick={goToPreviousPage}>Close</Button>
+            <Button sx={{color: textColor}} onClick={goToPreviousPage}>
+              Close
+            </Button>
             <Typography variant="body1">{currentSong.title}</Typography>
           </Grid>
           <Box margin="2rem 0">
@@ -59,18 +72,19 @@ const Player = () => {
           </Box>
           <Grid container justifyContent="space-between">
             <Typography variant="h5">{currentSong.title}</Typography>
-            <Button>Like</Button>
+            <Button sx={{color: textColor}}>Like</Button>
           </Grid>
           <Slider
+            sx={{color: textColor}}
             value={parseInt(audioRef.current.currentTime)}
             onChange={handleChange}
             onChangeCommitted={commitChange}
             width="100%"
             min={0}
             max={audioRef.current.duration}
-            step={0.5}
+            step={0.1}
           />
-          <Button onClick={toggleAudio}>
+          <Button sx={{color: textColor}} onClick={toggleAudio}>
             {audioRef.current.paused ? 'Play' : 'Pause'}
           </Button>
         </Grid>
