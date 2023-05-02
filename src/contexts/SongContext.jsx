@@ -7,6 +7,8 @@ const SongProvider = ({children}) => {
   const [currentSong, setCurrentSong] = useState(null);
   const [currentSongImage, setCurrentSongImage] = useState(null);
   const [progress, setProgress] = useState(null);
+  const [bgColor, setBgColor] = useState(null);
+  const [textColor, setTextColor] = useState(null);
   const audioRef = useRef();
 
   return (
@@ -18,6 +20,10 @@ const SongProvider = ({children}) => {
         setCurrentSongImage,
         progress,
         setProgress,
+        bgColor,
+        setBgColor,
+        textColor,
+        setTextColor,
         audioRef,
       }}
     >
