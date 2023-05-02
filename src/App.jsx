@@ -9,6 +9,7 @@ import Layout from './views/Layout';
 import Login from './views/Login';
 import {SongProvider} from './contexts/SongContext';
 import Player from './views/Player';
+import Radio from './views/Radio';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
               <Route path="/upload" element={<Upload />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/player" element={<Player />} />
+              <Route path="/radio" element={<Radio />} />
             </Route>
           </Routes>
         </SongProvider>
