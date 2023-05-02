@@ -1,14 +1,11 @@
-import {Button} from '@mui/material';
 import {RadioBrowserApi} from 'radio-browser-api';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect} from 'react';
+import MediaTableRadio from '../components/MediaTableRadio';
+import {radioList} from '../utils/variables';
 
 const Radio = () => {
   const api = new RadioBrowserApi('My Radio App');
   /* https://stream.radioplay.fi/nrj/nrj_64.aac?direct=true&listenerid=undefined&aw_0_1st.bauer_listenerid=undefined&aw_0_1st.playerid=BMUK_inpage_html5&aw_0_1st.skey=1683025260&aw_0_1st.bauer_loggedin=false */
-  const [stationUrl, setStationUrl] = useState(
-    'https://icecast.synthwaveradio.eu:8000/live?nocache=122809'
-  );
-  const audioRef = useRef();
 
   const fetchStations = async () => {
     const stations = await api.searchStations({
@@ -24,24 +21,13 @@ const Radio = () => {
     );
   };
 
-  const toggleAudio = () => {
-    if (audioRef.current.paused) {
-      audioRef.current.play();
-    } else {
-      audioRef.current.pause();
-    }
-  };
-
   useEffect(() => {
-    fetchStations();
-    audioRef.current.volume = 0.5;
-    audioRef.current.load();
+    // fetchStations();
   }, []);
 
   return (
     <>
-      <audio ref={audioRef} src={stationUrl} />
-      <Button onClick={toggleAudio}>play</Button>
+      <MediaTableRadio radioList={radioList}></MediaTableRadio>
     </>
   );
 };

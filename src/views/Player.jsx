@@ -65,25 +65,31 @@ const Player = () => {
           </Grid>
           <Box margin="2rem 0">
             <img
-              src={mediaUrl + currentSongImage.thumbnails.w640}
+              src={
+                currentSong.type
+                  ? currentSongImage
+                  : mediaUrl + currentSongImage.thumbnails.w640
+              }
               alt="Song cover art"
               width="100%"
             />
           </Box>
           <Grid container justifyContent="space-between">
             <Typography variant="h5">{currentSong.title}</Typography>
-            <Button sx={{color: textColor}}>Like</Button>
+            {!currentSong.type && <Button sx={{color: textColor}}>Like</Button>}
           </Grid>
-          <Slider
-            sx={{color: textColor}}
-            value={parseInt(audioRef.current.currentTime)}
-            onChange={handleChange}
-            onChangeCommitted={commitChange}
-            width="100%"
-            min={0}
-            max={audioRef.current.duration}
-            step={0.1}
-          />
+          {!currentSong.type && (
+            <Slider
+              sx={{color: textColor}}
+              value={parseInt(audioRef.current.currentTime)}
+              onChange={handleChange}
+              onChangeCommitted={commitChange}
+              width="100%"
+              min={0}
+              max={audioRef.current.duration}
+              step={0.1}
+            />
+          )}
           <Button sx={{color: textColor}} onClick={toggleAudio}>
             {audioRef.current.paused ? 'Play' : 'Pause'}
           </Button>
