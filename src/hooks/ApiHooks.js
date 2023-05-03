@@ -159,4 +159,64 @@ const useTag = () => {
   return {getTag, postTag};
 };
 
-export {useMedia, useUser, useAuthentication, useTag};
+const useFavourite = () => {
+  const postFavourite = async (data, token) => {
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+    return await doFetch(baseUrl + 'favourites', fetchOptions);
+  };
+
+  const getFavourites = async (id) => {
+    return await doFetch(baseUrl + 'favourites/file/' + id);
+  };
+
+  const deleteFavourite = async (id, token) => {
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    return await doFetch(baseUrl + 'favourites/file/' + id, options);
+  };
+
+  return {postFavourite, getFavourites, deleteFavourite};
+};
+
+const useComment = () => {
+  const postComment = async (data, token) => {
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+    return await doFetch(baseUrl + 'comments', fetchOptions);
+  };
+
+  const deleteComment = async (id, token) => {
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    return await doFetch(baseUrl + 'comments/' + id, options);
+  };
+
+  const getFileComments = async (id) => {
+    return await doFetch(baseUrl + 'comments/file/' + id);
+  };
+
+  return {postComment, deleteComment, getFileComments};
+};
+
+export {useMedia, useUser, useAuthentication, useTag, useFavourite, useComment};
