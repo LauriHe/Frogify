@@ -19,11 +19,14 @@ import commentIcon from '../assets/comment.svg';
 import {useUser} from '../hooks/ApiHooks';
 import {useEffect, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
+import {useNavigate} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 const MediaRowProfile = ({file, mediaArray}) => {
   const {getUser} = useUser();
   const [postMaker, setPostMaker] = useState('');
   const {user} = useContext(MediaContext);
+  const navigate = useNavigate();
 
   const image = mediaArray.find(
     (item) => item.file_id === JSON.parse(file.description).imageId
@@ -164,7 +167,9 @@ const MediaRowProfile = ({file, mediaArray}) => {
             alignItems="center"
             width="100%"
           >
-            <Button fullWidth>Modify song</Button>
+            <Button component={Link} to="/update" state={{file}} fullWidth>
+              Modify song
+            </Button>
             <Divider flexItem></Divider>
             <Button fullWidth>Delete song</Button>
             <Divider flexItem></Divider>
