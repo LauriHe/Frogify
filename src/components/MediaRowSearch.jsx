@@ -10,6 +10,7 @@ import {
 import PropTypes from 'prop-types';
 import {mediaUrl} from '../utils/variables';
 import {useUser} from '../hooks/ApiHooks';
+import {useNavigate} from 'react-router-dom';
 import {useContext, useEffect, useState} from 'react';
 import userIcon from '../assets/person.svg';
 import dotsVerIcon from '../assets/dotsVertical.svg';
@@ -21,6 +22,7 @@ const MediaRowSearch = ({file, mediaArray}) => {
   const {getUser} = useUser();
   const [postMaker, setPostMaker] = useState('');
   const {user} = useContext(MediaContext);
+  const navigate = useNavigate();
 
   const fetchUser = async () => {
     const token = localStorage.getItem('userToken');
@@ -31,6 +33,7 @@ const MediaRowSearch = ({file, mediaArray}) => {
   const image = mediaArray.find(
     (item) => item.file_id === JSON.parse(file.description).imageId
   );
+  console.log(image.file_id);
 
   useEffect(() => {
     fetchUser();
@@ -46,6 +49,9 @@ const MediaRowSearch = ({file, mediaArray}) => {
       setSettingImg(!settingImg);
       document.querySelector('body').style.overflow = 'hidden';
     }
+  };
+  const modifySong = () => {
+    navigate('/upload/' + image.file_id);
   };
 
   return (
@@ -144,7 +150,9 @@ const MediaRowSearch = ({file, mediaArray}) => {
             alignItems="center"
             width="100%"
           >
-            <Button fullWidth>Modify song</Button>
+            <Button onClick={modifySong} fullWidth>
+              Modify song
+            </Button>
             <Divider flexItem></Divider>
             <Button fullWidth>Delete song</Button>
             <Divider flexItem></Divider>
