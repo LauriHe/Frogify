@@ -7,14 +7,11 @@ import {
   Paper,
   Divider,
 } from '@mui/material';
-import userIcon from '../assets/person.svg';
 import settingIcon from '../assets/setting.svg';
-import dotsVerIcon from '../assets/dotsVertical.svg';
 import defaultProfile from '../assets/defaultProfile.jpg';
-/* Testing */
 import {useContext, useEffect, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
-import {useTag} from '../hooks/ApiHooks';
+import {useFavourite, useTag} from '../hooks/ApiHooks';
 import {mediaUrl} from '../utils/variables';
 import MediaTableSearch from '../components/MediaTableSearch';
 import {useMedia} from '../hooks/ApiHooks';
@@ -23,6 +20,7 @@ import {useNavigate} from 'react-router-dom';
 const Profile = () => {
   /* Profile picture and avatar */
   const {user} = useContext(MediaContext);
+
   const [avatar, setAvatar] = useState({
     filename: defaultProfile,
   });
@@ -46,14 +44,13 @@ const Profile = () => {
   }, [user]);
 
   /* Posts */
-  const {mediaArray} = useMedia(true);
+  const {mediaArray} = useMedia(false);
 
   const [active, setActive] = useState('posts');
   const [listArray, setListArray] = useState(
     mediaArray.filter((item) => item.media_type === 'audio').reverse()
   );
 
-  console.log(mediaArray);
   const listPosts = () => {
     setActive('posts');
     setListArray(
@@ -70,13 +67,13 @@ const Profile = () => {
     setActive('liked');
     setListArray(mediaArray.filter((item) => item.media_type === 'audio'));
   };
-  /* Tykkäys nappi */
 
   useEffect(() => {
     setListArray(
       mediaArray.filter((item) => item.media_type === 'audio').reverse()
     );
   }, [mediaArray]);
+
   /* Settings */
   const [setting, setSetting] = useState(false);
 
@@ -98,19 +95,6 @@ const Profile = () => {
     localStorage.removeItem('userToken');
     document.querySelector('body').style.overflow = 'visible';
     navigate('/');
-  };
-
-  /* Picture settings */
-  const [settingImg, setSettingImg] = useState(false);
-
-  const toggleSettingImg = () => {
-    if (settingImg) {
-      setSettingImg(!settingImg);
-      document.querySelector('body').style.overflow = 'visible';
-    } else {
-      setSettingImg(!settingImg);
-      document.querySelector('body').style.overflow = 'hidden';
-    }
   };
 
   return (
@@ -224,50 +208,11 @@ const Profile = () => {
           >
             Liked
           </Button>
-          {/* Change to divider */}
           <Divider orientation="vertical" flexItem color="white" />
           <IconButton color="primary" onClick={toggleSetting}>
             <img src={settingIcon} alt="setting icon" width={30} />
           </IconButton>
         </Box>
-
-        {/* Posts */}
-        {/*  <Box sx={{borderBottom: 1, pb: 1, pt: 1}}>
-          <Grid
-            container
-            justifyContent="flex-start"
-            gap={3}
-            alignItems="center"
-          >
-            <img
-              src="https://placekitten.com/200/300"
-              width={100}
-              height={100}
-            />
-            <Box>
-              <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
-                SongName
-              </Typography>
-              <Grid container alignItems="center" gap={1}>
-                <img src={userIcon} alt="user icon" width={30} />
-                <Typography variant="h6" component="h3" color="grey">
-                  UserName
-                </Typography>
-              </Grid>
-            </Box>
-            <Box>
-              <IconButton
-                color="primary"
-                aria-label="upload picture"
-                component="label"
-                sx={{p: 1, pr: 1}}
-                onClick={toggleSettingImg}
-              >
-                <img src={dotsVerIcon} alt="dots icon" width={30} />
-              </IconButton>
-            </Box>
-          </Grid>
-        </Box> */}
 
         {mediaArray.length > 0 && (
           <MediaTableSearch
@@ -323,51 +268,6 @@ const Profile = () => {
             </Grid>
           </Paper>
         )}
-
-        {/* Picture settings */}
-        {/*
-        {settingImg && (
-          <Box
-            sx={{
-              height: '100%',
-              width: '100%',
-              position: 'absolute',
-              top: '0',
-              zIndex: '5',
-              backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            }}
-          ></Box>
-        )}
-        {settingImg && (
-          <Paper
-            variant="outlined"
-            sx={{
-              width: '50%',
-              height: 'fit-content',
-              position: 'absolute',
-              top: '8rem',
-              left: '50%',
-              transform: 'translate(-50%, 50%)',
-              zIndex: '10',
-            }}
-          >
-            <Grid
-              container
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-              width="100%"
-            >
-              <Button fullWidth>Modify song</Button>
-              <Divider flexItem></Divider>
-              <Button fullWidth>Delete song</Button>
-              <Divider flexItem></Divider>
-              <Button fullWidth onClick={toggleSettingImg}>
-                Cancel
-              </Button>
-            </Grid>
-          </Paper>
-        )} */}
       </Box>
     </>
   );

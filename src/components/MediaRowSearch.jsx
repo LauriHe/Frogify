@@ -59,7 +59,7 @@ const MediaRowSearch = ({file, mediaArray}) => {
         spacing={1}
       >
         {/* Image */}
-        <Grid item xs="auto">
+        <Grid item xs>
           <img
             src={mediaUrl + image.thumbnails.w640}
             alt={file.title}
@@ -67,7 +67,7 @@ const MediaRowSearch = ({file, mediaArray}) => {
           />
         </Grid>
         {/* Username, song title */}
-        <Grid item xs="auto">
+        <Grid item xs>
           <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
             {file.title}
           </Typography>
