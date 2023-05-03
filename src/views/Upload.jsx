@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import {useParams} from 'react-router-dom';
 import useForm from '../hooks/FormHooks';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {Box, Button, Grid, Slider} from '@mui/material';
@@ -11,12 +12,13 @@ import {appId} from '../utils/variables';
 import {uploadValidators} from '../utils/validators';
 
 import React from 'react';
-import {createRoot} from 'react-dom/client';
 import {useEffect} from 'react';
 
 const Upload = (props) => {
   const [image, setImage] = useState(null);
   const [audio, setAudio] = useState(null);
+  const {id} = useParams();
+  console.log(id);
 
   const [selectedImage, setSelectedImage] = useState(
     'https://placekitten.com/600/400'
@@ -54,6 +56,26 @@ const Upload = (props) => {
     contrast: 100,
     saturation: 100,
     sepia: 0,
+  };
+
+  const doUpdate = async () => {
+    try {
+      const allData = {
+        desc: inputs.description,
+        filters: filterInputs,
+      };
+      const data = {
+        title: inputs.title,
+        description: JSON.stringify(allData),
+      };
+
+      const userToken = localStorage.getItem('userToken');
+      const updateResult = await putMedia(file.file_id, data, userToken);
+      console.log('doUpdate', updateResult);
+      navigate('/home');
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const doUpload = async () => {
