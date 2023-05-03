@@ -175,40 +175,50 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
   }, []);
 
   return (
-    <Box>
-      <Grid
-        container
-        gap={2}
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <img
-          src={mediaUrl + image.thumbnails.w640}
-          alt={file.title}
-          width={100}
-        />
-        <Box>
-          <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
-            {file.title}
-          </Typography>
-          <Grid container alignItems="center" gap={1}>
-            <img src={userIcon} alt="user icon" width={30} />
-            <Typography variant="h6" component="h3" color="grey">
-              {postMaker?.username}
-            </Typography>
+    <Box padding="1rem 1rem 0 1rem">
+      <Grid container gap={1} alignItems="center">
+        <Grid container justifyContent="space-between">
+          <Grid container gap={1} width="fit-content">
+            <img
+              src={mediaUrl + image.thumbnails.w640}
+              alt={file.title}
+              width={100}
+            />
+            <Box>
+              <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
+                {file.title}
+              </Typography>
+              <Grid container alignItems="center" gap={1}>
+                <img src={userIcon} alt="user icon" width={30} />
+                <Typography variant="h6" component="h3" color="grey">
+                  {postMaker?.username}
+                </Typography>
+              </Grid>
+            </Box>
           </Grid>
-        </Box>
-        <Box>
           <IconButton
             color="primary"
             aria-label="upload picture"
             component="label"
             sx={{p: 1, pr: 1}}
-            onClick={toggleLike}
+            onClick={playAudio}
           >
-            <img src={likeIcon} alt="like icon" width={30} />
+            PLAY
           </IconButton>
-          <p>{likes}</p>
+        </Grid>
+        <Grid container gap={1}>
+          <Grid container width="fit-content">
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="label"
+              sx={{p: 1, pr: 1}}
+              onClick={toggleLike}
+            >
+              <img src={likeIcon} alt="like icon" width={30} />
+            </IconButton>
+            <p>{likes}</p>
+          </Grid>
           <IconButton
             color="primary"
             aria-label="upload picture"
@@ -223,20 +233,11 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
             aria-label="upload picture"
             component="label"
             sx={{p: 1, pr: 1}}
-            onClick={playAudio}
-          >
-            PLAY
-          </IconButton>
-          <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-            sx={{p: 1, pr: 1}}
             onClick={toggleFollow}
           >
             Follow
           </IconButton>
-        </Box>
+        </Grid>
 
         {location.pathname === '/profile' &&
           user.user_id === postMaker.user_id && (
