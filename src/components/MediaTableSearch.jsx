@@ -1,15 +1,14 @@
 import {Divider, Grid, ImageList} from '@mui/material';
 import PropTypes from 'prop-types';
-
 import MediaRowSearch from './MediaRowSearch';
 
-const MediaTable = ({searchArray}) => {
+const MediaTableSearch = ({searchArray, mediaArray}) => {
   return (
     <ImageList cols={1} gap={8} sx={{marginBottom: '3rem'}}>
       {searchArray.map((item, index) => {
         return (
           <Grid container direction="column" gap={1} key={index}>
-            <MediaRowSearch file={item} />
+            <MediaRowSearch file={item} mediaArray={mediaArray} />
             {!(index === searchArray.length - 1) && <Divider />}
           </Grid>
         );
@@ -18,8 +17,9 @@ const MediaTable = ({searchArray}) => {
   );
 };
 
-MediaTable.propTypes = {
-  searchArray: PropTypes.array,
+MediaTableSearch.propTypes = {
+  searchArray: PropTypes.array.isRequired,
+  mediaArray: PropTypes.array.isRequired,
 };
 
-export default MediaTable;
+export default MediaTableSearch;
