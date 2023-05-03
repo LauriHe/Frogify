@@ -6,32 +6,65 @@ import likeIcon from '../assets/like.svg';
 import likeIconGreen from '../assets/likeGreen.svg';
 import {useContext, useEffect, useState} from 'react';
 import {SongContext} from '../contexts/SongContext';
-import {MediaContext} from '../contexts/MediaContext';
 import {useNavigate} from 'react-router-dom';
 import {useFavourite} from '../hooks/ApiHooks';
 import {useUser} from '../hooks/ApiHooks';
+import {MediaContext} from '../contexts/MediaContext';
 
 const MediaRow = ({file, mediaArray, toggleComments}) => {
   const {setCurrentSong, setCurrentSongImage} = useContext(SongContext);
-  const {user} = useContext(MediaContext);
+  const {user, setUser, userStorage} = useContext(MediaContext);
+  const {getUserByToken} = useUser();
   const [likes, setLikes] = useState(0);
   const [userLike, setUserLike] = useState(false);
+  const [userFollow, setUserFollow] = useState(false);
+  const {putUser} = useUser();
   const {getFavourites, postFavourite, deleteFavourite} = useFavourite();
   const navigate = useNavigate();
   const [postMaker, setPostMaker] = useState();
+  const [update, setUpdate] = useState(false);
   const {getUser} = useUser();
+
+  const goToLogin = () => {
+    navigate('/login');
+  };
 
   const image = mediaArray.find(
     (item) => item.file_id === JSON.parse(file.description).imageId
   );
 
-  const fetchUser = async () => {
+  const fetchPostMaker = async () => {
     const token = localStorage.getItem('userToken');
-    const user = await getUser(file.user_id, token);
-    setPostMaker(user);
+    const maker = await getUser(file.user_id, token);
+    setPostMaker(maker);
+  };
+
+  const addToHistory = async (file) => {
+    try {
+      if (user) {
+        console.log(JSON.parse(user.full_name));
+        if (JSON.parse(user.full_name).history) {
+          const storage = JSON.parse(user.full_name);
+
+          const following = JSON.parse(user.full_name).following;
+          const history = JSON.parse(user.full_name).history;
+          history.push(file.file_id);
+          if (history.length > 10) {
+            history.shift();
+          }
+          storage.history = history;
+          const token = localStorage.getItem('userToken');
+          const data = {full_name: JSON.stringify({following, history})};
+          await putUser(data, token);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const playAudio = () => {
+    addToHistory(file);
     setCurrentSong(file);
     setCurrentSongImage(image);
   };
@@ -70,6 +103,7 @@ const MediaRow = ({file, mediaArray, toggleComments}) => {
   };
 
   const toggleLike = () => {
+    setUpdate(!update);
     if (userLike) {
       deleteLike();
     } else {
@@ -81,45 +115,126 @@ const MediaRow = ({file, mediaArray, toggleComments}) => {
     toggleComments(file.file_id);
   };
 
+  const fetchFollow = async () => {
+    const token = localStorage.getItem('userToken');
+    const user = await getUserByToken(token);
+    setUser(user);
+    if (JSON.parse(user.full_name).storage.following) {
+      const following = JSON.parse(user.full_name).storage.following;
+      if (following.includes(file.user_id)) {
+        setUserFollow(true);
+      }
+    }
+  };
+
+  const doFollow = async () => {
+    try {
+      if (user) {
+        if (JSON.parse(user.full_name).following) {
+          const storage = JSON.parse(user.full_name);
+          const following = JSON.parse(user.full_name).following;
+          const history = JSON.parse(user.full_name).history;
+          if (!following.includes(file.user_id)) {
+            following.push(file.user_id);
+            storage.following = following;
+            const token = localStorage.getItem('userToken');
+            const data = {full_name: JSON.stringify({following, history})};
+            await putUser(data, token);
+            setUpdate(!update);
+            setUserFollow(true);
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const deleteFollow = async () => {
+    try {
+      if (JSON.parse(user.full_name).following) {
+        const storage = JSON.parse(user.full_name);
+        let following = JSON.parse(user.full_name).following;
+        const history = JSON.parse(user.full_name).history;
+        if (following.includes(file.user_id)) {
+          following = following.filter((id) => id !== file.user_id);
+          storage.following = following;
+          const token = localStorage.getItem('userToken');
+          const data = {full_name: JSON.stringify({following, history})};
+          await putUser(data, token);
+          setUserFollow(false);
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const toggleFollow = () => {
+    if (userFollow) {
+      deleteFollow();
+    } else {
+      doFollow();
+    }
+  };
+
   useEffect(() => {
-    fetchLikes();
+    if (user) {
+      fetchFollow();
+    }
+  }, [userFollow, userStorage.following, update]);
+
+  useEffect(() => {
+    if (user) {
+      fetchLikes();
+    }
   }, [userLike]);
 
   useEffect(() => {
-    fetchUser();
+    if (user) {
+      fetchPostMaker();
+    }
   }, []);
 
   return (
     <>
-      <Box sx={{mb: '1rem'}}>
-        <ImageListItem>
-          <img
-            src={mediaUrl + image.thumbnails.w640}
-            alt={`cover art for ${file.title}`}
-          />
-          <ImageListItemBar
-            title={file.title}
-            subtitle={user ? postMaker?.username : ''}
-            actionIcon={<Button onClick={playAudio}>play</Button>}
-          />
-        </ImageListItem>
-        <Box sx={{display: 'flex', margin: '.5rem', gap: '.5rem'}}>
-          <img
-            src={userLike ? likeIconGreen : likeIcon}
-            onClick={user ? toggleLike : navigate('/login')}
-            alt="home icon"
-            width="30rem"
-          />
-          <p>{likes}</p>
-          <img
-            src={commentIcon}
-            onClick={user ? comment : navigate('/login')}
-            alt="home icon"
-            width="30rem"
-          />
-          <Button onClick={playAudio}>play</Button>
+      {!userStorage.storage?.following ||
+      userStorage.storage?.following.includes(file.user_id) ||
+      userStorage.storage?.following.length < 1 ? (
+        <Box sx={{mb: '1rem'}}>
+          <ImageListItem>
+            <img
+              src={mediaUrl + image.thumbnails.w640}
+              alt={`cover art for ${file.title}`}
+            />
+            <ImageListItemBar
+              title={file.title}
+              subtitle={user ? postMaker?.username : ''}
+              actionIcon={<Button onClick={playAudio}>play</Button>}
+            />
+          </ImageListItem>
+          <Box sx={{display: 'flex', margin: '.5rem', gap: '.5rem'}}>
+            <img
+              src={userLike ? likeIconGreen : likeIcon}
+              onClick={user ? toggleLike : goToLogin}
+              alt="Like icon"
+              width="30rem"
+            />
+            <p>{likes}</p>
+            <img
+              src={commentIcon}
+              onClick={user ? comment : goToLogin}
+              alt="Comment icon"
+              width="30rem"
+            />
+            {!(file.user_id === user.user_id) && (
+              <Button onClick={toggleFollow}>
+                {userFollow ? 'unfollow' : 'follow'}
+              </Button>
+            )}
+          </Box>
         </Box>
-      </Box>
+      ) : null}
     </>
   );
 };

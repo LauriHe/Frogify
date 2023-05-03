@@ -16,13 +16,16 @@ const RegisterForm = ({toggle}) => {
     password: '',
     confirm: '',
     email: '',
-    full_name: '',
   };
 
   const doRegister = async () => {
     try {
       const withoutConfirm = {...inputs};
       delete withoutConfirm.confirm;
+      withoutConfirm.full_name = JSON.stringify({
+        following: [],
+        history: [],
+      });
       const userResult = await postUser(withoutConfirm);
       alert(userResult.message);
       toggle();
@@ -95,17 +98,6 @@ const RegisterForm = ({toggle}) => {
           value={inputs.email}
           validators={registerValidators.email}
           errorMessages={registerForm.email}
-        />
-        <TextValidator
-          className="inputRounded"
-          fullWidth
-          margin="dense"
-          name="full_name"
-          label="Full name"
-          onChange={handleInputChange}
-          value={inputs.full_name}
-          validators={registerValidators.full_name}
-          errorMessages={registerForm.full_name}
         />
         <Button
           color="secondary"

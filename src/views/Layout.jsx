@@ -27,7 +27,7 @@ import {mediaUrl} from '../utils/variables';
 
 const Layout = () => {
   const theme = createTheme(themeOptions);
-  const {user, setUser} = useContext(MediaContext);
+  const {user, setUser, setUserStorage} = useContext(MediaContext);
   const {getUserByToken} = useUser();
   const navigate = useNavigate();
   const location = useLocation();
@@ -48,6 +48,8 @@ const Layout = () => {
       const userData = await getUserByToken(userToken);
       if (userData) {
         setUser(userData);
+        const storage = JSON.parse(userData.full_name);
+        setUserStorage(storage);
         const target = location.pathname === '/login' ? '/' : location.pathname;
         navigate(target);
         return;
@@ -91,7 +93,7 @@ const Layout = () => {
 
   useEffect(() => {
     getUserInfo();
-  }, []);
+  }, [user?.full_name]);
 
   return (
     <>

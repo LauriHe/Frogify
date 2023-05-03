@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import {useComment, useMedia} from '../hooks/ApiHooks';
 import MediaRow from './MediaRow';
 import useForm from '../hooks/FormHooks';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import Comment from './Comment';
+import {MediaContext} from '../contexts/MediaContext';
 
 const MediaTable = ({myFilesOnly = false}) => {
   const {mediaArray} = useMedia(myFilesOnly);
-  const audioArray = mediaArray.filter((item) => item.media_type === 'audio');
-  audioArray.reverse();
-
+  const {user} = useContext(MediaContext);
+  const [audioArray, setAudioArray] = useState();
   const [fileId, setFileId] = useState(0);
   const [viewComments, setViewComments] = useState(false);
   const [comments, setComments] = useState([]);
@@ -68,23 +68,31 @@ const MediaTable = ({myFilesOnly = false}) => {
   };
 
   useEffect(() => {
+    setAudioArray(
+      mediaArray.filter((item) => item.media_type === 'audio').reverse()
+    );
+  }, [mediaArray]);
+
+  useEffect(() => {
     fetchComments();
   }, [viewComments]);
 
   return (
     <Grid container direction="column" alignItems="center">
-      <ImageList cols={1} gap={8} sx={{marginBottom: '7rem'}}>
-        {audioArray.map((item, index) => {
-          return (
-            <MediaRow
-              key={index}
-              file={item}
-              mediaArray={mediaArray}
-              toggleComments={toggleViewComments}
-            />
-          );
-        })}
-      </ImageList>
+      {audioArray && user && (
+        <ImageList cols={1} gap={8} sx={{marginBottom: '7rem'}}>
+          {audioArray.map((item, index) => {
+            return (
+              <MediaRow
+                key={index}
+                file={item}
+                mediaArray={mediaArray}
+                toggleComments={toggleViewComments}
+              />
+            );
+          })}
+        </ImageList>
+      )}
       {viewComments && (
         <Paper
           sx={{
