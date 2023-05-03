@@ -12,7 +12,7 @@ import {appId} from '../utils/variables';
 
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 
 const Upload = (props) => {
   const [image, setImage] = useState(null);
@@ -25,7 +25,7 @@ const Upload = (props) => {
   const {postMedia, mediaArray} = useMedia();
   const {postTag, getTag} = useTag();
   const [editImg, setEditImg] = useState(true);
-  const [editImgBtn, setEditImgBtn] = useState(true)
+  const [editImgBtn, setEditImgBtn] = useState(true);
   const navigate = useNavigate();
   const toggleEditImg = () => {
     if (editImg) {
@@ -33,14 +33,14 @@ const Upload = (props) => {
     } else {
       setEditImg(true);
     }
-  }
+  };
   const toggleEditImgBtn = () => {
     if (editImgBtn) {
       setEditImgBtn(false);
     } else {
       setEditImgBtn(true);
     }
-  }
+  };
 
   const initValues = {
     songTitle: '',
@@ -110,7 +110,7 @@ const Upload = (props) => {
       });
       reader.readAsDataURL(event.target.files[0]);
     }
-    toggleEditImgBtn
+    toggleEditImgBtn;
   };
 
   const {inputs, handleSubmit, handleInputChange} = useForm(
@@ -124,9 +124,9 @@ const Upload = (props) => {
   );
   useEffect(() => {
     setEditImgBtn(!editImgBtn);
-    console.log('is it work')
+    console.log('is it work');
   }, [image]);
-  console.log(editImgBtn)
+  console.log(editImgBtn);
   return (
     <Grid columns={1}>
       <Box
@@ -140,19 +140,20 @@ const Upload = (props) => {
         <ValidatorForm onSubmit={handleSubmit} noValidate>
           <h3>Add Files</h3>
 
-          {editImg&&<Button variant="text" component="label" fullWidth>
-            <img src={uploadIcon} alt="upload icon" height={50} />
-            Upload Audio
-            <input
-              hidden
-              accept="audio/*"
-              multiple
-              type="file"
-              name="audio"
-              onChange={handleFileChange}
-              
-            />
-          </Button>}
+          {editImg && (
+            <Button variant="text" component="label" fullWidth>
+              <img src={uploadIcon} alt="upload icon" height={50} />
+              Upload Audio
+              <input
+                hidden
+                accept="audio/*"
+                multiple
+                type="file"
+                name="audio"
+                onChange={handleFileChange}
+              />
+            </Button>
+          )}
           <Button variant="text" component="label" fullWidth>
             <img src={uploadIcon} alt="upload icon" height={50} />
             Upload Image
@@ -163,27 +164,25 @@ const Upload = (props) => {
               type="file"
               name="image"
               onChange={handleFileChange}
-              
             />
           </Button>
-          {editImgBtn&&<Button
-            id="editBtn"
-            color="secondary"
-            hidden
-            sx={{
-              mt: 1,
-              borderRadius: '10rem',
-              left: '50%',
-              transform: 'translate(-50%)',
-              
-            }}
-            variant="text"
-            onClick={toggleEditImg}
-            
-          >
-            Edit Image
-          </Button>}
-          
+          {editImgBtn && (
+            <Button
+              id="editBtn"
+              color="secondary"
+              hidden
+              sx={{
+                mt: 1,
+                borderRadius: '10rem',
+                left: '50%',
+                transform: 'translate(-50%)',
+              }}
+              variant="text"
+              onClick={toggleEditImg}
+            >
+              Edit Image
+            </Button>
+          )}
 
           <h3 margin="dense">Add Song Info</h3>
 
@@ -197,37 +196,46 @@ const Upload = (props) => {
             value={inputs.songTitle}
             variant="standard"
           />
-          <TextValidator
-            className="inputRounded"
-            fullWidth
-            margin="dense"
-            name="genres"
-            label="genres"
-            onChange={handleInputChange}
-            value={inputs.genres}
-            variant="standard"
-          />
-          <TextValidator
-            className="inputRounded"
-            fullWidth
-            margin="dense"
-            name="keywords"
-            label="Keywords"
-            onChange={handleInputChange}
-            value={inputs.keywords}
-            variant="standard"
-          />
-          <TextValidator
-            className="inputRounded"
-            fullWidth
-            margin="dense"
-            name="artistTags"
-            label="Tag other artists!"
-            onChange={handleInputChange}
-            value={inputs.artistTags}
-            variant="standard"
-            sx={{marginBottom: '2rem'}}
-          />
+          <Grid container>
+            <TextValidator
+              className="inputRounded"
+              fullWidth
+              margin="dense"
+              name="genres"
+              label="genres"
+              onChange={handleInputChange}
+              value={inputs.genres}
+              variant="standard"
+            />
+            <button></button>
+          </Grid>
+          <Grid container>
+            <TextValidator
+              className="inputRounded"
+              fullWidth
+              margin="dense"
+              name="keywords"
+              label="Keywords"
+              onChange={handleInputChange}
+              value={inputs.keywords}
+              variant="standard"
+            />
+            <button></button>
+          </Grid>
+          <Grid container>
+            <TextValidator
+              className="inputRounded"
+              fullWidth
+              margin="dense"
+              name="artistTags"
+              label="Tag other artists!"
+              onChange={handleInputChange}
+              value={inputs.artistTags}
+              variant="standard"
+              sx={{marginBottom: '2rem'}}
+            />
+            <button></button>
+          </Grid>
 
           <Button
             color="secondary"
