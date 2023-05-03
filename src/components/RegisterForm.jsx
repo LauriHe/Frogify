@@ -22,6 +22,10 @@ const RegisterForm = ({toggle}) => {
     try {
       const withoutConfirm = {...inputs};
       delete withoutConfirm.confirm;
+      withoutConfirm.full_name = JSON.stringify({
+        following: [],
+        history: [],
+      });
       const userResult = await postUser(withoutConfirm);
       alert(userResult.message);
       toggle();

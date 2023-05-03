@@ -20,7 +20,7 @@ import {SongContext} from '../contexts/SongContext';
 
 const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
   const {setCurrentSong, setCurrentSongImage} = useContext(SongContext);
-  const {user, setUser, follows} = useContext(MediaContext);
+  const {user, setUser, userStorage} = useContext(MediaContext);
   const {getUserByToken} = useUser();
   const [likes, setLikes] = useState(0);
   const [userLike, setUserLike] = useState(false);
@@ -53,7 +53,30 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
     }
   };
 
+  const addToHistory = async (file) => {
+    try {
+      if (user) {
+        console.log(JSON.parse(user.full_name));
+        if (JSON.parse(user.full_name).storage.history) {
+          const storage = JSON.parse(user.full_name).storage;
+          const history = JSON.parse(user.full_name).storage.history;
+          history.push(file.file_id);
+          if (history.length > 10) {
+            history.shift();
+          }
+          storage.history = history;
+          const token = localStorage.getItem('userToken');
+          const data = {full_name: JSON.stringify({storage})};
+          await putUser(data, token);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const playAudio = () => {
+    addToHistory(file);
     setCurrentSong(file);
     setCurrentSongImage(image);
   };
@@ -108,8 +131,8 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
     const token = localStorage.getItem('userToken');
     const user = await getUserByToken(token);
     setUser(user);
-    if (user.full_name) {
-      const following = JSON.parse(user.full_name).following;
+    if (JSON.parse(user.full_name).storage.following) {
+      const following = JSON.parse(user.full_name).storage.following;
       if (following.includes(file.user_id)) {
         setUserFollow(true);
       }
@@ -119,17 +142,18 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
   const doFollow = async () => {
     try {
       if (user) {
-        let following = [];
-        if (user.full_name) {
-          following = JSON.parse(user.full_name).following;
-        }
-        if (!following.includes(file.user_id)) {
-          following.push(file.user_id);
-          const token = localStorage.getItem('userToken');
-          const data = {full_name: JSON.stringify({following: following})};
-          await putUser(data, token);
-          setUpdate(!update);
-          setUserFollow(true);
+        if (JSON.parse(user.full_name).storage.following) {
+          const storage = JSON.parse(user.full_name).storage;
+          const following = JSON.parse(user.full_name).storage.following;
+          if (!following.includes(file.user_id)) {
+            following.push(file.user_id);
+            storage.following = following;
+            const token = localStorage.getItem('userToken');
+            const data = {full_name: JSON.stringify({storage})};
+            await putUser(data, token);
+            setUpdate(!update);
+            setUserFollow(true);
+          }
         }
       }
     } catch (error) {
@@ -139,12 +163,14 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
 
   const deleteFollow = async () => {
     try {
-      if (user.full_name) {
-        let following = JSON.parse(user.full_name).following;
+      if (JSON.parse(user.full_name).storage.following) {
+        const storage = JSON.parse(user.full_name).storage;
+        let following = JSON.parse(user.full_name).storage.following;
         if (following.includes(file.user_id)) {
           following = following.filter((id) => id !== file.user_id);
+          storage.following = following;
           const token = localStorage.getItem('userToken');
-          const data = {full_name: JSON.stringify({following: following})};
+          const data = {full_name: JSON.stringify({storage})};
           await putUser(data, token);
           setUserFollow(false);
         }
@@ -164,7 +190,7 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
 
   useEffect(() => {
     fetchFollow();
-  }, [userFollow, follows.following, update]);
+  }, [userFollow, userStorage.following, update]);
 
   useEffect(() => {
     fetchLikes();
