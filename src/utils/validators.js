@@ -1,5 +1,10 @@
 const registerValidators = {
-  username: ['required', 'minStringLength:3', 'isUsernameAvailable'],
+  username: [
+    'required',
+    'minStringLength:3',
+    'isUsernameAvailable',
+    'maxStringLength:40',
+  ],
   password: ['required', 'minStringLength:5'],
   confirm: ['required', 'isPasswordMatch'],
   email: ['required', 'isEmail'],
@@ -11,4 +16,11 @@ const loginValidators = {
   password: ['required'],
 };
 
-export {registerValidators, loginValidators};
+const uploadValidators = {
+  songTitle: ['required', 'maxStringLength:30'],
+  genres: ['required', 'maxStringLength:40'],
+  keywords: ['required', 'maxStringLength:40'],
+  artistTags: ['maxStringLength:40'],
+};
+
+export {registerValidators, loginValidators, uploadValidators};

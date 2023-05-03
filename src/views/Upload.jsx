@@ -4,11 +4,11 @@ import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {Box, Button, Grid} from '@mui/material';
 import {Container} from '@mui/system';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
-import {Avatar} from '@mui/material';
 import {useState} from 'react';
 import uploadIcon from '../assets/plus.svg';
 import {useNavigate} from 'react-router-dom';
 import {appId} from '../utils/variables';
+import {uploadValidators} from '../utils/validators';
 
 import React from 'react';
 import {createRoot} from 'react-dom/client';
@@ -194,48 +194,43 @@ const Upload = (props) => {
             label="Song Title"
             onChange={handleInputChange}
             value={inputs.songTitle}
+            validators={uploadValidators.songTitle}
             variant="standard"
           />
-          <Grid container>
-            <TextValidator
-              className="inputRounded"
-              fullWidth
-              margin="dense"
-              name="genres"
-              label="genres"
-              onChange={handleInputChange}
-              value={inputs.genres}
-              variant="standard"
-            />
-            <button></button>
-          </Grid>
-          <Grid container>
-            <TextValidator
-              className="inputRounded"
-              fullWidth
-              margin="dense"
-              name="keywords"
-              label="Keywords"
-              onChange={handleInputChange}
-              value={inputs.keywords}
-              variant="standard"
-            />
-            <button></button>
-          </Grid>
-          <Grid container>
-            <TextValidator
-              className="inputRounded"
-              fullWidth
-              margin="dense"
-              name="artistTags"
-              label="Tag other artists!"
-              onChange={handleInputChange}
-              value={inputs.artistTags}
-              variant="standard"
-              sx={{marginBottom: '2rem'}}
-            />
-            <button></button>
-          </Grid>
+          <TextValidator
+            className="inputRounded"
+            fullWidth
+            margin="dense"
+            name="genres"
+            label="genres"
+            onChange={handleInputChange}
+            value={inputs.genres}
+            validators={uploadValidators.genres}
+            variant="standard"
+          />
+          <TextValidator
+            className="inputRounded"
+            fullWidth
+            margin="dense"
+            name="keywords"
+            label="Keywords"
+            onChange={handleInputChange}
+            value={inputs.keywords}
+            validators={uploadValidators.keywords}
+            variant="standard"
+          />
+          <TextValidator
+            className="inputRounded"
+            fullWidth
+            margin="dense"
+            name="artistTags"
+            label="Tag other artists!"
+            onChange={handleInputChange}
+            value={inputs.artistTags}
+            validators={uploadValidators.artistTags}
+            variant="standard"
+            sx={{marginBottom: '2rem'}}
+          />
 
           <Button
             color="secondary"
