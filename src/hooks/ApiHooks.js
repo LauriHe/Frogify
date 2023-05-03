@@ -92,6 +92,18 @@ const useUser = () => {
     return await doFetch(baseUrl + 'users', options);
   };
 
+  const putUser = async (data, token) => {
+    const options = {
+      method: 'PUT',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+    return await doFetch(baseUrl + 'users', options);
+  };
+
   const getUserByToken = async (token) => {
     const options = {
       method: 'GET',
@@ -117,7 +129,7 @@ const useUser = () => {
     return await doFetch(baseUrl + 'users/' + id, options);
   };
 
-  return {postUser, getUserByToken, getCheckUser, getUser};
+  return {postUser, putUser, getUserByToken, getCheckUser, getUser};
 };
 
 const useAuthentication = () => {
