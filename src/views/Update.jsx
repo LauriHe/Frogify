@@ -7,27 +7,30 @@ import {Container} from '@mui/system';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import {useState} from 'react';
 import uploadIcon from '../assets/plus.svg';
-import {useNavigate} from 'react-router-dom';
 import {appId} from '../utils/variables';
 import {uploadValidators} from '../utils/validators';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 import React from 'react';
 import {useEffect} from 'react';
 
-const Upload = (props) => {
+const Update = (props) => {
   const [image, setImage] = useState(null);
   const [audio, setAudio] = useState(null);
+  const {state} = useLocation();
+  const file = state.file;
   const {id} = useParams();
-  console.log(id);
+  /* console.log(id); */
 
   const [selectedImage, setSelectedImage] = useState(
     'https://placekitten.com/600/400'
   );
   // 'https://placehold.co/600x400?text=Choose-media'
-  const {postMedia, mediaArray} = useMedia();
+  const {putMedia} = useMedia();
   const {postTag, getTag} = useTag();
   const [editImg, setEditImg] = useState(true);
   const [editImgBtn, setEditImgBtn] = useState(true);
+  const [initialFile, setInitialFile] = useState();
   const navigate = useNavigate();
   const toggleEditImg = () => {
     if (editImg) {
@@ -43,12 +46,13 @@ const Upload = (props) => {
       setEditImgBtn(true);
     }
   };
-
+  dataA;
+  console.log(file);
   const initValues = {
-    songTitle: '',
-    genres: '',
-    keywords: '',
-    artistTags: '',
+    songTitle: file.title,
+    genres: JSON.parse(file.description).genres,
+    keywords: JSON.parse(file.description).keywords,
+    artistTags: JSON.parse(file.description).artistTags,
   };
 
   const filterInitValues = {
@@ -58,67 +62,40 @@ const Upload = (props) => {
     sepia: 0,
   };
 
-  const doUpdate = async () => {
-    try {
-      const allData = {
-        desc: inputs.description,
-        filters: filterInputs,
-      };
-      const data = {
-        title: inputs.title,
-        description: JSON.stringify(allData),
-      };
-
-      const userToken = localStorage.getItem('userToken');
-      const updateResult = await putMedia(file.file_id, data, userToken);
-      console.log('doUpdate', updateResult);
-      navigate('/');
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
   const doUpload = async () => {
     try {
       const userToken = localStorage.getItem('userToken');
       const dataImage = new FormData();
       dataImage.append('title', inputs.songTitle);
-      dataImage.append('file', image);
       dataImage.append('description', JSON.stringify(filterInputs));
-      const uploadResultImage = await postMedia(dataImage, userToken);
-
-      const tagResultImage = await postTag(
-        {
-          file_id: uploadResultImage.file_id,
-          tag: appId,
-        },
+      /* const uploadResultImage = await putMedia(
+        JSON.parse(file.description).imageId,
+        dataImage,
         userToken
-      );
+      ); */
+
       const dataAudio = new FormData();
       dataAudio.append('title', inputs.songTitle);
       const allDataAudio = {
         genres: inputs.genres,
         keywords: inputs.keywords,
         artistTags: inputs.artistTags,
-        imageId: uploadResultImage.file_id,
+        imageId: JSON.parse(file.description).imageId,
       };
 
       dataAudio.append('description', JSON.stringify(allDataAudio));
-      dataAudio.append('file', audio);
 
-      const uploadResultAudio = await postMedia(dataAudio, userToken);
-
-      const tagResultAudio = await postTag(
-        {
-          file_id: uploadResultAudio.file_id,
-          tag: appId,
-        },
+      const uploadResultAudio = await putMedia(
+        file.file_id,
+        dataAudio,
         userToken
       );
+
       console.log(uploadResultAudio);
       navigate('/home');
     } catch (error) {
-      alert(error.message);
+      /* alert(error.message); */
+      console.log(error);
     }
   };
 
@@ -146,10 +123,11 @@ const Upload = (props) => {
     null,
     filterInitValues
   );
+
   useEffect(() => {
     setEditImgBtn(!editImgBtn);
   }, [image]);
-  console.log(editImgBtn);
+
   return (
     <Grid columns={1}>
       <Box
@@ -328,4 +306,4 @@ const Upload = (props) => {
   );
 };
 
-export default Upload;
+export default Update;
