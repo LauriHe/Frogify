@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import useForm from '../hooks/FormHooks';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
-import {Box, Button, Grid} from '@mui/material';
+import {Box, Button, Grid, Slider} from '@mui/material';
 import {Container} from '@mui/system';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import {useState} from 'react';
@@ -62,6 +62,7 @@ const Upload = (props) => {
       const dataImage = new FormData();
       dataImage.append('title', inputs.songTitle);
       dataImage.append('file', image);
+      dataImage.append('description', JSON.stringify(filterInputs));
       const uploadResultImage = await postMedia(dataImage, userToken);
 
       const tagResultImage = await postTag(
@@ -79,6 +80,7 @@ const Upload = (props) => {
         artistTags: inputs.artistTags,
         imageId: uploadResultImage.file_id,
       };
+
       dataAudio.append('description', JSON.stringify(allDataAudio));
       dataAudio.append('file', audio);
 
@@ -183,55 +185,113 @@ const Upload = (props) => {
               Edit Image
             </Button>
           )}
+          {editImg && (
+            <Box>
+              <h3 margin="dense">Add Song Info</h3>
 
-          <h3 margin="dense">Add Song Info</h3>
+              <TextValidator
+                className="inputRounded"
+                fullWidth
+                margin="dense"
+                name="songTitle"
+                label="Song Title"
+                onChange={handleInputChange}
+                value={inputs.songTitle}
+                validators={uploadValidators.songTitle}
+                variant="standard"
+              />
+              <TextValidator
+                className="inputRounded"
+                fullWidth
+                margin="dense"
+                name="genres"
+                label="genres"
+                onChange={handleInputChange}
+                value={inputs.genres}
+                validators={uploadValidators.genres}
+                variant="standard"
+              />
+              <TextValidator
+                className="inputRounded"
+                fullWidth
+                margin="dense"
+                name="keywords"
+                label="Keywords"
+                onChange={handleInputChange}
+                value={inputs.keywords}
+                validators={uploadValidators.keywords}
+                variant="standard"
+              />
+              <TextValidator
+                className="inputRounded"
+                fullWidth
+                margin="dense"
+                name="artistTags"
+                label="Tag other artists!"
+                onChange={handleInputChange}
+                value={inputs.artistTags}
+                validators={uploadValidators.artistTags}
+                variant="standard"
+                sx={{marginBottom: '2rem'}}
+              />
+            </Box>
+          )}
+          {!editImg && (
+            <Box>
+              <img
+                src={selectedImage}
+                alt="preview"
+                style={{
+                  width: '100%',
+                  height: 400,
+                  objectFit: 'contain',
+                  filter: `
+          brightness(${filterInputs.brightness}%)
+          contrast(${filterInputs.contrast}%)
+          saturate(${filterInputs.saturation}%)
+          sepia(${filterInputs.sepia}%)
+          `,
+                }}
+              />
+              <Slider
+                name="brightness"
+                min={0}
+                max={200}
+                step={1}
+                valueLabelDisplay="auto"
+                onChange={handleFilterChange}
+                value={filterInputs.brightness}
+              />
 
-          <TextValidator
-            className="inputRounded"
-            fullWidth
-            margin="dense"
-            name="songTitle"
-            label="Song Title"
-            onChange={handleInputChange}
-            value={inputs.songTitle}
-            validators={uploadValidators.songTitle}
-            variant="standard"
-          />
-          <TextValidator
-            className="inputRounded"
-            fullWidth
-            margin="dense"
-            name="genres"
-            label="genres"
-            onChange={handleInputChange}
-            value={inputs.genres}
-            validators={uploadValidators.genres}
-            variant="standard"
-          />
-          <TextValidator
-            className="inputRounded"
-            fullWidth
-            margin="dense"
-            name="keywords"
-            label="Keywords"
-            onChange={handleInputChange}
-            value={inputs.keywords}
-            validators={uploadValidators.keywords}
-            variant="standard"
-          />
-          <TextValidator
-            className="inputRounded"
-            fullWidth
-            margin="dense"
-            name="artistTags"
-            label="Tag other artists!"
-            onChange={handleInputChange}
-            value={inputs.artistTags}
-            validators={uploadValidators.artistTags}
-            variant="standard"
-            sx={{marginBottom: '2rem'}}
-          />
-
+              <Slider
+                name="contrast"
+                min={0}
+                max={200}
+                step={1}
+                valueLabelDisplay="auto"
+                onChange={handleFilterChange}
+                value={filterInputs.contrast}
+              />
+              <Slider
+                name="saturation"
+                min={0}
+                max={200}
+                step={1}
+                valueLabelDisplay="auto"
+                onChange={handleFilterChange}
+                value={filterInputs.saturation}
+              />
+              <Slider
+                name="sepia"
+                min={0}
+                max={100}
+                step={1}
+                valueLabelDisplay="auto"
+                onChange={handleFilterChange}
+                value={filterInputs.sepia}
+              />
+            </Box>
+          )}
           <Button
             color="secondary"
             fullWidth
