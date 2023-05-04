@@ -5,6 +5,7 @@ import {
   BottomNavigationAction,
   Container,
   CssBaseline,
+  Grid,
   ThemeProvider,
   Toolbar,
   Typography,
@@ -128,7 +129,7 @@ const Layout = () => {
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Container sx={{width: '100%', padding: '0%'}}>
+        <Container maxWidth={location.pathname === '/player' ? 'sm' : 'xl'}>
           <AppBar position="fixed">
             <Toolbar disableGutters>
               <Avatar
@@ -163,45 +164,49 @@ const Layout = () => {
           !(location.pathname === '/upload') ? (
             <audio ref={audioRef} src={audioUrl} />
           ) : null}
-          <BottomNavigation
-            sx={{width: '100%', position: 'fixed', bottom: '0'}}
-          >
-            <BottomNavigationAction
-              component={Link}
-              to={user ? '/' : '/login'}
-              label="home"
-              value="home"
-              icon={<img src={homeIcon} alt="home icon" width="40rem" />}
-            />
-            <BottomNavigationAction
-              component={Link}
-              to={user ? 'search' : '/login'}
-              label="search"
-              value="search"
-              icon={<img src={searchIcon} alt="search icon" width="40rem" />}
-            />
-            <BottomNavigationAction
-              component={Link}
-              to={user ? 'upload' : '/login'}
-              label="upload"
-              value="upload"
-              icon={<img src={uploadIcon} alt="upload icon" width="40rem" />}
-            />
-            <BottomNavigationAction
-              component={Link}
-              to={user ? 'radio' : '/login'}
-              label="radio"
-              value="radio"
-              icon={<img src={radioIcon} alt="radio icon" width="40rem" />}
-            />
-            <BottomNavigationAction
-              component={Link}
-              to={user ? 'profile' : '/login'}
-              label="profile"
-              value="profile"
-              icon={<img src={profileIcon} alt="profile icon" width="40rem" />}
-            />
-          </BottomNavigation>
+          <Grid container justifyContent="center">
+            <BottomNavigation
+              sx={{width: '100%', position: 'fixed', bottom: '0'}}
+            >
+              <BottomNavigationAction
+                component={Link}
+                to={user ? '/' : '/login'}
+                label="home"
+                value="home"
+                icon={<img src={homeIcon} alt="home icon" width="40rem" />}
+              />
+              <BottomNavigationAction
+                component={Link}
+                to={user ? 'search' : '/login'}
+                label="search"
+                value="search"
+                icon={<img src={searchIcon} alt="search icon" width="40rem" />}
+              />
+              <BottomNavigationAction
+                component={Link}
+                to={user ? 'upload' : '/login'}
+                label="upload"
+                value="upload"
+                icon={<img src={uploadIcon} alt="upload icon" width="40rem" />}
+              />
+              <BottomNavigationAction
+                component={Link}
+                to={user ? 'radio' : '/login'}
+                label="radio"
+                value="radio"
+                icon={<img src={radioIcon} alt="radio icon" width="40rem" />}
+              />
+              <BottomNavigationAction
+                component={Link}
+                to={user ? 'profile' : '/login'}
+                label="profile"
+                value="profile"
+                icon={
+                  <img src={profileIcon} alt="profile icon" width="40rem" />
+                }
+              />
+            </BottomNavigation>
+          </Grid>
         </Container>
       </ThemeProvider>
     </>

@@ -5,6 +5,7 @@ import MediaRow from './MediaRow';
 import useForm from '../hooks/FormHooks';
 import {useEffect, useState} from 'react';
 import Comment from './Comment';
+import {useWindowSize} from '../hooks/WindowHooks';
 
 const MediaTable = (showedPosts) => {
   const {mediaArray} = useMedia();
@@ -13,6 +14,8 @@ const MediaTable = (showedPosts) => {
   const [viewComments, setViewComments] = useState(false);
   const [comments, setComments] = useState([]);
   const {getFileComments, postComment, deleteComment} = useComment();
+  const windowSize = useWindowSize();
+  const [cols, setCols] = useState(1);
 
   const fetchComments = async () => {
     try {
@@ -75,10 +78,25 @@ const MediaTable = (showedPosts) => {
     fetchComments();
   }, [viewComments]);
 
+  useEffect(() => {
+    if (windowSize.width > 1300) {
+      setCols(3);
+    } else if (windowSize.width > 768) {
+      setCols(2);
+    } else {
+      setCols(1);
+    }
+  }, [windowSize]);
+
   return (
     <Grid container direction="column" alignItems="center">
       {audioArray && (
-        <ImageList cols={1} gap={8} sx={{marginBottom: '7rem'}}>
+        <ImageList
+          direction="row"
+          cols={cols}
+          gap={8}
+          sx={{marginBottom: '7rem'}}
+        >
           {audioArray.map((item, index) => {
             return (
               <MediaRow

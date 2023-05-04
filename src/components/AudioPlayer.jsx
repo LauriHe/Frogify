@@ -12,6 +12,7 @@ import pauseIcon from '../assets/pause.svg';
 import pauseIconDark from '../assets/pauseDark.svg';
 import closeIcon from '../assets/close.svg';
 import closeIconDark from '../assets/closeDark.svg';
+import {useWindowSize} from '../hooks/WindowHooks';
 
 const AudioPlayer = () => {
   const {
@@ -34,6 +35,8 @@ const AudioPlayer = () => {
   const googleProxyURL =
     'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
   const crossOriginImageUrl = googleProxyURL + encodeURIComponent(imageUrl);
+  const windowSize = useWindowSize();
+  const [playerWidth, setPlayerWidth] = useState('100%');
 
   const [title, setTitle] = useState('');
 
@@ -168,124 +171,146 @@ const AudioPlayer = () => {
     formatTitle();
   }, [currentSong]);
 
+  useEffect(() => {
+    if (windowSize.width > 1300) {
+      setPlayerWidth('40%');
+    } else if (windowSize.width > 1000) {
+      setPlayerWidth('50%');
+    } else if (windowSize.width > 800) {
+      setPlayerWidth('60%');
+    } else if (windowSize.width > 500) {
+      setPlayerWidth('90%');
+    } else {
+      setPlayerWidth('100%');
+    }
+  }, [windowSize]);
+
   return (
-    <Grid
-      container
-      justifyContent="center"
-      sx={{width: '100%', height: '4rem', position: 'fixed', bottom: '4rem'}}
-    >
-      <img
-        id="cover-art"
-        src={currentSong.type ? currentSongImage : crossOriginImageUrl}
-        alt="cover art"
-        height="40rem"
-        crossOrigin="Anonymous"
-        style={{display: 'none'}}
-      />
-      {bgColor && (
-        <Paper
-          onClick={openPlayerPage}
-          sx={
-            currentSong.type
-              ? {
-                  width: '95%',
-                  borderRadius: '.5rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  gap: '.5rem',
-                  padding: '0 .5rem',
-                  backgroundColor: bgColor,
-                }
-              : {
-                  width: '95%',
-                  borderRadius: '.5rem',
-                  display: 'flex',
-                  flexDirection: 'column-reverse',
-                  gap: '.5rem',
-                  padding: '0 .5rem',
-                  backgroundColor: bgColor,
-                }
-          }
-        >
-          {!currentSong.type && (
-            <Box width="100%">
-              <LinearProgress
-                variant="determinate"
-                value={
-                  (audioRef.current?.currentTime / audioRef.current?.duration) *
-                  100
-                }
-              />
-            </Box>
-          )}
-          <Grid container justifyContent="space-between" alignContent="center">
-            <Grid width="auto" container alignItems="center" gap={2}>
-              <img
-                id="cover-art"
-                src={currentSong.type ? currentSongImage : imageUrl}
-                alt="cover art"
-                height="40rem"
-                crossOrigin="Anonymous"
-                style={
-                  imageFilters
-                    ? {
-                        filter: `
+    <Grid container justifyContent="center">
+      <Grid
+        container
+        justifyContent="center"
+        sx={{height: '4rem', position: 'fixed', bottom: '4rem'}}
+        width={playerWidth}
+      >
+        <img
+          id="cover-art"
+          src={currentSong.type ? currentSongImage : crossOriginImageUrl}
+          alt="cover art"
+          height="40rem"
+          crossOrigin="Anonymous"
+          style={{display: 'none'}}
+        />
+        {bgColor && (
+          <Paper
+            onClick={openPlayerPage}
+            sx={
+              currentSong.type
+                ? {
+                    width: '95%',
+                    borderRadius: '.5rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    gap: '.5rem',
+                    padding: '0 .5rem',
+                    backgroundColor: bgColor,
+                  }
+                : {
+                    width: '95%',
+                    borderRadius: '.5rem',
+                    display: 'flex',
+                    flexDirection: 'column-reverse',
+                    gap: '.5rem',
+                    padding: '0 .5rem',
+                    backgroundColor: bgColor,
+                  }
+            }
+          >
+            {!currentSong.type && (
+              <Box width="100%">
+                <LinearProgress
+                  variant="determinate"
+                  value={
+                    (audioRef.current?.currentTime /
+                      audioRef.current?.duration) *
+                    100
+                  }
+                />
+              </Box>
+            )}
+            <Grid
+              container
+              justifyContent="space-between"
+              alignContent="center"
+            >
+              <Grid width="auto" container alignItems="center" gap={2}>
+                <img
+                  id="cover-art"
+                  src={currentSong.type ? currentSongImage : imageUrl}
+                  alt="cover art"
+                  height="40rem"
+                  crossOrigin="Anonymous"
+                  style={
+                    imageFilters
+                      ? {
+                          filter: `
                 brightness(${imageFilters.brightness}%)
                 contrast(${imageFilters.contrast}%)
                 saturate(${imageFilters.saturation}%)
                 sepia(${imageFilters.sepia}%)
                 `,
-                      }
-                    : {}
-                }
-              />
-              <Typography variant="body1" sx={{color: textColor}}>
-                {title}
-              </Typography>
-            </Grid>
-            <Grid width="auto" container direction="row-reverse">
-              <Button
-                sx={{color: textColor, width: '1rem', padding: '0'}}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  closePlayer();
-                }}
-              >
-                <img
-                  src={textColor === 'white' ? closeIcon : closeIconDark}
-                  alt="close icon"
-                  style={{width: '2rem'}}
+                        }
+                      : {}
+                  }
                 />
-              </Button>
-              <Button
-                sx={{color: textColor, width: '1rem', padding: '0'}}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleAudio();
-                }}
-              >
-                {textColor === 'white' && (
+                <Typography variant="body1" sx={{color: textColor}}>
+                  {title}
+                </Typography>
+              </Grid>
+              <Grid width="auto" container direction="row-reverse">
+                <Button
+                  sx={{color: textColor, width: '1rem', padding: '0'}}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closePlayer();
+                  }}
+                >
                   <img
-                    src={audioRef.current?.paused ? playIcon : pauseIcon}
-                    alt="play / pause icon"
+                    src={textColor === 'white' ? closeIcon : closeIconDark}
+                    alt="close icon"
                     style={{width: '2rem'}}
                   />
-                )}
-                {textColor === 'black' && (
-                  <img
-                    src={
-                      audioRef.current?.paused ? playIconDark : pauseIconDark
-                    }
-                    alt="play / pause icon"
-                    style={{width: '2rem'}}
-                  />
-                )}
-              </Button>
+                </Button>
+                <Button
+                  sx={{color: textColor, width: '1rem', padding: '0'}}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleAudio();
+                  }}
+                >
+                  {textColor === 'white' && (
+                    <img
+                      src={audioRef.current?.paused ? playIcon : pauseIcon}
+                      alt="play / pause icon"
+                      style={{width: '2rem'}}
+                    />
+                  )}
+                  {textColor === 'black' && (
+                    <img
+                      src={
+                        audioRef.current?.paused ? playIconDark : pauseIconDark
+                      }
+                      alt="play / pause icon"
+                      style={{width: '2rem'}}
+                    />
+                  )}
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
-        </Paper>
-      )}
+          </Paper>
+        )}
+      </Grid>
     </Grid>
   );
 };
