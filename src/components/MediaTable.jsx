@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import {useComment, useMedia} from '../hooks/ApiHooks';
 import MediaRow from './MediaRow';
 import useForm from '../hooks/FormHooks';
-import {useContext, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import Comment from './Comment';
-import {MediaContext} from '../contexts/MediaContext';
 
 const MediaTable = ({myFilesOnly = false}) => {
   const {mediaArray} = useMedia(myFilesOnly);
-  const {user} = useContext(MediaContext);
   const [audioArray, setAudioArray] = useState();
   const [fileId, setFileId] = useState(0);
   const [viewComments, setViewComments] = useState(false);
@@ -79,7 +77,7 @@ const MediaTable = ({myFilesOnly = false}) => {
 
   return (
     <Grid container direction="column" alignItems="center">
-      {audioArray && user && (
+      {audioArray && (
         <ImageList cols={1} gap={8} sx={{marginBottom: '7rem'}}>
           {audioArray.map((item, index) => {
             return (

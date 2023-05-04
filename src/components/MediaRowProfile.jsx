@@ -24,6 +24,15 @@ const MediaRowProfile = ({file, mediaArray}) => {
   const [postMaker, setPostMaker] = useState('');
   const {user} = useContext(MediaContext);
 
+  const [title, setTitle] = useState('');
+
+  const formatTitle = () => {
+    setTitle(file.title);
+    if (file.title.length > 15) {
+      setTitle(file.title.slice(0, 15) + '...');
+    }
+  };
+
   const image = mediaArray.find(
     (item) => item.file_id === JSON.parse(file.description).imageId
   );
@@ -36,12 +45,17 @@ const MediaRowProfile = ({file, mediaArray}) => {
 
   useEffect(() => {
     fetchUser();
+    formatTitle();
   }, []);
 
-  const {setCurrentSong, setCurrentSongImage} = useContext(SongContext);
+  const {setCurrentSong, setCurrentSongImage, setImageFilters} =
+    useContext(SongContext);
   const playAudio = () => {
     setCurrentSong(file);
     setCurrentSongImage(image);
+    if (image.description) {
+      setImageFilters(JSON.parse(image.description));
+    }
   };
 
   const [settingImg, setSettingImg] = useState(false);
@@ -58,25 +72,31 @@ const MediaRowProfile = ({file, mediaArray}) => {
 
   return (
     <Box>
-      <Grid
-        container
-        gap={1}
-        alignItems="center"
-        justifyContent="space-between"
-        spacing={1}
-      >
+      <Grid container gap={1} alignItems="center" spacing={1}>
         {/* Image */}
         <Grid item>
           <img
             src={mediaUrl + image.thumbnails.w640}
             alt={file.title}
             width={100}
+            style={
+              image.description
+                ? {
+                    filter: `
+            brightness(${JSON.parse(image.description).brightness}%)
+            contrast(${JSON.parse(image.description).contrast}%)
+            saturate(${JSON.parse(image.description).saturation}%)
+            sepia(${JSON.parse(image.description).sepia}%)
+            `,
+                  }
+                : {}
+            }
           />
         </Grid>
         {/* Username, song title */}
         <Grid item>
           <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
-            {file.title}
+            {title}
           </Typography>
           <Grid container alignItems="center" gap={1}>
             <img src={userIcon} alt="user icon" width={30} />
@@ -86,7 +106,13 @@ const MediaRowProfile = ({file, mediaArray}) => {
           </Grid>
         </Grid>
         {/* Buttons */}
-        <Grid container alignItems="center" direction="row" item xs={4}>
+        <Grid
+          container
+          alignItems="center"
+          direction="row"
+          item
+          width="fit-content"
+        >
           {/* <IconButton
             color="primary"
             aria-label="upload picture"
@@ -110,7 +136,7 @@ const MediaRowProfile = ({file, mediaArray}) => {
             sx={{p: 1, pr: 1}}
             onClick={playAudio}
           >
-            <img src={playIcon} alt="play icon" width={30} />
+            <img src={playIcon} alt="play icon" width={40} />
           </IconButton>
           {location.pathname === '/profile' &&
             user.user_id === postMaker.user_id && (

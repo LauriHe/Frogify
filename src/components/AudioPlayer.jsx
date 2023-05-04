@@ -1,11 +1,17 @@
 import {Box, Button, Grid, LinearProgress, Typography} from '@mui/material';
 import Paper from '@mui/material/Paper';
-import {useContext, useEffect} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {SongContext} from '../contexts/SongContext';
 import {mediaUrl} from '../utils/variables';
 import {useNavigate} from 'react-router-dom';
 import '../style.scss';
 import ColorThief from '/node_modules/colorthief/dist/color-thief.mjs';
+import playIcon from '../assets/play.svg';
+import playIconDark from '../assets/playDark.svg';
+import pauseIcon from '../assets/pause.svg';
+import pauseIconDark from '../assets/pauseDark.svg';
+import closeIcon from '../assets/close.svg';
+import closeIconDark from '../assets/closeDark.svg';
 
 const AudioPlayer = () => {
   const {
@@ -28,6 +34,15 @@ const AudioPlayer = () => {
   const googleProxyURL =
     'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
   const crossOriginImageUrl = googleProxyURL + encodeURIComponent(imageUrl);
+
+  const [title, setTitle] = useState('');
+
+  const formatTitle = () => {
+    setTitle(currentSong.title);
+    if (currentSong.title.length > 20) {
+      setTitle(currentSong.title.slice(0, 20) + '...');
+    }
+  };
 
   const toggleAudio = () => {
     if (audioRef.current.paused) {
@@ -149,6 +164,10 @@ const AudioPlayer = () => {
     }
   }, [currentSongImage]);
 
+  useEffect(() => {
+    formatTitle();
+  }, [currentSong]);
+
   return (
     <Grid
       container
@@ -222,27 +241,46 @@ const AudioPlayer = () => {
                 }
               />
               <Typography variant="body1" sx={{color: textColor}}>
-                {currentSong.title}
+                {title}
               </Typography>
             </Grid>
             <Grid width="auto" container direction="row-reverse">
               <Button
-                sx={{color: textColor}}
+                sx={{color: textColor, width: '1rem', padding: '0'}}
                 onClick={(e) => {
                   e.stopPropagation();
                   closePlayer();
                 }}
               >
-                Close
+                <img
+                  src={textColor === 'white' ? closeIcon : closeIconDark}
+                  alt="close icon"
+                  style={{width: '2rem'}}
+                />
               </Button>
               <Button
-                sx={{color: textColor}}
+                sx={{color: textColor, width: '1rem', padding: '0'}}
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleAudio();
                 }}
               >
-                {audioRef.current?.paused ? 'Play' : 'Pause'}
+                {textColor === 'white' && (
+                  <img
+                    src={audioRef.current?.paused ? playIcon : pauseIcon}
+                    alt="play / pause icon"
+                    style={{width: '2rem'}}
+                  />
+                )}
+                {textColor === 'black' && (
+                  <img
+                    src={
+                      audioRef.current?.paused ? playIconDark : pauseIconDark
+                    }
+                    alt="play / pause icon"
+                    style={{width: '2rem'}}
+                  />
+                )}
               </Button>
             </Grid>
           </Grid>

@@ -4,6 +4,16 @@ import {SongContext} from '../contexts/SongContext';
 import {mediaUrl} from '../utils/variables';
 import {Navigate, useNavigate} from 'react-router-dom';
 import {useUser} from '../hooks/ApiHooks';
+import playIcon from '../assets/play.svg';
+import playIconDark from '../assets/playDark.svg';
+import pauseIcon from '../assets/pause.svg';
+import pauseIconDark from '../assets/pauseDark.svg';
+import closeIcon from '../assets/close.svg';
+import closeIconDark from '../assets/closeDark.svg';
+import expandIcon from '../assets/expand.svg';
+import expandIconDark from '../assets/expandDark.svg';
+import collapseIcon from '../assets/collapse.svg';
+import collapseIconDark from '../assets/collapseDark.svg';
 
 const Player = () => {
   const {getUser} = useUser();
@@ -18,6 +28,7 @@ const Player = () => {
   const [pausedByButton, setPausedByButton] = useState(false);
   const [postMaker, setPostMaker] = useState('');
   const navigate = useNavigate();
+  const [showSongInfo, setShowSongInfo] = useState(false);
 
   const goToPreviousPage = () => {
     navigate(-1);
@@ -50,9 +61,14 @@ const Player = () => {
     }
   };
 
+  const toggleSongInfo = () => {
+    setShowSongInfo(!showSongInfo);
+  };
+
   useEffect(() => {
     document.querySelector('body').style.backgroundColor = bgColor;
     fetchUser();
+
     return () => {
       document.querySelector('body').style.backgroundColor = null;
     };
@@ -84,7 +100,11 @@ const Player = () => {
             }}
             onClick={goToPreviousPage}
           >
-            Close
+            <img
+              src={textColor === 'white' ? closeIcon : closeIconDark}
+              alt="close icon"
+              style={{width: '2rem'}}
+            />
           </Button>
           <Grid
             mt="1rem"
@@ -105,6 +125,8 @@ const Player = () => {
               style={
                 imageFilters
                   ? {
+                      maxHeight: '30vh',
+                      width: '100%',
                       filter: `
               brightness(${imageFilters.brightness}%)
               contrast(${imageFilters.contrast}%)
@@ -112,45 +134,113 @@ const Player = () => {
               sepia(${imageFilters.sepia}%)
               `,
                     }
-                  : {}
+                  : {maxHeight: '30vh', width: '100%'}
               }
               alt="Song cover art"
-              width="100%"
             />
           </Box>
-          <Grid container justifyContent="space-between">
-            <Grid>
+          <Grid
+            container
+            justifyContent={!currentSong.type ? 'space-between' : 'center'}
+          >
+            <Grid width="fit-content">
               <Typography variant="h5">{currentSong.title}</Typography>
-              <Typography variant="body1" m={0} color>
-                {postMaker.username}
-              </Typography>
+              {!currentSong.type && (
+                <Typography variant="body1" m={0} color>
+                  {postMaker.username}
+                </Typography>
+              )}
             </Grid>
-            <Button sx={{color: textColor}}>Like</Button>
+            {!currentSong.type && (
+              <Grid
+                container
+                alignItems="center"
+                width="fit-content"
+                onClick={toggleSongInfo}
+              >
+                <Typography variant="body1" sx={{color: textColor}}>
+                  Song info
+                </Typography>
+                {textColor === 'white' && (
+                  <img
+                    src={showSongInfo ? collapseIcon : expandIcon}
+                    alt="collapse / expand icon"
+                    style={{width: '2rem'}}
+                  />
+                )}
+                {textColor === 'black' && (
+                  <img
+                    src={showSongInfo ? collapseIconDark : expandIconDark}
+                    alt="collapse / expand icon"
+                    style={{width: '2rem'}}
+                  />
+                )}
+              </Grid>
+            )}
           </Grid>
-          <Box width="100%" mt={2}>
-            <Slider
-              sx={{color: textColor, padding: '.5rem 0 !important'}}
-              value={parseInt(audioRef.current.currentTime)}
-              onChange={handleChange}
-              onChangeCommitted={commitChange}
-              width="100%"
-              min={0}
-              max={audioRef.current.duration}
-              step={0.1}
-            />
-            <Grid container width="100%" justifyContent="space-between">
-              <Typography variant="body1">
-                {parseInt(audioRef.current.currentTime / 60)}:
-                {parseInt(audioRef.current.currentTime % 60)}
-              </Typography>
-              <Typography variant="body1">
-                {parseInt(audioRef.current.duration / 60)}:
-                {parseInt(audioRef.current.duration % 60)}
-              </Typography>
+          {showSongInfo && (
+            <Grid>
+              <Grid container gap={2}>
+                <Typography variant="body1">Genres:</Typography>
+                <Typography variant="body1">
+                  {JSON.parse(currentSong.description).genres}
+                </Typography>
+              </Grid>
+              <Grid container gap={2}>
+                <Typography variant="body1">Keywords:</Typography>
+                <Typography variant="body1">
+                  {JSON.parse(currentSong.description).keywords}
+                </Typography>
+              </Grid>
+              <Grid container gap={2}>
+                <Typography variant="body1">Artist tags:</Typography>
+                <Typography variant="body1">
+                  {JSON.parse(currentSong.description).artistTags}
+                </Typography>
+              </Grid>
             </Grid>
-          </Box>
+          )}
+          {!currentSong.type && (
+            <Box width="100%" mt={2}>
+              <Slider
+                sx={{color: textColor, padding: '.5rem 0 !important'}}
+                value={parseInt(audioRef.current.currentTime)}
+                onChange={handleChange}
+                onChangeCommitted={commitChange}
+                width="100%"
+                min={0}
+                max={audioRef.current.duration}
+                step={0.1}
+              />
+              <Grid container width="100%" justifyContent="space-between">
+                <Typography variant="body1">
+                  {parseInt(audioRef.current.currentTime / 60)}:
+                  {parseInt(audioRef.current.currentTime % 60)}
+                </Typography>
+                {
+                  <Typography variant="body1">
+                    {parseInt(audioRef.current.duration / 60)}:
+                    {parseInt(audioRef.current.duration % 60)}
+                  </Typography>
+                }
+              </Grid>
+            </Box>
+          )}
           <Button sx={{color: textColor}} onClick={toggleAudio}>
-            {audioRef.current.paused ? 'Play' : 'Pause'}
+            {textColor === 'white' && (
+              <img
+                src={audioRef.current?.paused ? playIcon : pauseIcon}
+                alt="play / pause icon"
+                style={{width: '4rem'}}
+              />
+            )}
+            {textColor === 'black' && (
+              <img
+                src={audioRef.current?.paused ? playIconDark : pauseIconDark}
+                alt="play / pause icon"
+                style={{width: '4rem'}}
+              />
+            )}
           </Button>
         </Grid>
       ) : (

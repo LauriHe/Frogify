@@ -17,7 +17,7 @@ import {useFavourite, useTag} from '../hooks/ApiHooks';
 import {mediaUrl} from '../utils/variables';
 import MediaTableProfile from '../components/MediaTableProfile';
 import {useMedia} from '../hooks/ApiHooks';
-import {Form, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {ColorContext} from '../contexts/ColorContext';
 import {ValidatorForm} from 'react-material-ui-form-validator';
 
@@ -120,9 +120,7 @@ const Profile = () => {
   /* Adding Profile Picture */
   const [picture, setPicture] = useState(false);
   const [image, setImage] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(
-    'https://placekitten.com/300/300'
-  );
+  const [selectedImage, setSelectedImage] = useState(defaultProfile);
 
   const togglePicture = () => {
     setPicture(!picture);
@@ -382,7 +380,9 @@ const Profile = () => {
                       event.preventDefault();
                     }}
                   >
-                    <img src={selectedImage} alt="preview" width={150}></img>
+                    <Grid container justifyContent="center">
+                      <img src={selectedImage} alt="preview" width={150}></img>
+                    </Grid>
                     <Button variant="text" component="label" fullWidth>
                       <img src={uploadIcon} alt="upload icon" height={50} />
                       Upload Image

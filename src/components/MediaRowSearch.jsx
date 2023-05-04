@@ -9,9 +9,12 @@ import dotsVerIcon from '../assets/dotsVertical.svg';
 import likeIcon from '../assets/like.svg';
 import commentIcon from '../assets/comment.svg';
 import {SongContext} from '../contexts/SongContext';
+import likeIconGreen from '../assets/likeGreen.svg';
+import playIcon from '../assets/play.svg';
 
 const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
-  const {setCurrentSong, setCurrentSongImage} = useContext(SongContext);
+  const {setCurrentSong, setCurrentSongImage, setImageFilters} =
+    useContext(SongContext);
   const {user, setUser, userStorage} = useContext(MediaContext);
   const {getUserByToken} = useUser();
   const [likes, setLikes] = useState(0);
@@ -22,6 +25,15 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
   const [postMaker, setPostMaker] = useState();
   const [update, setUpdate] = useState(false);
   const {getUser} = useUser();
+
+  const [title, setTitle] = useState('');
+
+  const formatTitle = () => {
+    setTitle(file.title);
+    if (file.title.length > 15) {
+      setTitle(file.title.slice(0, 15) + '...');
+    }
+  };
 
   const fetchPostMaker = async () => {
     const token = localStorage.getItem('userToken');
@@ -73,6 +85,9 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
     addToHistory(file);
     setCurrentSong(file);
     setCurrentSongImage(image);
+    if (image.description) {
+      setImageFilters(JSON.parse(image.description));
+    }
   };
 
   const fetchLikes = async () => {
@@ -194,6 +209,7 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
 
   useEffect(() => {
     fetchPostMaker();
+    formatTitle();
   }, []);
 
   return (
@@ -205,10 +221,22 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
               src={mediaUrl + image.thumbnails.w640}
               alt={file.title}
               width={100}
+              style={
+                image.description
+                  ? {
+                      filter: `
+              brightness(${JSON.parse(image.description).brightness}%)
+              contrast(${JSON.parse(image.description).contrast}%)
+              saturate(${JSON.parse(image.description).saturation}%)
+              sepia(${JSON.parse(image.description).sepia}%)
+              `,
+                    }
+                  : {}
+              }
             />
             <Box>
               <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
-                {file.title}
+                {title}
               </Typography>
               <Grid container alignItems="center" gap={1}>
                 <img src={userIcon} alt="user icon" width={30} />
@@ -225,7 +253,7 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
             sx={{p: 1, pr: 1}}
             onClick={playAudio}
           >
-            PLAY
+            <img src={playIcon} alt="play icon" />
           </IconButton>
         </Grid>
         <Grid container gap={1}>
@@ -237,7 +265,11 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
               sx={{p: 1, pr: 1}}
               onClick={toggleLike}
             >
-              <img src={likeIcon} alt="like icon" width={30} />
+              <img
+                src={userLike ? likeIconGreen : likeIcon}
+                alt="like icon"
+                width={30}
+              />
             </IconButton>
             <p>{likes}</p>
           </Grid>
@@ -258,7 +290,7 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
               sx={{p: 1, pr: 1}}
               onClick={toggleFollow}
             >
-              Follow
+              {userFollow ? 'unfollow' : 'follow'}
             </IconButton>
           )}
         </Grid>

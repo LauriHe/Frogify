@@ -10,6 +10,7 @@ import {useNavigate} from 'react-router-dom';
 import {useFavourite} from '../hooks/ApiHooks';
 import {useUser} from '../hooks/ApiHooks';
 import {MediaContext} from '../contexts/MediaContext';
+import playIcon from '../assets/play.svg';
 
 const MediaRow = ({file, mediaArray, toggleComments}) => {
   const {setCurrentSong, setCurrentSongImage, setImageFilters} =
@@ -225,7 +226,11 @@ const MediaRow = ({file, mediaArray, toggleComments}) => {
             <ImageListItemBar
               title={file.title}
               subtitle={user ? postMaker?.username : ''}
-              actionIcon={<Button onClick={playAudio}>play</Button>}
+              actionIcon={
+                <Button onClick={playAudio}>
+                  <img src={playIcon} alt="play icon" />
+                </Button>
+              }
             />
           </ImageListItem>
           <Box sx={{display: 'flex', margin: '.5rem', gap: '.5rem'}}>
@@ -242,8 +247,8 @@ const MediaRow = ({file, mediaArray, toggleComments}) => {
               alt="Comment icon"
               width="30rem"
             />
-            {!(file.user_id === user.user_id) && (
-              <Button onClick={toggleFollow}>
+            {!(file.user_id === user?.user_id) && (
+              <Button onClick={user ? toggleFollow : goToLogin}>
                 {userFollow ? 'unfollow' : 'follow'}
               </Button>
             )}
