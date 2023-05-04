@@ -3,6 +3,7 @@ import {
   Avatar,
   BottomNavigation,
   BottomNavigationAction,
+  Button,
   Container,
   CssBaseline,
   Grid,
@@ -19,6 +20,8 @@ import searchIcon from '../assets/search.svg';
 import uploadIcon from '../assets/plus.svg';
 import radioIcon from '../assets/radio.svg';
 import profileIcon from '../assets/person.svg';
+import loginIcon from '../assets/login.svg';
+import logoutIcon from '../assets/logout.svg';
 import {useContext, useEffect, useRef, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
 import {useUser} from '../hooks/ApiHooks';
@@ -125,13 +128,26 @@ const Layout = () => {
     setColorLuminance(colors ? JSON.parse(colors).luminance : 48);
   }, []);
 
+  /* logout */
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('userToken');
+    navigate('/');
+  };
+
+  const navigateLogin = () => {
+    navigate('/login');
+  };
+
   return (
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Container
           maxWidth={
-            location.pathname === '/player' || location.pathname === '/profile'
+            location.pathname === '/player' ||
+            location.pathname === '/upload' ||
+            location.pathname === '/update'
               ? 'md'
               : 'xl'
           }
@@ -147,6 +163,12 @@ const Layout = () => {
               <Typography variant="h4" color="secondary" onClick={navigateHome}>
                 Frogify
               </Typography>
+              <Button
+                onClick={!user ? navigateLogin : logout}
+                sx={{position: 'fixed', right: '10px'}}
+              >
+                <img src={!user ? loginIcon : logoutIcon}></img>
+              </Button>
             </Toolbar>
           </AppBar>
           <main
