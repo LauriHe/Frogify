@@ -171,14 +171,25 @@ const Upload = (props) => {
   }, [image, audio]);
   console.log(editImgBtn);
   return (
-    <Grid columns={1} container justifyContent="center" alignItems={'center'}>
+    <Grid
+      columns={1}
+      container
+      justifyContent="center"
+      alignItems={'center'}
+      style={{width: '100%'}}
+    >
       <Grid
         sx={{
           display: 'flex',
           alignItems: 'center',
         }}
+        style={{width: '100%'}}
       >
-        <ValidatorForm onSubmit={handleSubmit} noValidate>
+        <ValidatorForm
+          style={{width: '100%'}}
+          onSubmit={handleSubmit}
+          noValidate
+        >
           {editImg && <h3>Add Files</h3>}
           {editImg && (
             <Button variant="text" component="label" fullWidth>

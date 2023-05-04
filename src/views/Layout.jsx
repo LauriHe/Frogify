@@ -129,7 +129,15 @@ const Layout = () => {
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Container maxWidth={location.pathname === '/player' ? 'sm' : 'xl'}>
+        <Container
+          maxWidth={
+            location.pathname === '/player' ||
+            location.pathname === '/upload' ||
+            location.pathname === '/update'
+              ? 'sm'
+              : 'xl'
+          }
+        >
           <AppBar position="fixed">
             <Toolbar disableGutters>
               <Avatar
