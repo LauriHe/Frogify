@@ -9,6 +9,7 @@ import {
   Slider,
 } from '@mui/material';
 import settingIcon from '../assets/setting.svg';
+import uploadIcon from '../assets/plus.svg';
 import defaultProfile from '../assets/defaultProfile.jpg';
 import {useContext, useEffect, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
@@ -16,8 +17,9 @@ import {useFavourite, useTag} from '../hooks/ApiHooks';
 import {mediaUrl} from '../utils/variables';
 import MediaTableProfile from '../components/MediaTableProfile';
 import {useMedia} from '../hooks/ApiHooks';
-import {useNavigate} from 'react-router-dom';
+import {Form, useNavigate} from 'react-router-dom';
 import {ColorContext} from '../contexts/ColorContext';
+import {ValidatorForm} from 'react-material-ui-form-validator';
 
 const Profile = () => {
   /* Profile picture and avatar */
@@ -27,7 +29,7 @@ const Profile = () => {
   const [avatar, setAvatar] = useState({
     filename: defaultProfile,
   });
-  const {getTag} = useTag();
+  const {getTag, postTag} = useTag();
 
   const fetchAvatar = async () => {
     try {
@@ -47,7 +49,7 @@ const Profile = () => {
   }, [user]);
 
   /* Posts */
-  const {mediaArray} = useMedia(false);
+  const {mediaArray, deleteMedia, postMedia} = useMedia(false);
 
   const [active, setActive] = useState('posts');
   const [listArray, setListArray] = useState(
@@ -112,6 +114,58 @@ const Profile = () => {
     } else {
       setSetting(!setting);
       document.querySelector('body').style.overflow = 'hidden';
+    }
+  };
+
+  /* Adding Profile Picture */
+  const [picture, setPicture] = useState(false);
+  const [image, setImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(
+    'https://placekitten.com/300/300'
+  );
+
+  const togglePicture = () => {
+    setPicture(!picture);
+  };
+
+  const handleFileChange = (event) => {
+    event.persist();
+    setImage(event.target.files[0]);
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      setSelectedImage(reader.result);
+    });
+    reader.readAsDataURL(event.target.files[0]);
+  };
+
+  const doUpload = async () => {
+    const userToken = localStorage.getItem('userToken');
+    try {
+      const avatars = await getTag('avatar_' + user.user_id);
+      const ava = avatars.pop();
+      deleteMedia(ava.file_id, userToken);
+    } catch (error) {
+      console.log('No profile picture');
+    }
+
+    try {
+      const dataImage = new FormData();
+      dataImage.append('title', user.username);
+      dataImage.append('file', image);
+
+      const uploadResultImage = await postMedia(dataImage, userToken);
+      const tagResultImage = await postTag(
+        {
+          file_id: uploadResultImage.file_id,
+          tag: 'avatar_' + user.user_id,
+        },
+        userToken
+      );
+      window.location.reload(false);
+      console.log(tagResultImage);
+      console.log(uploadResultImage);
+    } catch (error) {
+      alert(error.message);
     }
   };
 
@@ -211,7 +265,7 @@ const Profile = () => {
                     Posts
                   </Typography>
                 </Grid>
-                <Grid
+                {/* <Grid
                   item
                   container
                   alignItems="center"
@@ -222,7 +276,7 @@ const Profile = () => {
                   <Typography variant="caption" color="grey">
                     Followers
                   </Typography>
-                </Grid>
+                </Grid> */}
                 <Grid
                   item
                   container
@@ -316,10 +370,45 @@ const Profile = () => {
                 alignItems="center"
                 width="100%"
               >
-                <Button fullWidth>Change profile info</Button>
+                <Button fullWidth>Change Info</Button>
+                <Divider flexItem />
+                <Button fullWidth onClick={togglePicture}>
+                  Profile picture
+                </Button>
+                {picture && (
+                  <ValidatorForm
+                    onSubmit={(event) => {
+                      doUpload();
+                      event.preventDefault();
+                    }}
+                  >
+                    <img src={selectedImage} alt="preview" width={150}></img>
+                    <Button variant="text" component="label" fullWidth>
+                      <img src={uploadIcon} alt="upload icon" height={50} />
+                      Upload Image
+                      <input
+                        hidden
+                        accept="image/*"
+                        multiple
+                        type="file"
+                        name="image"
+                        onChange={handleFileChange}
+                      />
+                    </Button>
+                    <Button
+                      color="secondary"
+                      fullWidth
+                      sx={{mt: 1, borderRadius: '10rem'}}
+                      variant="contained"
+                      type="submit"
+                    >
+                      Submit
+                    </Button>
+                  </ValidatorForm>
+                )}
                 <Divider flexItem />
                 <Button fullWidth onClick={toggleColors}>
-                  Change theme color
+                  Theme color
                 </Button>
                 {showColors && (
                   <Grid
