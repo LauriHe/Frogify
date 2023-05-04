@@ -132,18 +132,17 @@ const MediaRowProfile = ({file, mediaArray}) => {
           >
             <img src={playIcon} alt="play icon" width={40} />
           </IconButton>
-          {location.pathname === '/profile' &&
-            user.user_id === postMaker.user_id && (
-              <IconButton
-                color="primary"
-                aria-label="upload picture"
-                component="label"
-                sx={{p: 1, pr: 1}}
-                onClick={toggleSettingImg}
-              >
-                <img src={dotsVerIcon} alt="dots icon" width={30} />
-              </IconButton>
-            )}
+          {user.user_id === postMaker.user_id && (
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="label"
+              sx={{p: 1, pr: 1}}
+              onClick={toggleSettingImg}
+            >
+              <img src={dotsVerIcon} alt="dots icon" width={30} />
+            </IconButton>
+          )}
         </Grid>
       </Grid>
 

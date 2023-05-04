@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --base=/~username/foldername/",
+    "build": "vite build --base=/~lauhei/Mediapalvelut-ja-kayttajakokemus/Project/",
     "preview": "vite preview"
   },
   "dependencies": {
