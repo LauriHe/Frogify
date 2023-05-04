@@ -85,7 +85,6 @@ const Profile = () => {
       likeInfo.forEach((like) => {
         if (like.user_id === user.user_id) {
           myLikes.push(file);
-          console.log('85');
         }
       });
     }
@@ -148,7 +147,7 @@ const Profile = () => {
       dataImage.append('file', image);
 
       const uploadResultImage = await postMedia(dataImage, userToken);
-      const tagResultImage = await postTag(
+      await postTag(
         {
           file_id: uploadResultImage.file_id,
           tag: 'avatar_' + user.user_id,
@@ -156,8 +155,6 @@ const Profile = () => {
         userToken
       );
       window.location.reload(false);
-      console.log(tagResultImage);
-      console.log(uploadResultImage);
     } catch (error) {
       alert(error.message);
     }

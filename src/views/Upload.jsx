@@ -1,9 +1,6 @@
-import PropTypes from 'prop-types';
-import {useParams} from 'react-router-dom';
 import useForm from '../hooks/FormHooks';
-import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
+import {useMedia, useTag} from '../hooks/ApiHooks';
 import {Box, Button, Grid, Slider} from '@mui/material';
-import {Container} from '@mui/system';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import {useState} from 'react';
 import uploadIcon from '../assets/plus.svg';
@@ -18,15 +15,13 @@ import {useEffect} from 'react';
 const Upload = (props) => {
   const [image, setImage] = useState(null);
   const [audio, setAudio] = useState(null);
-  const {id} = useParams();
-  console.log(id);
 
   const [selectedImage, setSelectedImage] = useState(
     'https://placekitten.com/600/400'
   );
   // 'https://placehold.co/600x400?text=Choose-media'
-  const {postMedia, mediaArray} = useMedia();
-  const {postTag, getTag} = useTag();
+  const {postMedia} = useMedia();
+  const {postTag} = useTag();
   const [editImg, setEditImg] = useState(true);
   const [editImgBtn, setEditImgBtn] = useState(true);
   const [imageIcon, setImageIcon] = useState(true);
@@ -53,13 +48,6 @@ const Upload = (props) => {
       setImageIcon(true);
     }
   };
-  const toggleAudioIcon = () => {
-    if (audioIcon) {
-      setAudioIcon(false);
-    } else {
-      setAudioIcon(true);
-    }
-  };
 
   const initValues = {
     songTitle: '',
@@ -75,26 +63,6 @@ const Upload = (props) => {
     sepia: 0,
   };
 
-  const doUpdate = async () => {
-    try {
-      const allData = {
-        desc: inputs.description,
-        filters: filterInputs,
-      };
-      const data = {
-        title: inputs.title,
-        description: JSON.stringify(allData),
-      };
-
-      const userToken = localStorage.getItem('userToken');
-      const updateResult = await putMedia(file.file_id, data, userToken);
-      console.log('doUpdate', updateResult);
-      navigate('/');
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
   const doUpload = async () => {
     try {
       const userToken = localStorage.getItem('userToken');
@@ -104,7 +72,7 @@ const Upload = (props) => {
       dataImage.append('description', JSON.stringify(filterInputs));
       const uploadResultImage = await postMedia(dataImage, userToken);
 
-      const tagResultImage = await postTag(
+      await postTag(
         {
           file_id: uploadResultImage.file_id,
           tag: appId,
@@ -125,14 +93,13 @@ const Upload = (props) => {
 
       const uploadResultAudio = await postMedia(dataAudio, userToken);
 
-      const tagResultAudio = await postTag(
+      await postTag(
         {
           file_id: uploadResultAudio.file_id,
           tag: appId,
         },
         userToken
       );
-      console.log(uploadResultAudio);
       navigate('/');
     } catch (error) {
       alert(error.message);
@@ -169,7 +136,6 @@ const Upload = (props) => {
     setImageIcon(!!image);
     setAudioIcon(!!audio);
   }, [image, audio]);
-  console.log(editImgBtn);
   return (
     <Grid columns={1} container justifyContent="center" alignItems={'center'}>
       <Grid
@@ -234,8 +200,7 @@ const Upload = (props) => {
 
           {editImg && (
             <Grid>
-              <h3 margin="dense">Add Song Info</h3>
-
+              <h3>Add Song Info</h3>
               <TextValidator
                 className="inputRounded"
                 fullWidth
