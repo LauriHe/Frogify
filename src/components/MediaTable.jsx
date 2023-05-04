@@ -6,8 +6,8 @@ import useForm from '../hooks/FormHooks';
 import {useEffect, useState} from 'react';
 import Comment from './Comment';
 
-const MediaTable = ({myFilesOnly = false}) => {
-  const {mediaArray} = useMedia(myFilesOnly);
+const MediaTable = (showedPosts) => {
+  const {mediaArray} = useMedia();
   const [audioArray, setAudioArray] = useState();
   const [fileId, setFileId] = useState(0);
   const [viewComments, setViewComments] = useState(false);
@@ -86,6 +86,7 @@ const MediaTable = ({myFilesOnly = false}) => {
                 file={item}
                 mediaArray={mediaArray}
                 toggleComments={toggleViewComments}
+                showedPosts={showedPosts}
               />
             );
           })}
@@ -155,7 +156,7 @@ const MediaTable = ({myFilesOnly = false}) => {
 };
 
 MediaTable.propTypes = {
-  myFilesOnly: PropTypes.bool,
+  showedPosts: PropTypes.string,
 };
 
 export default MediaTable;

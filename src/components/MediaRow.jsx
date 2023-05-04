@@ -12,7 +12,7 @@ import {useUser} from '../hooks/ApiHooks';
 import {MediaContext} from '../contexts/MediaContext';
 import playIcon from '../assets/play.svg';
 
-const MediaRow = ({file, mediaArray, toggleComments}) => {
+const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
   const {setCurrentSong, setCurrentSongImage, setImageFilters} =
     useContext(SongContext);
   const {user, setUser, userStorage} = useContext(MediaContext);
@@ -202,9 +202,8 @@ const MediaRow = ({file, mediaArray, toggleComments}) => {
 
   return (
     <>
-      {!userStorage?.following ||
-      userStorage?.following.includes(file.user_id) ||
-      userStorage?.following.length < 1 ? (
+      {showedPosts.showedPosts === 'all' ||
+      userStorage?.following.includes(file.user_id) ? (
         <Box sx={{mb: '1rem'}}>
           <ImageListItem>
             <img
@@ -263,6 +262,7 @@ MediaRow.propTypes = {
   file: PropTypes.object.isRequired,
   mediaArray: PropTypes.array.isRequired,
   toggleComments: PropTypes.func.isRequired,
+  showedPosts: PropTypes.object,
 };
 
 export default MediaRow;
