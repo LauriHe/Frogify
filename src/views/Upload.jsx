@@ -228,7 +228,7 @@ const Upload = (props) => {
               variant="text"
               onClick={toggleEditImg}
             >
-              Edit Image
+              Edit Toggle
             </Button>
           )}
 
