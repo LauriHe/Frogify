@@ -11,24 +11,27 @@ import {SongProvider} from './contexts/SongContext';
 import Player from './views/Player';
 import Radio from './views/Radio';
 import Update from './views/update';
+import {ColorProvider} from './contexts/ColorContext';
 
 const App = () => {
   return (
     <Router basename={import.meta.env.BASE_URL}>
       <MediaProvider>
         <SongProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route element={<Layout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/upload" element={<Upload />} />
-              <Route path="/update" element={<Update />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/player" element={<Player />} />
-              <Route path="/radio" element={<Radio />} />
-            </Route>
-          </Routes>
+          <ColorProvider>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route element={<Layout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/upload" element={<Upload />} />
+                <Route path="/update" element={<Update />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/player" element={<Player />} />
+                <Route path="/radio" element={<Radio />} />
+              </Route>
+            </Routes>
+          </ColorProvider>
         </SongProvider>
       </MediaProvider>
     </Router>

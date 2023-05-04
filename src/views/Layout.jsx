@@ -10,7 +10,7 @@ import {
   Typography,
   createTheme,
 } from '@mui/material';
-import {themeOptions} from '../theme/themeOptions';
+// import {themeOptions} from '../theme/themeOptions';
 import {Link, Outlet, useLocation, useNavigate} from 'react-router-dom';
 import logo from '../assets/frogify.svg';
 import homeIcon from '../assets/home.svg';
@@ -24,9 +24,10 @@ import {useUser} from '../hooks/ApiHooks';
 import AudioPlayer from '../components/AudioPlayer';
 import {SongContext} from '../contexts/SongContext';
 import {mediaUrl} from '../utils/variables';
+import {ColorContext} from '../contexts/ColorContext';
 
 const Layout = () => {
-  const theme = createTheme(themeOptions);
+  // const theme = createTheme(themeOptions);
   const {user, setUser, setUserStorage} = useContext(MediaContext);
   const {getUserByToken} = useUser();
   const navigate = useNavigate();
@@ -37,6 +38,27 @@ const Layout = () => {
   const [audioUrl, setAudioUrl] = useState(null);
   const [audioReady, setAudioReady] = useState(false);
   const playAnimationRef = useRef();
+
+  const {
+    colorHue,
+    colorSaturation,
+    colorLuminance,
+    setColorHue,
+    setColorSaturation,
+    setColorLuminance,
+  } = useContext(ColorContext);
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#ffffff',
+      },
+      secondary: {
+        main: `hsl(${colorHue}, ${colorSaturation}%, ${colorLuminance}%)`,
+      },
+      mode: 'dark',
+    },
+  });
 
   const navigateHome = () => {
     navigate('/');
@@ -94,6 +116,13 @@ const Layout = () => {
   useEffect(() => {
     getUserInfo();
   }, [user?.full_name]);
+
+  useEffect(() => {
+    const colors = localStorage.getItem('color');
+    setColorHue(colors ? JSON.parse(colors).hue : 141);
+    setColorSaturation(colors ? JSON.parse(colors).saturation : 76);
+    setColorLuminance(colors ? JSON.parse(colors).luminance : 48);
+  }, []);
 
   return (
     <>

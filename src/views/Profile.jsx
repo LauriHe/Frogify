@@ -6,6 +6,7 @@ import {
   Grid,
   Paper,
   Divider,
+  Slider,
 } from '@mui/material';
 import settingIcon from '../assets/setting.svg';
 import defaultProfile from '../assets/defaultProfile.jpg';
@@ -16,6 +17,7 @@ import {mediaUrl} from '../utils/variables';
 import MediaTableProfile from '../components/MediaTableProfile';
 import {useMedia} from '../hooks/ApiHooks';
 import {useNavigate} from 'react-router-dom';
+import {ColorContext} from '../contexts/ColorContext';
 
 const Profile = () => {
   /* Profile picture and avatar */
@@ -121,6 +123,40 @@ const Profile = () => {
     localStorage.removeItem('userToken');
     document.querySelector('body').style.overflow = 'visible';
     navigate('/');
+  };
+
+  /* color */
+
+  const {
+    colorHue,
+    colorSaturation,
+    colorLuminance,
+    setColorHue,
+    setColorSaturation,
+    setColorLuminance,
+  } = useContext(ColorContext);
+  const [showColors, setShowColors] = useState(false);
+
+  const toggleColors = () => {
+    setShowColors(!showColors);
+  };
+
+  const handleSlider = (event, newValue) => {
+    if (event.target.name === 'hue') {
+      setColorHue(newValue);
+    }
+    if (event.target.name === 'saturation') {
+      setColorSaturation(newValue);
+    }
+    if (event.target.name === 'luminance') {
+      setColorLuminance(newValue);
+    }
+    const colors = {
+      hue: colorHue,
+      saturation: colorSaturation,
+      luminance: colorLuminance,
+    };
+    localStorage.setItem('color', JSON.stringify(colors));
   };
 
   return (
@@ -265,12 +301,11 @@ const Profile = () => {
             <Paper
               variant="outlined"
               sx={{
-                width: '50%',
-                height: 'fit-content',
-                position: 'absolute',
-                top: '8rem',
+                width: '75%',
+                position: 'fixed',
+                top: '10rem',
                 left: '50%',
-                transform: 'translate(-50%, 50%)',
+                transform: 'translate(-50%, 0)',
                 zIndex: '10',
               }}
             >
@@ -283,7 +318,58 @@ const Profile = () => {
               >
                 <Button fullWidth>Change profile info</Button>
                 <Divider flexItem />
-                <Button fullWidth>Change colors</Button>
+                <Button fullWidth onClick={toggleColors}>
+                  Change theme color
+                </Button>
+                {showColors && (
+                  <Grid
+                    container
+                    direction="column"
+                    gap={1}
+                    alignItems="center"
+                    padding="1rem 0"
+                  >
+                    <Box
+                      sx={{
+                        width: '5rem',
+                        height: '2rem',
+                        backgroundColor: `hsl(${colorHue}, ${colorSaturation}%, ${colorLuminance}%)`,
+                        borderRadius: '0.2rem',
+                      }}
+                    ></Box>
+                    <Typography variant="body1">Hue</Typography>
+                    <Slider
+                      width="100%"
+                      name="hue"
+                      min={0}
+                      max={360}
+                      step={1}
+                      valueLabelDisplay="auto"
+                      onChange={handleSlider}
+                      value={colorHue}
+                    ></Slider>
+                    <Typography variant="body1">saturation</Typography>
+                    <Slider
+                      name="saturation"
+                      min={0}
+                      max={100}
+                      step={1}
+                      valueLabelDisplay="auto"
+                      onChange={handleSlider}
+                      value={colorSaturation}
+                    ></Slider>
+                    <Typography variant="body1">luminance</Typography>
+                    <Slider
+                      name="luminance"
+                      min={0}
+                      max={100}
+                      step={1}
+                      valueLabelDisplay="auto"
+                      onChange={handleSlider}
+                      value={colorLuminance}
+                    ></Slider>
+                  </Grid>
+                )}
                 <Divider flexItem />
                 <Button fullWidth onClick={logout}>
                   Log out
