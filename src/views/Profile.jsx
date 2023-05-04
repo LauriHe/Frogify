@@ -171,7 +171,6 @@ const Profile = () => {
   };
 
   /* color */
-
   const {
     colorHue,
     colorSaturation,
