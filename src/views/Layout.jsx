@@ -134,7 +134,7 @@ const Layout = () => {
             location.pathname === '/player' ||
             location.pathname === '/upload' ||
             location.pathname === '/update'
-              ? 'sm'
+              ? 'md'
               : 'xl'
           }
         >
