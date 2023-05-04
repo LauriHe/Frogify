@@ -7,6 +7,7 @@ import {Container} from '@mui/system';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import {useState} from 'react';
 import uploadIcon from '../assets/plus.svg';
+import checkIcon from '../assets/check.svg';
 import {useNavigate} from 'react-router-dom';
 import {appId} from '../utils/variables';
 import {uploadValidators} from '../utils/validators';
@@ -28,6 +29,8 @@ const Upload = (props) => {
   const {postTag, getTag} = useTag();
   const [editImg, setEditImg] = useState(true);
   const [editImgBtn, setEditImgBtn] = useState(true);
+  const [imageIcon, setImageIcon] = useState(true);
+  const [audioIcon, setAudioIcon] = useState();
   const navigate = useNavigate();
   const toggleEditImg = () => {
     if (editImg) {
@@ -41,6 +44,20 @@ const Upload = (props) => {
       setEditImgBtn(false);
     } else {
       setEditImgBtn(true);
+    }
+  };
+  const toggleImgIcon = () => {
+    if (imageIcon) {
+      setImageIcon(false);
+    } else {
+      setImageIcon(true);
+    }
+  };
+  const toggleAudioIcon = () => {
+    if (audioIcon) {
+      setAudioIcon(false);
+    } else {
+      setAudioIcon(true);
     }
   };
 
@@ -116,7 +133,7 @@ const Upload = (props) => {
         userToken
       );
       console.log(uploadResultAudio);
-      navigate('/home');
+      navigate('/');
     } catch (error) {
       alert(error.message);
     }
@@ -135,6 +152,7 @@ const Upload = (props) => {
       reader.readAsDataURL(event.target.files[0]);
     }
     toggleEditImgBtn;
+    toggleImgIcon;
   };
 
   const {inputs, handleSubmit, handleInputChange} = useForm(
@@ -147,8 +165,10 @@ const Upload = (props) => {
     filterInitValues
   );
   useEffect(() => {
-    setEditImgBtn(!editImgBtn);
-  }, [image]);
+    setEditImgBtn(!!image);
+    setImageIcon(!!image);
+    setAudioIcon(!!audio);
+  }, [image, audio]);
   console.log(editImgBtn);
   return (
     <Grid columns={1}>
@@ -161,11 +181,14 @@ const Upload = (props) => {
         }}
       >
         <ValidatorForm onSubmit={handleSubmit} noValidate>
-          <h3>Add Files</h3>
-
+          {editImg && <h3>Add Files</h3>}
           {editImg && (
             <Button variant="text" component="label" fullWidth>
-              <img src={uploadIcon} alt="upload icon" height={50} />
+              <img
+                src={audioIcon ? checkIcon : uploadIcon}
+                alt="upload icon"
+                height={50}
+              />
               Upload Audio
               <input
                 hidden
@@ -178,7 +201,11 @@ const Upload = (props) => {
             </Button>
           )}
           <Button variant="text" component="label" fullWidth>
-            <img src={uploadIcon} alt="upload icon" height={50} />
+            <img
+              src={imageIcon ? checkIcon : uploadIcon}
+              alt="upload icon"
+              height={50}
+            />
             Upload Image
             <input
               hidden
@@ -206,6 +233,7 @@ const Upload = (props) => {
               Edit Image
             </Button>
           )}
+
           {editImg && (
             <Box>
               <h3 margin="dense">Add Song Info</h3>
@@ -264,7 +292,7 @@ const Upload = (props) => {
                 alt="preview"
                 style={{
                   width: '100%',
-                  height: 400,
+                  height: 200,
                   objectFit: 'contain',
                   filter: `
           brightness(${filterInputs.brightness}%)
@@ -274,22 +302,26 @@ const Upload = (props) => {
           `,
                 }}
               />
+              <h4>Edit Filter</h4>
               <Slider
                 name="brightness"
                 min={0}
                 max={200}
                 step={1}
-                valueLabelDisplay="auto"
+                valueLabelDisplay="off"
+                aria-label="Brightness"
                 onChange={handleFilterChange}
                 value={filterInputs.brightness}
               />
 
               <Slider
                 name="contrast"
+                label="contrast"
                 min={0}
                 max={200}
                 step={1}
-                valueLabelDisplay="auto"
+                valueLabelDisplay="off"
+                aria-label="Contrast"
                 onChange={handleFilterChange}
                 value={filterInputs.contrast}
               />
@@ -298,7 +330,9 @@ const Upload = (props) => {
                 min={0}
                 max={200}
                 step={1}
-                valueLabelDisplay="auto"
+                valueLabelDisplay="off"
+                aria-valuetext="Saturation"
+                aria-label="Saturation"
                 onChange={handleFilterChange}
                 value={filterInputs.saturation}
               />
@@ -307,7 +341,8 @@ const Upload = (props) => {
                 min={0}
                 max={100}
                 step={1}
-                valueLabelDisplay="auto"
+                valueLabelDisplay="off"
+                aria-label="Sepia"
                 onChange={handleFilterChange}
                 value={filterInputs.sepia}
               />
@@ -316,7 +351,7 @@ const Upload = (props) => {
           <Button
             color="secondary"
             fullWidth
-            sx={{mt: 1, borderRadius: '10rem'}}
+            sx={{mt: '1rem', borderRadius: '10rem'}}
             variant="contained"
             type="submit"
           >
