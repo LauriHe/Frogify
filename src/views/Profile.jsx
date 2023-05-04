@@ -22,7 +22,7 @@ import {ColorContext} from '../contexts/ColorContext';
 import {ValidatorForm} from 'react-material-ui-form-validator';
 
 const Profile = () => {
-  /* Profile picture and avatar */
+  /* Profile picture */
   const {user} = useContext(MediaContext);
   const {getFavourites} = useFavourite();
 
@@ -64,14 +64,10 @@ const Profile = () => {
     setListArray(myPosts.filter((file) => file.user_id === user.user_id));
   };
 
-  /* console.log(user); */
   const listHistory = () => {
     setActive('history');
-    /* console.log('testi' + JSON.parse(user.full_name)); */
     if (JSON.parse(user.full_name).history) {
-      /* console.log('first'); */
       const history = JSON.parse(user.full_name).history;
-      /* console.log('history' + history); */
       const myHistory = mediaArray.filter((file) =>
         history.includes(file.file_id)
       );
@@ -91,9 +87,7 @@ const Profile = () => {
           console.log('85');
         }
       });
-      console.log('info' + likeInfo.user_id);
     }
-    console.log(myLikes);
     setListArray(myLikes);
   };
 

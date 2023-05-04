@@ -14,6 +14,9 @@ import {mediaUrl} from '../utils/variables';
 import userIcon from '../assets/person.svg';
 import dotsVerIcon from '../assets/dotsVertical.svg';
 import playIcon from '../assets/play.svg';
+import likeIcon from '../assets/like.svg';
+import commentIcon from '../assets/comment.svg';
+
 import {useUser} from '../hooks/ApiHooks';
 import {useEffect, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
@@ -72,37 +75,39 @@ const MediaRowProfile = ({file, mediaArray}) => {
 
   return (
     <Box>
-      <Grid container gap={1} alignItems="center" spacing={1}>
-        {/* Image */}
-        <Grid item>
-          <img
-            src={mediaUrl + image.thumbnails.w640}
-            alt={file.title}
-            width={100}
-            style={
-              image.description
-                ? {
-                    filter: `
+      <Grid container direction="row" gap={1} alignItems="center" spacing={1}>
+        <Grid container item alignItems="center" gap={1} direction="row" xs>
+          {/* Image */}
+          <Grid item>
+            <img
+              src={mediaUrl + image.thumbnails.w640}
+              alt={file.title}
+              width={100}
+              style={
+                image.description
+                  ? {
+                      filter: `
             brightness(${JSON.parse(image.description).brightness}%)
             contrast(${JSON.parse(image.description).contrast}%)
             saturate(${JSON.parse(image.description).saturation}%)
             sepia(${JSON.parse(image.description).sepia}%)
             `,
-                  }
-                : {}
-            }
-          />
-        </Grid>
-        {/* Username, song title */}
-        <Grid item>
-          <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
-            {title}
-          </Typography>
-          <Grid container alignItems="center" gap={1}>
-            <img src={userIcon} alt="user icon" width={30} />
-            <Typography variant="h6" component="h3" color="grey">
-              {postMaker.username}
+                    }
+                  : {}
+              }
+            />
+          </Grid>
+          {/* Username, song title */}
+          <Grid item>
+            <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
+              {title}
             </Typography>
+            <Grid container alignItems="center" gap={1}>
+              <img src={userIcon} alt="user icon" width={30} />
+              <Typography variant="h6" component="h3" color="grey">
+                {postMaker.username}
+              </Typography>
+            </Grid>
           </Grid>
         </Grid>
         {/* Buttons */}
@@ -113,22 +118,6 @@ const MediaRowProfile = ({file, mediaArray}) => {
           item
           width="fit-content"
         >
-          {/* <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-            sx={{p: 1, pr: 1}}
-          >
-            <img src={likeIcon} alt="like icon" width={30} />
-          </IconButton>
-          <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-            sx={{p: 1, pr: 1}}
-          >
-            <img src={commentIcon} alt="comment icon" width={30} />
-          </IconButton> */}
           <IconButton
             color="primary"
             aria-label="upload picture"
@@ -190,6 +179,27 @@ const MediaRowProfile = ({file, mediaArray}) => {
             </Button>
             <Divider flexItem></Divider>
             <Button fullWidth>Delete song</Button>
+
+            <Divider flexItem></Divider>
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="label"
+              sx={{p: 1, pr: 1}}
+            >
+              <Typography>LIKE</Typography>
+              <img src={likeIcon} alt="like icon" width={30} />
+            </IconButton>
+            <Divider flexItem></Divider>
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="label"
+              sx={{p: 1, pr: 1}}
+            >
+              <Typography>COMMENTS</Typography>
+              <img src={commentIcon} alt="comment icon" width={30} />
+            </IconButton>
             <Divider flexItem></Divider>
             <Button fullWidth onClick={toggleSettingImg}>
               Cancel

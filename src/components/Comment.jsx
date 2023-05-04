@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {useContext, useEffect, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
 import {useUser} from '../hooks/ApiHooks';
+import deleteIcon from '../assets/delete.svg';
 
 const Comment = ({comment, deleteUserComment}) => {
   const {user} = useContext(MediaContext);
@@ -42,7 +43,7 @@ const Comment = ({comment, deleteUserComment}) => {
       </Grid>
       {user.user_id === comment.user_id && (
         <Button sx={{height: '2rem'}} onClick={handleDelete}>
-          Delete
+          <img src={deleteIcon}></img>
         </Button>
       )}
     </Grid>
