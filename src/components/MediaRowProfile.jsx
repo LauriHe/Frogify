@@ -14,7 +14,7 @@ import {mediaUrl} from '../utils/variables';
 import userIcon from '../assets/person.svg';
 import dotsVerIcon from '../assets/dotsVertical.svg';
 import playIcon from '../assets/play.svg';
-import {useUser} from '../hooks/ApiHooks';
+import {useMedia, useUser} from '../hooks/ApiHooks';
 import {useEffect, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
 import {Link} from 'react-router-dom';
@@ -23,6 +23,7 @@ const MediaRowProfile = ({file, mediaArray}) => {
   const {getUser} = useUser();
   const [postMaker, setPostMaker] = useState('');
   const {user} = useContext(MediaContext);
+  const {deleteMedia} = useMedia();
 
   const [title, setTitle] = useState('');
 
@@ -70,39 +71,48 @@ const MediaRowProfile = ({file, mediaArray}) => {
     }
   };
 
+  const deleteSong = () => {
+    const userToken = localStorage.getItem('userToken');
+    deleteMedia(file.file_id, userToken);
+    deleteMedia(image.file_id, userToken);
+    window.location.reload();
+  };
+
   return (
     <Box>
-      <Grid container gap={1} alignItems="center" spacing={1}>
-        {/* Image */}
-        <Grid item>
-          <img
-            src={mediaUrl + image.thumbnails.w640}
-            alt={file.title}
-            width={100}
-            style={
-              image.description
-                ? {
-                    filter: `
+      <Grid container direction="row" gap={1} alignItems="center" spacing={1}>
+        <Grid container item alignItems="center" gap={1} direction="row" xs>
+          {/* Image */}
+          <Grid item>
+            <img
+              src={mediaUrl + image.thumbnails.w640}
+              alt={file.title}
+              width={100}
+              style={
+                image.description
+                  ? {
+                      filter: `
             brightness(${JSON.parse(image.description).brightness}%)
             contrast(${JSON.parse(image.description).contrast}%)
             saturate(${JSON.parse(image.description).saturation}%)
             sepia(${JSON.parse(image.description).sepia}%)
             `,
-                  }
-                : {}
-            }
-          />
-        </Grid>
-        {/* Username, song title */}
-        <Grid item>
-          <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
-            {title}
-          </Typography>
-          <Grid container alignItems="center" gap={1}>
-            <img src={userIcon} alt="user icon" width={30} />
-            <Typography variant="h6" component="h3" color="grey">
-              {postMaker.username}
+                    }
+                  : {}
+              }
+            />
+          </Grid>
+          {/* Username, song title */}
+          <Grid item>
+            <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
+              {title}
             </Typography>
+            <Grid container alignItems="center" gap={1}>
+              <img src={userIcon} alt="user icon" width={30} />
+              <Typography variant="h6" component="h3" color="grey">
+                {postMaker.username}
+              </Typography>
+            </Grid>
           </Grid>
         </Grid>
         {/* Buttons */}
@@ -113,22 +123,6 @@ const MediaRowProfile = ({file, mediaArray}) => {
           item
           width="fit-content"
         >
-          {/* <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-            sx={{p: 1, pr: 1}}
-          >
-            <img src={likeIcon} alt="like icon" width={30} />
-          </IconButton>
-          <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-            sx={{p: 1, pr: 1}}
-          >
-            <img src={commentIcon} alt="comment icon" width={30} />
-          </IconButton> */}
           <IconButton
             color="primary"
             aria-label="upload picture"
@@ -156,7 +150,7 @@ const MediaRowProfile = ({file, mediaArray}) => {
       {settingImg && (
         <Box
           sx={{
-            height: '100%',
+            height: '100vh',
             width: '100%',
             position: 'absolute',
             top: '0',
@@ -169,10 +163,10 @@ const MediaRowProfile = ({file, mediaArray}) => {
         <Paper
           variant="outlined"
           sx={{
-            width: '50%',
+            width: '20rem',
             height: 'fit-content',
-            position: 'absolute',
-            top: '8rem',
+            position: 'fixed',
+            top: '20rem',
             left: '50%',
             transform: 'translate(-50%, 50%)',
             zIndex: '10',
@@ -189,7 +183,9 @@ const MediaRowProfile = ({file, mediaArray}) => {
               Modify song
             </Button>
             <Divider flexItem></Divider>
-            <Button fullWidth>Delete song</Button>
+            <Button fullWidth onClick={deleteSong}>
+              Delete song
+            </Button>
             <Divider flexItem></Divider>
             <Button fullWidth onClick={toggleSettingImg}>
               Cancel

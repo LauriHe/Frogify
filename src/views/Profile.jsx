@@ -22,7 +22,7 @@ import {ColorContext} from '../contexts/ColorContext';
 import {ValidatorForm} from 'react-material-ui-form-validator';
 
 const Profile = () => {
-  /* Profile picture and avatar */
+  /* Profile picture */
   const {user} = useContext(MediaContext);
   const {getFavourites} = useFavourite();
 
@@ -50,6 +50,7 @@ const Profile = () => {
 
   /* Posts */
   const {mediaArray, deleteMedia, postMedia} = useMedia(false);
+  const [myPostList, setMyPostList] = useState([]);
 
   const [active, setActive] = useState('posts');
   const [listArray, setListArray] = useState(
@@ -64,14 +65,10 @@ const Profile = () => {
     setListArray(myPosts.filter((file) => file.user_id === user.user_id));
   };
 
-  /* console.log(user); */
   const listHistory = () => {
     setActive('history');
-    /* console.log('testi' + JSON.parse(user.full_name)); */
     if (JSON.parse(user.full_name).history) {
-      /* console.log('first'); */
       const history = JSON.parse(user.full_name).history;
-      /* console.log('history' + history); */
       const myHistory = mediaArray.filter((file) =>
         history.includes(file.file_id)
       );
@@ -88,12 +85,9 @@ const Profile = () => {
       likeInfo.forEach((like) => {
         if (like.user_id === user.user_id) {
           myLikes.push(file);
-          console.log('85');
         }
       });
-      console.log('info' + likeInfo.user_id);
     }
-    console.log(myLikes);
     setListArray(myLikes);
   };
 
@@ -102,6 +96,7 @@ const Profile = () => {
       .filter((item) => item.media_type === 'audio')
       .reverse();
     setListArray(myPosts.filter((file) => file.user_id === user.user_id));
+    setMyPostList(myPosts.filter((file) => file.user_id === user.user_id));
   }, [mediaArray]);
 
   /* Settings */
@@ -152,7 +147,7 @@ const Profile = () => {
       dataImage.append('file', image);
 
       const uploadResultImage = await postMedia(dataImage, userToken);
-      const tagResultImage = await postTag(
+      await postTag(
         {
           file_id: uploadResultImage.file_id,
           tag: 'avatar_' + user.user_id,
@@ -160,8 +155,6 @@ const Profile = () => {
         userToken
       );
       window.location.reload(false);
-      console.log(tagResultImage);
-      console.log(uploadResultImage);
     } catch (error) {
       alert(error.message);
     }
@@ -258,7 +251,7 @@ const Profile = () => {
                   direction="column"
                   xs={4}
                 >
-                  <Typography variant="h6">000</Typography>
+                  <Typography variant="h6">{myPostList.length}</Typography>
                   <Typography variant="caption" color="grey">
                     Posts
                   </Typography>
@@ -282,7 +275,9 @@ const Profile = () => {
                   direction="column"
                   xs={4}
                 >
-                  <Typography variant="h6">000</Typography>
+                  <Typography variant="h6">
+                    {JSON.parse(user.full_name).following.length}
+                  </Typography>
                   <Typography variant="caption" color="grey">
                     Following
                   </Typography>
@@ -340,7 +335,7 @@ const Profile = () => {
           {setting && (
             <Box
               sx={{
-                height: '100%',
+                height: '100vh',
                 width: '100%',
                 position: 'absolute',
                 top: '0',
@@ -353,9 +348,9 @@ const Profile = () => {
             <Paper
               variant="outlined"
               sx={{
-                width: '75%',
+                width: '20rem',
                 position: 'fixed',
-                top: '10rem',
+                top: '20rem',
                 left: '50%',
                 transform: 'translate(-50%, 0)',
                 zIndex: '10',
@@ -368,8 +363,6 @@ const Profile = () => {
                 alignItems="center"
                 width="100%"
               >
-                <Button fullWidth>Change Info</Button>
-                <Divider flexItem />
                 <Button fullWidth onClick={togglePicture}>
                   Profile picture
                 </Button>

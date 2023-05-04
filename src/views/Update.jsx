@@ -56,12 +56,11 @@ const Update = (props) => {
         title: inputs.songTitle,
         description: JSON.stringify(filterInputs),
       };
-      const uploadResultImage = await putMedia(
+      await putMedia(
         JSON.parse(file.description).imageId,
         dataImage,
         userToken
       );
-      console.log(uploadResultImage);
 
       const allDataAudio = {
         genres: inputs.genres,
@@ -74,14 +73,8 @@ const Update = (props) => {
         description: JSON.stringify(allDataAudio),
       };
 
-      console.log(dataAudio);
-      const uploadResultAudio = await putMedia(
-        file.file_id,
-        dataAudio,
-        userToken
-      );
+      await putMedia(file.file_id, dataAudio, userToken);
 
-      console.log(uploadResultAudio);
       navigate('/');
     } catch (error) {
       /* alert(error.message); */

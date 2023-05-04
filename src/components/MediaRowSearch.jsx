@@ -60,7 +60,6 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
   const addToHistory = async (file) => {
     try {
       if (user) {
-        console.log(JSON.parse(user.full_name));
         if (JSON.parse(user.full_name).history) {
           const storage = JSON.parse(user.full_name);
 

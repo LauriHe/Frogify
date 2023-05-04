@@ -22,7 +22,7 @@ const Radio = () => {
   };
 
   useEffect(() => {
-    // fetchStations();
+    fetchStations();
   }, []);
 
   return (
