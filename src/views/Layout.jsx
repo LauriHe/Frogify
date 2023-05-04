@@ -145,7 +145,9 @@ const Layout = () => {
         <CssBaseline />
         <Container
           maxWidth={
-            location.pathname === '/player' || location.pathname === '/profile'
+            location.pathname === '/player' ||
+            location.pathname === '/upload' ||
+            location.pathname === '/update'
               ? 'md'
               : 'xl'
           }
