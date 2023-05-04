@@ -13,6 +13,7 @@ const AudioPlayer = () => {
     currentSongImage,
     setCurrentSong,
     setCurrentSongImage,
+    imageFilters,
     audioRef,
     bgColor,
     setBgColor,
@@ -207,6 +208,18 @@ const AudioPlayer = () => {
                 alt="cover art"
                 height="40rem"
                 crossOrigin="Anonymous"
+                style={
+                  imageFilters
+                    ? {
+                        filter: `
+                brightness(${imageFilters.brightness}%)
+                contrast(${imageFilters.contrast}%)
+                saturate(${imageFilters.saturation}%)
+                sepia(${imageFilters.sepia}%)
+                `,
+                      }
+                    : {}
+                }
               />
               <Typography variant="body1" sx={{color: textColor}}>
                 {currentSong.title}

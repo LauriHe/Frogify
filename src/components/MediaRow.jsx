@@ -12,7 +12,8 @@ import {useUser} from '../hooks/ApiHooks';
 import {MediaContext} from '../contexts/MediaContext';
 
 const MediaRow = ({file, mediaArray, toggleComments}) => {
-  const {setCurrentSong, setCurrentSongImage} = useContext(SongContext);
+  const {setCurrentSong, setCurrentSongImage, setImageFilters} =
+    useContext(SongContext);
   const {user, setUser, userStorage} = useContext(MediaContext);
   const {getUserByToken} = useUser();
   const [likes, setLikes] = useState(0);
@@ -67,6 +68,9 @@ const MediaRow = ({file, mediaArray, toggleComments}) => {
     addToHistory(file);
     setCurrentSong(file);
     setCurrentSongImage(image);
+    if (image.description) {
+      setImageFilters(JSON.parse(image.description));
+    }
   };
 
   const fetchLikes = async () => {
@@ -205,6 +209,18 @@ const MediaRow = ({file, mediaArray, toggleComments}) => {
           <ImageListItem>
             <img
               src={mediaUrl + image.thumbnails.w640}
+              style={
+                image.description
+                  ? {
+                      filter: `
+              brightness(${JSON.parse(image.description).brightness}%)
+              contrast(${JSON.parse(image.description).contrast}%)
+              saturate(${JSON.parse(image.description).saturation}%)
+              sepia(${JSON.parse(image.description).sepia}%)
+              `,
+                    }
+                  : {}
+              }
               alt={`cover art for ${file.title}`}
             />
             <ImageListItemBar

@@ -7,8 +7,14 @@ import {useUser} from '../hooks/ApiHooks';
 
 const Player = () => {
   const {getUser} = useUser();
-  const {audioRef, currentSong, currentSongImage, bgColor, textColor} =
-    useContext(SongContext);
+  const {
+    audioRef,
+    currentSong,
+    currentSongImage,
+    imageFilters,
+    bgColor,
+    textColor,
+  } = useContext(SongContext);
   const [pausedByButton, setPausedByButton] = useState(false);
   const [postMaker, setPostMaker] = useState('');
   const navigate = useNavigate();
@@ -95,6 +101,18 @@ const Player = () => {
                 currentSong.type
                   ? currentSongImage
                   : mediaUrl + currentSongImage.thumbnails.w640
+              }
+              style={
+                imageFilters
+                  ? {
+                      filter: `
+              brightness(${imageFilters.brightness}%)
+              contrast(${imageFilters.contrast}%)
+              saturate(${imageFilters.saturation}%)
+              sepia(${imageFilters.sepia}%)
+              `,
+                    }
+                  : {}
               }
               alt="Song cover art"
               width="100%"

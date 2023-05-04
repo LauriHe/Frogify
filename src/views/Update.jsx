@@ -52,10 +52,9 @@ const Update = (props) => {
   const doUpload = async () => {
     try {
       const userToken = localStorage.getItem('userToken');
-      const allDataImage = {filters: filterInputs};
       const dataImage = {
         title: inputs.songTitle,
-        description: JSON.stringify(allDataImage),
+        description: JSON.stringify(filterInputs),
       };
       const uploadResultImage = await putMedia(
         JSON.parse(file.description).imageId,

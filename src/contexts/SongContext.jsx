@@ -6,6 +6,7 @@ const SongContext = React.createContext();
 const SongProvider = ({children}) => {
   const [currentSong, setCurrentSong] = useState(null);
   const [currentSongImage, setCurrentSongImage] = useState(null);
+  const [imageFilters, setImageFilters] = useState(null);
   const [progress, setProgress] = useState(null);
   const [bgColor, setBgColor] = useState(null);
   const [textColor, setTextColor] = useState(null);
@@ -18,6 +19,8 @@ const SongProvider = ({children}) => {
         setCurrentSong,
         currentSongImage,
         setCurrentSongImage,
+        imageFilters,
+        setImageFilters,
         progress,
         setProgress,
         bgColor,
