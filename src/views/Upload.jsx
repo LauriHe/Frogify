@@ -171,11 +171,9 @@ const Upload = (props) => {
   }, [image, audio]);
   console.log(editImgBtn);
   return (
-    <Grid columns={1}>
-      <Box
+    <Grid columns={1} container justifyContent="center" alignItems={'center'}>
+      <Grid
         sx={{
-          marginLeft: '3rem',
-          marginRight: '3rem',
           display: 'flex',
           alignItems: 'center',
         }}
@@ -235,7 +233,7 @@ const Upload = (props) => {
           )}
 
           {editImg && (
-            <Box>
+            <Grid>
               <h3 margin="dense">Add Song Info</h3>
 
               <TextValidator
@@ -283,7 +281,7 @@ const Upload = (props) => {
                 variant="standard"
                 sx={{marginBottom: '2rem'}}
               />
-            </Box>
+            </Grid>
           )}
           {!editImg && (
             <Box>
@@ -303,49 +301,64 @@ const Upload = (props) => {
                 }}
               />
               <h4>Edit Filter</h4>
-              <Slider
-                name="brightness"
-                min={0}
-                max={200}
-                step={1}
-                valueLabelDisplay="off"
-                aria-label="Brightness"
-                onChange={handleFilterChange}
-                value={filterInputs.brightness}
-              />
-
-              <Slider
-                name="contrast"
-                label="contrast"
-                min={0}
-                max={200}
-                step={1}
-                valueLabelDisplay="off"
-                aria-label="Contrast"
-                onChange={handleFilterChange}
-                value={filterInputs.contrast}
-              />
-              <Slider
-                name="saturation"
-                min={0}
-                max={200}
-                step={1}
-                valueLabelDisplay="off"
-                aria-valuetext="Saturation"
-                aria-label="Saturation"
-                onChange={handleFilterChange}
-                value={filterInputs.saturation}
-              />
-              <Slider
-                name="sepia"
-                min={0}
-                max={100}
-                step={1}
-                valueLabelDisplay="off"
-                aria-label="Sepia"
-                onChange={handleFilterChange}
-                value={filterInputs.sepia}
-              />
+              <Grid container alignItems={'center'} gap={2}>
+                <Slider
+                  sx={{width: '60%'}}
+                  name="brightness"
+                  min={0}
+                  max={200}
+                  step={1}
+                  valueLabelDisplay="off"
+                  aria-label="Brightness"
+                  onChange={handleFilterChange}
+                  value={filterInputs.brightness}
+                />
+                <p style={{width: 'auto'}}>Brighness</p>
+              </Grid>
+              <Grid container alignItems={'center'} gap={2}>
+                <Slider
+                  sx={{width: '60%'}}
+                  name="contrast"
+                  label="contrast"
+                  min={0}
+                  max={200}
+                  step={1}
+                  valueLabelDisplay="off"
+                  aria-label="Contrast"
+                  onChange={handleFilterChange}
+                  value={filterInputs.contrast}
+                />
+                <p style={{width: 'auto'}}>Contrast</p>
+              </Grid>
+              <Grid container alignItems={'center'} gap={2}>
+                <Slider
+                  sx={{width: '60%'}}
+                  name="saturation"
+                  min={0}
+                  max={200}
+                  step={1}
+                  valueLabelDisplay="off"
+                  aria-valuetext="Saturation"
+                  aria-label="Saturation"
+                  onChange={handleFilterChange}
+                  value={filterInputs.saturation}
+                />
+                <p style={{width: 'auto'}}>Saturation</p>
+              </Grid>
+              <Grid container alignItems={'center'} gap={2}>
+                <Slider
+                  sx={{width: '60%'}}
+                  name="sepia"
+                  min={0}
+                  max={100}
+                  step={1}
+                  valueLabelDisplay="off"
+                  aria-label="Sepia"
+                  onChange={handleFilterChange}
+                  value={filterInputs.sepia}
+                />
+                <p style={{width: 'auto'}}>Sepia</p>
+              </Grid>
             </Box>
           )}
           <Button
@@ -358,7 +371,7 @@ const Upload = (props) => {
             Submit
           </Button>
         </ValidatorForm>
-      </Box>
+      </Grid>
     </Grid>
   );
 };
