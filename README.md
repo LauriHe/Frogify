@@ -1,6 +1,6 @@
 # Frogify
 
-Link to application: [https://users.metropolia.fi/~lauhei/Mediapalvelut-ja-kayttajakokemus/Project/](https://users.metropolia.fi/~lauhei/Mediapalvelut-ja-kayttajakokemus/Project/)
+Linkki sovellukseen: [https://users.metropolia.fi/~lauhei/Mediapalvelut-ja-kayttajakokemus/Project/](https://users.metropolia.fi/~lauhei/Mediapalvelut-ja-kayttajakokemus/Project/)
 
 Tekijät: Lauri Heikkinen, Sara Oksanen, Dominie Sihvola
 
