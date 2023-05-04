@@ -13,20 +13,16 @@ import {SongContext} from '../contexts/SongContext';
 import {mediaUrl} from '../utils/variables';
 import userIcon from '../assets/person.svg';
 import dotsVerIcon from '../assets/dotsVertical.svg';
-import likeIcon from '../assets/like.svg';
 import playIcon from '../assets/play.svg';
-import commentIcon from '../assets/comment.svg';
 import {useUser} from '../hooks/ApiHooks';
 import {useEffect, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
-import {useNavigate} from 'react-router-dom';
 import {Link} from 'react-router-dom';
 
 const MediaRowProfile = ({file, mediaArray}) => {
   const {getUser} = useUser();
   const [postMaker, setPostMaker] = useState('');
   const {user} = useContext(MediaContext);
-  const navigate = useNavigate();
 
   const image = mediaArray.find(
     (item) => item.file_id === JSON.parse(file.description).imageId
@@ -70,7 +66,7 @@ const MediaRowProfile = ({file, mediaArray}) => {
         spacing={1}
       >
         {/* Image */}
-        <Grid item xs>
+        <Grid item>
           <img
             src={mediaUrl + image.thumbnails.w640}
             alt={file.title}
@@ -78,7 +74,7 @@ const MediaRowProfile = ({file, mediaArray}) => {
           />
         </Grid>
         {/* Username, song title */}
-        <Grid item xs>
+        <Grid item>
           <Typography variant="h5" component="h2" sx={{mb: '.5rem'}}>
             {file.title}
           </Typography>
@@ -90,7 +86,7 @@ const MediaRowProfile = ({file, mediaArray}) => {
           </Grid>
         </Grid>
         {/* Buttons */}
-        <Grid container alignItems="center" direction="row" item xs="4">
+        <Grid container alignItems="center" direction="row" item xs={4}>
           {/* <IconButton
             color="primary"
             aria-label="upload picture"
@@ -112,13 +108,9 @@ const MediaRowProfile = ({file, mediaArray}) => {
             aria-label="upload picture"
             component="label"
             sx={{p: 1, pr: 1}}
+            onClick={playAudio}
           >
-            <img
-              src={playIcon}
-              onClick={playAudio}
-              alt="play icon"
-              width={30}
-            />
+            <img src={playIcon} alt="play icon" width={30} />
           </IconButton>
           {location.pathname === '/profile' &&
             user.user_id === postMaker.user_id && (

@@ -158,7 +158,7 @@ const Profile = () => {
                   container
                   direction="row"
                   justifyContent="center"
-                  xs="12"
+                  xs={12}
                 >
                   <Typography variant="h4">{user.username}</Typography>
                 </Grid>

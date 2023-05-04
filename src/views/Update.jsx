@@ -1,53 +1,40 @@
-import PropTypes from 'prop-types';
-import {useParams} from 'react-router-dom';
 import useForm from '../hooks/FormHooks';
-import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
+import {useMedia} from '../hooks/ApiHooks';
 import {Box, Button, Grid, Slider} from '@mui/material';
-import {Container} from '@mui/system';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
-import {useState} from 'react';
-import uploadIcon from '../assets/plus.svg';
-import {appId} from '../utils/variables';
+import {useEffect, useState} from 'react';
 import {uploadValidators} from '../utils/validators';
 import {useLocation, useNavigate} from 'react-router-dom';
 
 import React from 'react';
-import {useEffect} from 'react';
+import {mediaUrl} from '../utils/variables';
 
 const Update = (props) => {
-  const [image, setImage] = useState(null);
-  const [audio, setAudio] = useState(null);
   const {state} = useLocation();
   const file = state.file;
-  const {id} = useParams();
   /* console.log(id); */
-
-  const [selectedImage, setSelectedImage] = useState(
-    'https://placekitten.com/600/400'
-  );
   // 'https://placehold.co/600x400?text=Choose-media'
-  const {putMedia} = useMedia();
-  const {postTag, getTag} = useTag();
+  const {putMedia, mediaArray} = useMedia();
+  const image = mediaArray.filter(
+    (img) =>
+      img.media_type === 'image' &&
+      img.file_id === JSON.parse(file.description).imageId
+  );
+  const [selectedImage, setSelectedImage] = useState();
   const [editImg, setEditImg] = useState(true);
-  const [editImgBtn, setEditImgBtn] = useState(true);
-  const [initialFile, setInitialFile] = useState();
   const navigate = useNavigate();
   const toggleEditImg = () => {
     if (editImg) {
+      setSelectedImage(mediaUrl + image.pop()?.filename);
       setEditImg(false);
     } else {
       setEditImg(true);
     }
   };
-  const toggleEditImgBtn = () => {
-    if (editImgBtn) {
-      setEditImgBtn(false);
-    } else {
-      setEditImgBtn(true);
-    }
-  };
-  dataA;
-  console.log(file);
+  console.log(selectedImage);
+  useEffect(() => {
+    setSelectedImage(mediaUrl + image.pop()?.filename);
+  }, [image]);
   const initValues = {
     songTitle: file.title,
     genres: JSON.parse(file.description).genres,
@@ -65,26 +52,30 @@ const Update = (props) => {
   const doUpload = async () => {
     try {
       const userToken = localStorage.getItem('userToken');
-      const dataImage = new FormData();
-      dataImage.append('title', inputs.songTitle);
-      dataImage.append('description', JSON.stringify(filterInputs));
-      /* const uploadResultImage = await putMedia(
+      const allDataImage = {filters: filterInputs};
+      const dataImage = {
+        title: inputs.songTitle,
+        description: JSON.stringify(allDataImage),
+      };
+      const uploadResultImage = await putMedia(
         JSON.parse(file.description).imageId,
         dataImage,
         userToken
-      ); */
+      );
+      console.log(uploadResultImage);
 
-      const dataAudio = new FormData();
-      dataAudio.append('title', inputs.songTitle);
       const allDataAudio = {
         genres: inputs.genres,
         keywords: inputs.keywords,
         artistTags: inputs.artistTags,
         imageId: JSON.parse(file.description).imageId,
       };
+      const dataAudio = {
+        title: inputs.songTitle,
+        description: JSON.stringify(allDataAudio),
+      };
 
-      dataAudio.append('description', JSON.stringify(allDataAudio));
-
+      console.log(dataAudio);
       const uploadResultAudio = await putMedia(
         file.file_id,
         dataAudio,
@@ -92,26 +83,11 @@ const Update = (props) => {
       );
 
       console.log(uploadResultAudio);
-      navigate('/home');
+      navigate('/');
     } catch (error) {
       /* alert(error.message); */
       console.log(error);
     }
-  };
-
-  const handleFileChange = (event) => {
-    event.persist();
-    if (event.target.name == 'audio') {
-      setAudio(event.target.files[0]);
-    } else {
-      setImage(event.target.files[0]);
-      const reader = new FileReader();
-      reader.addEventListener('load', () => {
-        setSelectedImage(reader.result);
-      });
-      reader.readAsDataURL(event.target.files[0]);
-    }
-    toggleEditImgBtn;
   };
 
   const {inputs, handleSubmit, handleInputChange} = useForm(
@@ -123,10 +99,6 @@ const Update = (props) => {
     null,
     filterInitValues
   );
-
-  useEffect(() => {
-    setEditImgBtn(!editImgBtn);
-  }, [image]);
 
   return (
     <Grid columns={1}>
@@ -140,54 +112,24 @@ const Update = (props) => {
       >
         <ValidatorForm onSubmit={handleSubmit} noValidate>
           <h3>Add Files</h3>
-
-          {editImg && (
-            <Button variant="text" component="label" fullWidth>
-              <img src={uploadIcon} alt="upload icon" height={50} />
-              Upload Audio
-              <input
-                hidden
-                accept="audio/*"
-                multiple
-                type="file"
-                name="audio"
-                onChange={handleFileChange}
-              />
-            </Button>
-          )}
-          <Button variant="text" component="label" fullWidth>
-            <img src={uploadIcon} alt="upload icon" height={50} />
-            Upload Image
-            <input
-              hidden
-              accept="image/*"
-              multiple
-              type="file"
-              name="image"
-              onChange={handleFileChange}
-            />
+          <Button
+            id="editBtn"
+            color="secondary"
+            hidden
+            sx={{
+              mt: 1,
+              borderRadius: '10rem',
+              left: '50%',
+              transform: 'translate(-50%)',
+            }}
+            variant="text"
+            onClick={toggleEditImg}
+          >
+            Edit Image
           </Button>
-          {editImgBtn && (
-            <Button
-              id="editBtn"
-              color="secondary"
-              hidden
-              sx={{
-                mt: 1,
-                borderRadius: '10rem',
-                left: '50%',
-                transform: 'translate(-50%)',
-              }}
-              variant="text"
-              onClick={toggleEditImg}
-            >
-              Edit Image
-            </Button>
-          )}
           {editImg && (
             <Box>
-              <h3 margin="dense">Add Song Info</h3>
-
+              <h3>Add Song Info</h3>
               <TextValidator
                 className="inputRounded"
                 fullWidth
