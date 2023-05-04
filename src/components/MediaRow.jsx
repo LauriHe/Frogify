@@ -43,7 +43,6 @@ const MediaRow = ({file, mediaArray, toggleComments}) => {
   const addToHistory = async (file) => {
     try {
       if (user) {
-        console.log(JSON.parse(user.full_name));
         if (JSON.parse(user.full_name).history) {
           const storage = JSON.parse(user.full_name);
 
@@ -123,8 +122,8 @@ const MediaRow = ({file, mediaArray, toggleComments}) => {
     const token = localStorage.getItem('userToken');
     const user = await getUserByToken(token);
     setUser(user);
-    if (JSON.parse(user.full_name).storage.following) {
-      const following = JSON.parse(user.full_name).storage.following;
+    if (JSON.parse(user.full_name).following) {
+      const following = JSON.parse(user.full_name).following;
       if (following.includes(file.user_id)) {
         setUserFollow(true);
       }
@@ -202,9 +201,9 @@ const MediaRow = ({file, mediaArray, toggleComments}) => {
 
   return (
     <>
-      {!userStorage.storage?.following ||
-      userStorage.storage?.following.includes(file.user_id) ||
-      userStorage.storage?.following.length < 1 ? (
+      {!userStorage?.following ||
+      userStorage?.following.includes(file.user_id) ||
+      userStorage?.following.length < 1 ? (
         <Box sx={{mb: '1rem'}}>
           <ImageListItem>
             <img

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
-} from '@mui/material';
+import {Box, Grid, IconButton, Typography} from '@mui/material';
 import PropTypes from 'prop-types';
 import {mediaUrl} from '../utils/variables';
 import {useFavourite, useUser} from '../hooks/ApiHooks';
@@ -15,7 +7,6 @@ import {MediaContext} from '../contexts/MediaContext';
 import userIcon from '../assets/person.svg';
 import dotsVerIcon from '../assets/dotsVertical.svg';
 import likeIcon from '../assets/like.svg';
-import playIcon from '../assets/play.svg';
 import commentIcon from '../assets/comment.svg';
 import {SongContext} from '../contexts/SongContext';
 
@@ -134,8 +125,8 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
     const token = localStorage.getItem('userToken');
     const user = await getUserByToken(token);
     setUser(user);
-    if (JSON.parse(user.full_name).storage.following) {
-      const following = JSON.parse(user.full_name).storage.following;
+    if (JSON.parse(user.full_name).following) {
+      const following = JSON.parse(user.full_name).following;
       if (following.includes(file.user_id)) {
         setUserFollow(true);
       }
@@ -285,50 +276,6 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
             </IconButton>
           )}
       </Grid>
-      {settingImg && (
-        <Box
-          sx={{
-            height: '100%',
-            width: '100%',
-            position: 'absolute',
-            top: '0',
-            zIndex: '5',
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          }}
-        ></Box>
-      )}
-      {settingImg && (
-        <Paper
-          variant="outlined"
-          sx={{
-            width: '50%',
-            height: 'fit-content',
-            position: 'absolute',
-            top: '8rem',
-            left: '50%',
-            transform: 'translate(-50%, 50%)',
-            zIndex: '10',
-          }}
-        >
-          <Grid
-            container
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-            width="100%"
-          >
-            <Button onClick={modifySong} fullWidth>
-              Modify song
-            </Button>
-            <Divider flexItem></Divider>
-            <Button fullWidth>Delete song</Button>
-            <Divider flexItem></Divider>
-            <Button fullWidth onClick={toggleSettingImg}>
-              Cancel
-            </Button>
-          </Grid>
-        </Paper>
-      )}
     </Box>
   );
 };
