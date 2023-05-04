@@ -338,7 +338,7 @@ const Profile = () => {
           {setting && (
             <Box
               sx={{
-                height: '100%',
+                height: '100vh',
                 width: '100%',
                 position: 'absolute',
                 top: '0',
@@ -351,9 +351,9 @@ const Profile = () => {
             <Paper
               variant="outlined"
               sx={{
-                width: '75%',
+                width: '20rem',
                 position: 'fixed',
-                top: '10rem',
+                top: '20rem',
                 left: '50%',
                 transform: 'translate(-50%, 0)',
                 zIndex: '10',
@@ -366,8 +366,6 @@ const Profile = () => {
                 alignItems="center"
                 width="100%"
               >
-                <Button fullWidth>Change Info</Button>
-                <Divider flexItem />
                 <Button fullWidth onClick={togglePicture}>
                   Profile picture
                 </Button>

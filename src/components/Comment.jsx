@@ -33,7 +33,7 @@ const Comment = ({comment, deleteUserComment}) => {
     <Grid
       container
       gap={1}
-      padding=".5rem 1rem"
+      padding="1rem 1rem"
       justifyContent="space-between"
       alignItems="center"
     >
@@ -43,7 +43,7 @@ const Comment = ({comment, deleteUserComment}) => {
       </Grid>
       {user.user_id === comment.user_id && (
         <Button sx={{height: '2rem'}} onClick={handleDelete}>
-          <img src={deleteIcon}></img>
+          <img src={deleteIcon} style={{width: '2rem'}}></img>
         </Button>
       )}
     </Grid>

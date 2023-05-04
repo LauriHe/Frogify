@@ -150,7 +150,7 @@ const MediaRowProfile = ({file, mediaArray}) => {
       {settingImg && (
         <Box
           sx={{
-            height: '100%',
+            height: '100vh',
             width: '100%',
             position: 'absolute',
             top: '0',
@@ -163,10 +163,10 @@ const MediaRowProfile = ({file, mediaArray}) => {
         <Paper
           variant="outlined"
           sx={{
-            width: '50%',
+            width: '20rem',
             height: 'fit-content',
-            position: 'absolute',
-            top: '8rem',
+            position: 'fixed',
+            top: '20rem',
             left: '50%',
             transform: 'translate(-50%, 50%)',
             zIndex: '10',

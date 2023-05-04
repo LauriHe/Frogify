@@ -6,6 +6,7 @@ import useForm from '../hooks/FormHooks';
 import {useEffect, useState} from 'react';
 import Comment from './Comment';
 import {useWindowSize} from '../hooks/WindowHooks';
+import closeIcon from '../assets/close.svg';
 
 const MediaTable = (showedPosts) => {
   const {mediaArray} = useMedia();
@@ -16,6 +17,7 @@ const MediaTable = (showedPosts) => {
   const {getFileComments, postComment, deleteComment} = useComment();
   const windowSize = useWindowSize();
   const [cols, setCols] = useState(1);
+  const [commentWidth, setCommentWidth] = useState(0);
 
   const fetchComments = async () => {
     try {
@@ -81,10 +83,13 @@ const MediaTable = (showedPosts) => {
   useEffect(() => {
     if (windowSize.width > 1300) {
       setCols(3);
+      setCommentWidth('30%');
     } else if (windowSize.width > 768) {
       setCols(2);
+      setCommentWidth('50%');
     } else {
       setCols(1);
+      setCommentWidth('90%');
     }
   }, [windowSize]);
 
@@ -114,9 +119,9 @@ const MediaTable = (showedPosts) => {
         <Paper
           sx={{
             position: 'fixed',
-            top: '10rem',
+            top: '20rem',
             zIndex: 10,
-            width: '90%',
+            width: commentWidth,
             minHeight: '10rem',
             padding: '1rem 0',
           }}
@@ -126,7 +131,7 @@ const MediaTable = (showedPosts) => {
               sx={{padding: '0 1rem', marginBottom: '1rem'}}
               onClick={toggleViewComments}
             >
-              Close
+              <img src={closeIcon} style={{width: '2rem'}} alt="close icon" />
             </Button>
             {comments.map((comment, index) => {
               return (
@@ -142,6 +147,8 @@ const MediaTable = (showedPosts) => {
               justifyContent="center"
               component="form"
               onSubmit={handleSubmit}
+              alignItems="center"
+              gap={1}
             >
               <TextField
                 id="outlined-multiline-flexible"
@@ -151,9 +158,11 @@ const MediaTable = (showedPosts) => {
                 onChange={handleInputChange}
                 value={inputs.comment}
                 maxRows={4}
-                sx={{width: '70%'}}
+                sx={{width: '70%', marginTop: '1rem'}}
               />
-              <Button type="submit">Submit</Button>
+              <Button type="submit" sx={{marginTop: '1rem'}}>
+                Submit
+              </Button>
             </Grid>
           </Grid>
         </Paper>
