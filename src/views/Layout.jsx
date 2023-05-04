@@ -172,6 +172,7 @@ const Layout = () => {
           ) : null}
           <Grid container justifyContent="center">
             <BottomNavigation
+              showLabels
               sx={{width: '100%', position: 'fixed', bottom: '0'}}
             >
               <BottomNavigationAction
