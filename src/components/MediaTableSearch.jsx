@@ -99,10 +99,16 @@ const MediaTableSearch = ({searchArray, mediaArray}) => {
             zIndex: 10,
             width: '90%',
             minHeight: '10rem',
+            padding: '1rem 0',
           }}
         >
           <Grid>
-            <Button onClick={toggleViewComments}>Close</Button>
+            <Button
+              sx={{padding: '0 1rem', marginBottom: '1rem'}}
+              onClick={toggleViewComments}
+            >
+              Close
+            </Button>
             {comments.map((comment, index) => {
               return (
                 <Comment
@@ -112,7 +118,12 @@ const MediaTableSearch = ({searchArray, mediaArray}) => {
                 ></Comment>
               );
             })}
-            <Grid container component="form" onSubmit={handleSubmit}>
+            <Grid
+              container
+              justifyContent="center"
+              component="form"
+              onSubmit={handleSubmit}
+            >
               <TextField
                 id="outlined-multiline-flexible"
                 multiline
@@ -121,7 +132,7 @@ const MediaTableSearch = ({searchArray, mediaArray}) => {
                 onChange={handleInputChange}
                 value={inputs.comment}
                 maxRows={4}
-                sx={{width: '75%'}}
+                sx={{width: '70%'}}
               />
               <Button type="submit">Submit</Button>
             </Grid>

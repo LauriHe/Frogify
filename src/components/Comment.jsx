@@ -29,11 +29,21 @@ const Comment = ({comment, deleteUserComment}) => {
   }, []);
 
   return (
-    <Grid container gap={2}>
-      <p>{comment.comment}</p>
-      <p>{'Comment By: ' + commentUser.username}</p>
+    <Grid
+      container
+      gap={1}
+      padding=".5rem 1rem"
+      justifyContent="space-between"
+      alignItems="center"
+    >
+      <Grid container gap={0.5} width="fit-content">
+        <p style={{margin: 0}}>{commentUser.username + ': '}</p>
+        <p style={{margin: 0}}>{comment.comment}</p>
+      </Grid>
       {user.user_id === comment.user_id && (
-        <Button onClick={handleDelete}>Delete</Button>
+        <Button sx={{height: '2rem'}} onClick={handleDelete}>
+          Delete
+        </Button>
       )}
     </Grid>
   );
