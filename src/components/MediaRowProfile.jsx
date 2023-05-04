@@ -14,10 +14,7 @@ import {mediaUrl} from '../utils/variables';
 import userIcon from '../assets/person.svg';
 import dotsVerIcon from '../assets/dotsVertical.svg';
 import playIcon from '../assets/play.svg';
-import likeIcon from '../assets/like.svg';
-import commentIcon from '../assets/comment.svg';
-
-import {useUser} from '../hooks/ApiHooks';
+import {useMedia, useUser} from '../hooks/ApiHooks';
 import {useEffect, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
 import {Link} from 'react-router-dom';
@@ -26,6 +23,7 @@ const MediaRowProfile = ({file, mediaArray}) => {
   const {getUser} = useUser();
   const [postMaker, setPostMaker] = useState('');
   const {user} = useContext(MediaContext);
+  const {deleteMedia} = useMedia();
 
   const [title, setTitle] = useState('');
 
@@ -71,6 +69,13 @@ const MediaRowProfile = ({file, mediaArray}) => {
       setSettingImg(!settingImg);
       document.querySelector('body').style.overflow = 'hidden';
     }
+  };
+
+  const deleteSong = () => {
+    const userToken = localStorage.getItem('userToken');
+    deleteMedia(file.file_id, userToken);
+    deleteMedia(image.file_id, userToken);
+    window.location.reload();
   };
 
   return (
@@ -178,28 +183,9 @@ const MediaRowProfile = ({file, mediaArray}) => {
               Modify song
             </Button>
             <Divider flexItem></Divider>
-            <Button fullWidth>Delete song</Button>
-
-            <Divider flexItem></Divider>
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="label"
-              sx={{p: 1, pr: 1}}
-            >
-              <Typography>LIKE</Typography>
-              <img src={likeIcon} alt="like icon" width={30} />
-            </IconButton>
-            <Divider flexItem></Divider>
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="label"
-              sx={{p: 1, pr: 1}}
-            >
-              <Typography>COMMENTS</Typography>
-              <img src={commentIcon} alt="comment icon" width={30} />
-            </IconButton>
+            <Button fullWidth onClick={deleteSong}>
+              Delete song
+            </Button>
             <Divider flexItem></Divider>
             <Button fullWidth onClick={toggleSettingImg}>
               Cancel

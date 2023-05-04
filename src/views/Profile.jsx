@@ -50,6 +50,7 @@ const Profile = () => {
 
   /* Posts */
   const {mediaArray, deleteMedia, postMedia} = useMedia(false);
+  const [myPostList, setMyPostList] = useState([]);
 
   const [active, setActive] = useState('posts');
   const [listArray, setListArray] = useState(
@@ -96,6 +97,7 @@ const Profile = () => {
       .filter((item) => item.media_type === 'audio')
       .reverse();
     setListArray(myPosts.filter((file) => file.user_id === user.user_id));
+    setMyPostList(myPosts.filter((file) => file.user_id === user.user_id));
   }, [mediaArray]);
 
   /* Settings */
@@ -252,7 +254,7 @@ const Profile = () => {
                   direction="column"
                   xs={4}
                 >
-                  <Typography variant="h6">000</Typography>
+                  <Typography variant="h6">{myPostList.length}</Typography>
                   <Typography variant="caption" color="grey">
                     Posts
                   </Typography>
@@ -276,7 +278,9 @@ const Profile = () => {
                   direction="column"
                   xs={4}
                 >
-                  <Typography variant="h6">000</Typography>
+                  <Typography variant="h6">
+                    {JSON.parse(user.full_name).following.length}
+                  </Typography>
                   <Typography variant="caption" color="grey">
                     Following
                   </Typography>
