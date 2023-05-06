@@ -215,6 +215,7 @@ const AudioPlayer = () => {
                     gap: '.5rem',
                     padding: '0 .5rem',
                     backgroundColor: bgColor,
+                    cursor: 'pointer',
                   }
                 : {
                     width: '95%',
@@ -224,6 +225,7 @@ const AudioPlayer = () => {
                     gap: '.5rem',
                     padding: '0 .5rem',
                     backgroundColor: bgColor,
+                    cursor: 'pointer',
                   }
             }
           >

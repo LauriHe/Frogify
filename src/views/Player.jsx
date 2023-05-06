@@ -152,30 +152,27 @@ const Player = () => {
               )}
             </Grid>
             {!currentSong.type && (
-              <Grid
-                container
-                alignItems="center"
-                width="fit-content"
-                onClick={toggleSongInfo}
-              >
-                <Typography variant="body1" sx={{color: textColor}}>
-                  Song info
-                </Typography>
-                {textColor === 'white' && (
-                  <img
-                    src={showSongInfo ? collapseIcon : expandIcon}
-                    alt="collapse / expand icon"
-                    style={{width: '2rem'}}
-                  />
-                )}
-                {textColor === 'black' && (
-                  <img
-                    src={showSongInfo ? collapseIconDark : expandIconDark}
-                    alt="collapse / expand icon"
-                    style={{width: '2rem'}}
-                  />
-                )}
-              </Grid>
+              <Button onClick={toggleSongInfo}>
+                <Grid container alignItems="center" width="fit-content">
+                  <Typography variant="body1" sx={{color: textColor}}>
+                    Song info
+                  </Typography>
+                  {textColor === 'white' && (
+                    <img
+                      src={showSongInfo ? collapseIcon : expandIcon}
+                      alt="collapse / expand icon"
+                      style={{width: '2rem'}}
+                    />
+                  )}
+                  {textColor === 'black' && (
+                    <img
+                      src={showSongInfo ? collapseIconDark : expandIconDark}
+                      alt="collapse / expand icon"
+                      style={{width: '2rem'}}
+                    />
+                  )}
+                </Grid>
+              </Button>
             )}
           </Grid>
           {showSongInfo && (
