@@ -94,7 +94,7 @@ const Update = (props) => {
 
   return (
     <Grid
-      sx={{width: '100%'}}
+      sx={{width: '100%', marginBottom: '6rem'}}
       columns={1}
       container
       justifyContent="center"

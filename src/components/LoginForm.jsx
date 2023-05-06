@@ -40,6 +40,7 @@ const LoginForm = () => {
           margin="dense"
           name="username"
           label="Username"
+          autoCapitalize="none"
           onChange={handleInputChange}
           value={inputs.username}
         />
@@ -50,6 +51,7 @@ const LoginForm = () => {
           name="password"
           type="password"
           label="Password"
+          autoCapitalize="none"
           onChange={handleInputChange}
           value={inputs.password}
         />

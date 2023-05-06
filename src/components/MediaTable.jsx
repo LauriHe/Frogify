@@ -102,10 +102,10 @@ const MediaTable = (showedPosts) => {
           gap={8}
           sx={{marginBottom: '7rem'}}
         >
-          {audioArray.map((item, index) => {
+          {audioArray.map((item) => {
             return (
               <MediaRow
-                key={index}
+                key={item.file_id}
                 file={item}
                 mediaArray={mediaArray}
                 toggleComments={toggleViewComments}

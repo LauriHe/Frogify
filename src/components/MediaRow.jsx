@@ -203,7 +203,7 @@ const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
   return (
     <>
       {showedPosts.showedPosts === 'all' ||
-      userStorage?.following.includes(file.user_id) ? (
+      (user && userStorage?.following.includes(file.user_id)) ? (
         <Box sx={{mb: '1rem'}}>
           <ImageListItem>
             <img
@@ -233,24 +233,22 @@ const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
             />
           </ImageListItem>
           <Box sx={{display: 'flex', margin: '.5rem', gap: '.5rem'}}>
-            <img
-              src={userLike ? likeIconGreen : likeIcon}
-              onClick={user ? toggleLike : goToLogin}
-              alt="Like icon"
-              width="30rem"
-            />
-            <p>{likes}</p>
-            <img
-              src={commentIcon}
-              onClick={user ? comment : goToLogin}
-              alt="Comment icon"
-              width="30rem"
-            />
             {!(file.user_id === user?.user_id) && (
               <Button onClick={user ? toggleFollow : goToLogin}>
                 {userFollow ? 'unfollow' : 'follow'}
               </Button>
             )}
+            <Button onClick={user ? toggleLike : goToLogin}>
+              <img
+                src={userLike ? likeIconGreen : likeIcon}
+                alt="Like icon"
+                width="30rem"
+              />
+              <p>{likes}</p>
+            </Button>
+            <Button onClick={user ? comment : goToLogin}>
+              <img src={commentIcon} alt="Comment icon" width="30rem" />
+            </Button>
           </Box>
         </Box>
       ) : null}

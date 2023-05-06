@@ -1,4 +1,4 @@
-import {Box, Grid, IconButton, Typography} from '@mui/material';
+import {Box, Button, Grid, Typography} from '@mui/material';
 import PropTypes from 'prop-types';
 import {mediaUrl} from '../utils/variables';
 import {useFavourite, useUser} from '../hooks/ApiHooks';
@@ -245,7 +245,7 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
               </Grid>
             </Box>
           </Grid>
-          <IconButton
+          <Button
             color="primary"
             aria-label="upload picture"
             component="label"
@@ -253,36 +253,11 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
             onClick={playAudio}
           >
             <img src={playIcon} alt="play icon" />
-          </IconButton>
+          </Button>
         </Grid>
         <Grid container gap={1}>
-          <Grid container width="fit-content">
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="label"
-              sx={{p: 1, pr: 1}}
-              onClick={toggleLike}
-            >
-              <img
-                src={userLike ? likeIconGreen : likeIcon}
-                alt="like icon"
-                width={30}
-              />
-            </IconButton>
-            <p>{likes}</p>
-          </Grid>
-          <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-            sx={{p: 1, pr: 1}}
-            onClick={comment}
-          >
-            <img src={commentIcon} alt="comment icon" width={30} />
-          </IconButton>
           {!(file.user_id === user.user_id) && (
-            <IconButton
+            <Button
               color="primary"
               aria-label="upload picture"
               component="label"
@@ -290,13 +265,36 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
               onClick={toggleFollow}
             >
               {userFollow ? 'unfollow' : 'follow'}
-            </IconButton>
+            </Button>
           )}
+          <Button
+            color="primary"
+            aria-label="upload picture"
+            component="label"
+            sx={{p: 1, pr: 1}}
+            onClick={toggleLike}
+          >
+            <img
+              src={userLike ? likeIconGreen : likeIcon}
+              alt="like icon"
+              width={30}
+            />
+            <p style={{marginLeft: '.5rem'}}>{likes}</p>
+          </Button>
+          <Button
+            color="primary"
+            aria-label="upload picture"
+            component="label"
+            sx={{p: 1, pr: 1}}
+            onClick={comment}
+          >
+            <img src={commentIcon} alt="comment icon" width={30} />
+          </Button>
         </Grid>
 
         {location.pathname === '/profile' &&
           user.user_id === postMaker.user_id && (
-            <IconButton
+            <Button
               color="primary"
               aria-label="upload picture"
               component="label"
@@ -304,7 +302,7 @@ const MediaRowSearch = ({file, mediaArray, toggleComments}) => {
               onClick={toggleSettingImg}
             >
               <img src={dotsVerIcon} alt="dots icon" width={30} />
-            </IconButton>
+            </Button>
           )}
       </Grid>
     </Box>

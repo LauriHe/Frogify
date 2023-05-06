@@ -58,6 +58,7 @@ const RegisterForm = ({toggle}) => {
           margin="dense"
           name="username"
           label="Username"
+          autoCapitalize="none"
           value={inputs.username}
           onChange={handleInputChange}
           validators={registerValidators.username}
@@ -70,6 +71,7 @@ const RegisterForm = ({toggle}) => {
           name="password"
           type="password"
           label="Password"
+          autoCapitalize="none"
           onChange={handleInputChange}
           value={inputs.password}
           validators={registerValidators.password}
@@ -82,6 +84,7 @@ const RegisterForm = ({toggle}) => {
           name="confirm"
           type="password"
           label="Confirm password"
+          autoCapitalize="none"
           onChange={handleInputChange}
           value={inputs.confirm}
           validators={registerValidators.confirm}
@@ -94,6 +97,7 @@ const RegisterForm = ({toggle}) => {
           name="email"
           type="email"
           label="Email"
+          autoCapitalize="none"
           onChange={handleInputChange}
           value={inputs.email}
           validators={registerValidators.email}

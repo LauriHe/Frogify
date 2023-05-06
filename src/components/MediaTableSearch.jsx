@@ -80,7 +80,13 @@ const MediaTableSearch = ({searchArray, mediaArray}) => {
       <ImageList cols={1} gap={8} sx={{marginBottom: '3rem'}}>
         {searchArray.map((item, index) => {
           return (
-            <Grid container direction="column" gap={1} key={index}>
+            <Grid
+              container
+              direction="column"
+              gap={1}
+              key={item.file_id}
+              index={index}
+            >
               <MediaRowSearch
                 file={item}
                 mediaArray={mediaArray}

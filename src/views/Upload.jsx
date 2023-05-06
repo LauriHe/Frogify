@@ -142,7 +142,7 @@ const Upload = (props) => {
       container
       justifyContent="center"
       alignItems={'center'}
-      style={{width: '100%'}}
+      style={{width: '100%', marginBottom: '6rem'}}
     >
       <Grid
         sx={{

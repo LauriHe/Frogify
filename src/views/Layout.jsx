@@ -157,10 +157,15 @@ const Layout = () => {
               <Avatar
                 alt="Frogify logo"
                 src={logo}
-                sx={{mx: 1}}
+                sx={{mx: 1, cursor: 'pointer'}}
                 onClick={navigateHome}
               />
-              <Typography variant="h4" color="secondary" onClick={navigateHome}>
+              <Typography
+                variant="h4"
+                color="secondary"
+                sx={{cursor: 'pointer'}}
+                onClick={navigateHome}
+              >
                 Frogify
               </Typography>
               <Button

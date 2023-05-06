@@ -5,11 +5,11 @@ import MediaRowProfile from './MediaRowProfile';
 const MediaTableProfile = ({postList, mediaArray}) => {
   return (
     <ImageList cols={1} gap={8} sx={{marginBottom: '7rem'}}>
-      {postList.map((item, index) => {
+      {postList.map((item) => {
         return (
           <MediaRowProfile
             file={item}
-            key={index}
+            key={item.file_id}
             mediaArray={mediaArray}
           ></MediaRowProfile>
         );
