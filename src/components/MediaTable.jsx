@@ -19,6 +19,7 @@ const MediaTable = (showedPosts) => {
   const [cols, setCols] = useState(1);
   const [commentWidth, setCommentWidth] = useState(0);
 
+  // Fetch the comments of the post
   const fetchComments = async () => {
     try {
       const commentInfo = await getFileComments(fileId);
@@ -28,6 +29,7 @@ const MediaTable = (showedPosts) => {
     }
   };
 
+  // Add a comment to the post
   const doComment = async () => {
     try {
       const token = localStorage.getItem('userToken');
@@ -40,6 +42,7 @@ const MediaTable = (showedPosts) => {
     }
   };
 
+  // Delete a comment from the post
   const deleteUserComment = async (commentId) => {
     try {
       const token = localStorage.getItem('userToken');
@@ -47,6 +50,32 @@ const MediaTable = (showedPosts) => {
       fetchComments();
     } catch (error) {
       console.log(error.message);
+    }
+  };
+
+  // Show or hide the comments
+  const toggleViewComments = (fileId) => {
+    setFileId(fileId);
+    setViewComments(!viewComments);
+    inputs.comment = '';
+    if (viewComments) {
+      document.body.style.overflow = 'unset'; // Enable scrolling
+    } else {
+      document.body.style.overflow = 'hidden'; // Disable scrolling
+    }
+  };
+
+  // Adjust the width of the comment section based on the screen size
+  const adjustCommentWidth = () => {
+    if (windowSize.width > 1300) {
+      setCols(3);
+      setCommentWidth('30%');
+    } else if (windowSize.width > 768) {
+      setCols(2);
+      setCommentWidth('50%');
+    } else {
+      setCols(1);
+      setCommentWidth('90%');
     }
   };
 
@@ -59,17 +88,6 @@ const MediaTable = (showedPosts) => {
     initValues
   );
 
-  const toggleViewComments = (fileId) => {
-    setFileId(fileId);
-    setViewComments(!viewComments);
-    inputs.comment = '';
-    if (viewComments) {
-      document.body.style.overflow = 'unset';
-    } else {
-      document.body.style.overflow = 'hidden';
-    }
-  };
-
   useEffect(() => {
     setAudioArray(
       mediaArray.filter((item) => item.media_type === 'audio').reverse()
@@ -81,16 +99,7 @@ const MediaTable = (showedPosts) => {
   }, [viewComments]);
 
   useEffect(() => {
-    if (windowSize.width > 1300) {
-      setCols(3);
-      setCommentWidth('30%');
-    } else if (windowSize.width > 768) {
-      setCols(2);
-      setCommentWidth('50%');
-    } else {
-      setCols(1);
-      setCommentWidth('90%');
-    }
+    adjustCommentWidth();
   }, [windowSize]);
 
   return (

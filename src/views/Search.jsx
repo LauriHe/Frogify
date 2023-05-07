@@ -10,19 +10,21 @@ const Search = () => {
   audioArray.reverse();
   const [searchArray, setSearchArray] = useState(audioArray);
 
+  // Handle search term change
   const handleChange = (event) => {
     const searchTerm = event.target.value;
     if (searchTerm === '') {
-      setSearchArray(audioArray);
+      setSearchArray(audioArray); // If search term is empty, show all audio files
     } else {
       const filteredArray = audioArray.filter((file) => {
-        return file.title.toLowerCase().includes(searchTerm.toLowerCase());
+        return file.title.toLowerCase().includes(searchTerm.toLowerCase()); // Search for files that contain the search term in the title
       });
       setSearchArray(filteredArray);
     }
   };
 
   useEffect(() => {
+    // Show all files by default
     setSearchArray(
       mediaArray.filter((item) => item.media_type === 'audio').reverse()
     );

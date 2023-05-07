@@ -15,6 +15,7 @@ const LoginForm = () => {
     password: '',
   };
 
+  // Call postLogin() from ApiHooks.js with the user input
   const doLogin = async () => {
     try {
       const loginResult = await postLogin(inputs);

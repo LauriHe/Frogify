@@ -20,6 +20,7 @@ const MediaTableSearch = ({searchArray, mediaArray}) => {
   const [comments, setComments] = useState([]);
   const {getFileComments, postComment, deleteComment} = useComment();
 
+  // Fetch the comments of the post
   const fetchComments = async () => {
     try {
       const commentInfo = await getFileComments(fileId);
@@ -29,6 +30,7 @@ const MediaTableSearch = ({searchArray, mediaArray}) => {
     }
   };
 
+  // Add a comment to the post
   const doComment = async () => {
     try {
       const token = localStorage.getItem('userToken');
@@ -41,6 +43,7 @@ const MediaTableSearch = ({searchArray, mediaArray}) => {
     }
   };
 
+  // Delete a comment from the post
   const deleteUserComment = async (commentId) => {
     try {
       const token = localStorage.getItem('userToken');
@@ -48,6 +51,18 @@ const MediaTableSearch = ({searchArray, mediaArray}) => {
       fetchComments();
     } catch (error) {
       console.log(error.message);
+    }
+  };
+
+  // Show or hide the comments
+  const toggleViewComments = (fileId) => {
+    setFileId(fileId);
+    setViewComments(!viewComments);
+    inputs.comment = '';
+    if (viewComments) {
+      document.body.style.overflow = 'unset';
+    } else {
+      document.body.style.overflow = 'hidden';
     }
   };
 
@@ -59,17 +74,6 @@ const MediaTableSearch = ({searchArray, mediaArray}) => {
     doComment,
     initValues
   );
-
-  const toggleViewComments = (fileId) => {
-    setFileId(fileId);
-    setViewComments(!viewComments);
-    inputs.comment = '';
-    if (viewComments) {
-      document.body.style.overflow = 'unset';
-    } else {
-      document.body.style.overflow = 'hidden';
-    }
-  };
 
   useEffect(() => {
     fetchComments();

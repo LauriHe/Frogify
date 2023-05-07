@@ -37,9 +37,9 @@ const AudioPlayer = () => {
   const crossOriginImageUrl = googleProxyURL + encodeURIComponent(imageUrl);
   const windowSize = useWindowSize();
   const [playerWidth, setPlayerWidth] = useState('100%');
-
   const [title, setTitle] = useState('');
 
+  // Shorten title if too long
   const formatTitle = () => {
     setTitle(currentSong.title);
     if (currentSong.title.length > 20) {
@@ -47,6 +47,7 @@ const AudioPlayer = () => {
     }
   };
 
+  // Toggle play/pause
   const toggleAudio = () => {
     if (audioRef.current.paused) {
       audioRef.current.play();
@@ -55,15 +56,18 @@ const AudioPlayer = () => {
     }
   };
 
+  // Close player
   const closePlayer = () => {
     setCurrentSong(null);
     setCurrentSongImage(null);
   };
 
+  // Go to player page
   const openPlayerPage = () => {
     navigate('/player');
   };
 
+  // Convert RGB to HSL
   const rgbToHsl = (color) => {
     const r = color[0];
     const g = color[1];
@@ -92,6 +96,7 @@ const AudioPlayer = () => {
     return [h, s, l];
   };
 
+  // Convert HSL to RGB
   const hslToRgb = (color) => {
     let r;
     let g;
@@ -145,33 +150,29 @@ const AudioPlayer = () => {
     return [r, g, b];
   };
 
-  useEffect(() => {
-    if (currentSongImage) {
-      const img = document.getElementById('cover-art');
-      img.addEventListener('load', function () {
-        const initialColor = colorThief.getColor(img);
-        const hslColor = rgbToHsl(initialColor);
-        if (hslColor[1] > 0.6) {
-          hslColor[1] = 0.6;
-        }
-        const rgbColor = hslToRgb(hslColor);
-        const brightness = Math.round(
-          (parseInt(rgbColor[0]) * 299 +
-            parseInt(rgbColor[1]) * 587 +
-            parseInt(rgbColor[2]) * 114) /
-            1000
-        );
-        setBgColor(`rgb(${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]})`);
-        setTextColor(brightness > 125 ? 'black' : 'white');
-      });
-    }
-  }, [currentSongImage]);
+  // Set background color of the player based on the album cover
+  const setBackGroundColor = () => {
+    const img = document.getElementById('cover-art');
+    img.addEventListener('load', function () {
+      const initialColor = colorThief.getColor(img);
+      const hslColor = rgbToHsl(initialColor); // Convert rgb to hsl to adjust saturation
+      if (hslColor[1] > 0.6) {
+        hslColor[1] = 0.6;
+      }
+      const rgbColor = hslToRgb(hslColor); // Convert back to rgb
+      const brightness = Math.round(
+        (parseInt(rgbColor[0]) * 299 +
+          parseInt(rgbColor[1]) * 587 +
+          parseInt(rgbColor[2]) * 114) /
+          1000
+      ); // Calculate brightness
+      setBgColor(`rgb(${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]})`); // Set background color
+      setTextColor(brightness > 125 ? 'black' : 'white'); // Set text color based on contrast
+    });
+  };
 
-  useEffect(() => {
-    formatTitle();
-  }, [currentSong]);
-
-  useEffect(() => {
+  // Adjust player width based on screen size
+  const adjustPlayerWidth = () => {
     if (windowSize.width > 1300) {
       setPlayerWidth('40%');
     } else if (windowSize.width > 1000) {
@@ -183,6 +184,20 @@ const AudioPlayer = () => {
     } else {
       setPlayerWidth('100%');
     }
+  };
+
+  useEffect(() => {
+    if (currentSongImage) {
+      setBackGroundColor();
+    }
+  }, [currentSongImage]);
+
+  useEffect(() => {
+    formatTitle();
+  }, [currentSong]);
+
+  useEffect(() => {
+    adjustPlayerWidth();
   }, [windowSize]);
 
   return (

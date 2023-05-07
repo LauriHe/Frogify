@@ -8,13 +8,14 @@ import deleteIcon from '../assets/delete.svg';
 const Comment = ({comment, deleteUserComment}) => {
   const {user} = useContext(MediaContext);
   const {getUser} = useUser();
-
   const [commentUser, setCommentUser] = useState({});
 
+  // Call deleteUserComment() from parent component
   const handleDelete = () => {
     deleteUserComment(comment.comment_id);
   };
 
+  // Fetch the user who made the comment
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem('userToken');

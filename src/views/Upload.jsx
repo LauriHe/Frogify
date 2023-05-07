@@ -27,6 +27,8 @@ const Upload = (props) => {
   const [imageIcon, setImageIcon] = useState(true);
   const [audioIcon, setAudioIcon] = useState();
   const navigate = useNavigate();
+
+  // Show or hide the image filter sliders
   const toggleEditImg = () => {
     if (editImg) {
       setEditImg(false);
@@ -34,6 +36,8 @@ const Upload = (props) => {
       setEditImg(true);
     }
   };
+
+  // Show or hide the image edit button
   const toggleEditImgBtn = () => {
     if (editImgBtn) {
       setEditImgBtn(false);
@@ -41,6 +45,8 @@ const Upload = (props) => {
       setEditImgBtn(true);
     }
   };
+
+  // Show a check mark when the file is selected
   const toggleImgIcon = () => {
     if (imageIcon) {
       setImageIcon(false);
@@ -63,14 +69,16 @@ const Upload = (props) => {
     sepia: 0,
   };
 
+  // Upload the song and the image
   const doUpload = async () => {
     try {
+      // Image related part
       const userToken = localStorage.getItem('userToken');
       const dataImage = new FormData();
       dataImage.append('title', inputs.songTitle);
       dataImage.append('file', image);
       dataImage.append('description', JSON.stringify(filterInputs));
-      const uploadResultImage = await postMedia(dataImage, userToken);
+      const uploadResultImage = await postMedia(dataImage, userToken); // upload the image
 
       await postTag(
         {
@@ -78,7 +86,9 @@ const Upload = (props) => {
           tag: appId,
         },
         userToken
-      );
+      ); // add the app tag to the image
+
+      // Audio related part
       const dataAudio = new FormData();
       dataAudio.append('title', inputs.songTitle);
       const allDataAudio = {
@@ -91,7 +101,7 @@ const Upload = (props) => {
       dataAudio.append('description', JSON.stringify(allDataAudio));
       dataAudio.append('file', audio);
 
-      const uploadResultAudio = await postMedia(dataAudio, userToken);
+      const uploadResultAudio = await postMedia(dataAudio, userToken); // upload the audio
 
       await postTag(
         {
@@ -99,13 +109,15 @@ const Upload = (props) => {
           tag: appId,
         },
         userToken
-      );
+      ); // add the app tag to the audio
+
       navigate('/');
     } catch (error) {
       alert(error.message);
     }
   };
 
+  // Handle the file input change
   const handleFileChange = (event) => {
     event.persist();
     if (event.target.name == 'audio') {
@@ -131,11 +143,13 @@ const Upload = (props) => {
     null,
     filterInitValues
   );
+
   useEffect(() => {
     setEditImgBtn(!!image);
     setImageIcon(!!image);
     setAudioIcon(!!audio);
   }, [image, audio]);
+
   return (
     <Grid
       columns={1}

@@ -27,36 +27,39 @@ const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
   const [update, setUpdate] = useState(false);
   const {getUser} = useUser();
 
+  // Go to login page
   const goToLogin = () => {
     navigate('/login');
   };
 
+  // Get the id of the image that belongs to the post
   const image = mediaArray.find(
     (item) => item.file_id === JSON.parse(file.description).imageId
   );
 
+  // Fetch the user who made the post
   const fetchPostMaker = async () => {
     const token = localStorage.getItem('userToken');
     const maker = await getUser(file.user_id, token);
     setPostMaker(maker);
   };
 
+  // Add the song to the user's play history
   const addToHistory = async (file) => {
     try {
       if (user) {
         if (JSON.parse(user.full_name).history) {
-          const storage = JSON.parse(user.full_name);
-
-          const following = JSON.parse(user.full_name).following;
-          const history = JSON.parse(user.full_name).history;
+          const storage = JSON.parse(user.full_name); // Get the user's storage from "full_name" field
+          const following = JSON.parse(user.full_name).following; // Save the user's following array to a variable
+          const history = JSON.parse(user.full_name).history; // Save the user's history array to a variable
           history.push(file.file_id);
           if (history.length > 10) {
             history.shift();
-          }
+          } // Keep the history array at max 10 items
           storage.history = history;
           const token = localStorage.getItem('userToken');
-          const data = {full_name: JSON.stringify({following, history})};
-          await putUser(data, token);
+          const data = {full_name: JSON.stringify({following, history})}; // Rebuild the user's storage object
+          await putUser(data, token); // Upload the new storage object to the api
         }
       }
     } catch (error) {
@@ -64,6 +67,7 @@ const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
     }
   };
 
+  // Play the song
   const playAudio = () => {
     addToHistory(file);
     setCurrentSong(file);
@@ -73,6 +77,7 @@ const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
     }
   };
 
+  // Fetch the likes for the post
   const fetchLikes = async () => {
     try {
       const likeInfo = await getFavourites(file.file_id);
@@ -85,6 +90,7 @@ const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
     }
   };
 
+  // Add a like to the post
   const doLike = async () => {
     try {
       const token = localStorage.getItem('userToken');
@@ -96,6 +102,7 @@ const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
     }
   };
 
+  // Delete a like from the post
   const deleteLike = async () => {
     try {
       const token = localStorage.getItem('userToken');
@@ -106,6 +113,7 @@ const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
     }
   };
 
+  // Add or delete a like from the post depending on if the user has already liked it
   const toggleLike = () => {
     setUpdate(!update);
     if (userLike) {
@@ -115,34 +123,37 @@ const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
     }
   };
 
+  // Call toggleComments() from the parent component to show/hide comments
   const comment = () => {
     toggleComments(file.file_id);
   };
 
+  // Find out weather the user follows the post maker
   const fetchFollow = async () => {
     const token = localStorage.getItem('userToken');
     const user = await getUserByToken(token);
     setUser(user);
     if (JSON.parse(user.full_name).following) {
-      const following = JSON.parse(user.full_name).following;
+      const following = JSON.parse(user.full_name).following; // Get the user's following array from "full_name" field
       if (following.includes(file.user_id)) {
         setUserFollow(true);
       }
     }
   };
 
+  // Add the post maker to the user's following list
   const doFollow = async () => {
     try {
       if (user) {
         if (JSON.parse(user.full_name).following) {
           const storage = JSON.parse(user.full_name);
-          const following = JSON.parse(user.full_name).following;
-          const history = JSON.parse(user.full_name).history;
+          const following = JSON.parse(user.full_name).following; // Save the user's following array to a variable
+          const history = JSON.parse(user.full_name).history; // Save the user's history array to a variable
           if (!following.includes(file.user_id)) {
-            following.push(file.user_id);
+            following.push(file.user_id); // Add the post maker to the user's following array if it's not already there
             storage.following = following;
             const token = localStorage.getItem('userToken');
-            const data = {full_name: JSON.stringify({following, history})};
+            const data = {full_name: JSON.stringify({following, history})}; // Rebuild the user's storage object
             await putUser(data, token);
             setUpdate(!update);
             setUserFollow(true);
@@ -154,17 +165,18 @@ const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
     }
   };
 
+  // Delete the post maker from the user's following list
   const deleteFollow = async () => {
     try {
       if (JSON.parse(user.full_name).following) {
         const storage = JSON.parse(user.full_name);
-        let following = JSON.parse(user.full_name).following;
-        const history = JSON.parse(user.full_name).history;
+        let following = JSON.parse(user.full_name).following; // Save the user's following array to a variable
+        const history = JSON.parse(user.full_name).history; // Save the user's history array to a variable
         if (following.includes(file.user_id)) {
-          following = following.filter((id) => id !== file.user_id);
+          following = following.filter((id) => id !== file.user_id); // Remove the post maker from the user's following array
           storage.following = following;
           const token = localStorage.getItem('userToken');
-          const data = {full_name: JSON.stringify({following, history})};
+          const data = {full_name: JSON.stringify({following, history})}; // Rebuild the user's storage object
           await putUser(data, token);
           setUserFollow(false);
         }
@@ -174,6 +186,7 @@ const MediaRow = ({file, mediaArray, toggleComments, showedPosts}) => {
     }
   };
 
+  // Follow or unfollow the post maker depending on if the user already follows them
   const toggleFollow = () => {
     if (userFollow) {
       deleteFollow();

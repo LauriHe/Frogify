@@ -25,12 +25,12 @@ const Profile = () => {
   /* Profile picture */
   const {user} = useContext(MediaContext);
   const {getFavourites} = useFavourite();
-
   const [avatar, setAvatar] = useState({
     filename: defaultProfile,
   });
   const {getTag, postTag} = useTag();
 
+  // Fetch the user's profile picture
   const fetchAvatar = async () => {
     try {
       if (user) {
@@ -57,28 +57,32 @@ const Profile = () => {
     mediaArray.filter((item) => item.media_type === 'audio').reverse()
   );
 
+  // List the user's posts
   const listPosts = () => {
     setActive('posts');
     const myPosts = mediaArray
-      .filter((item) => item.media_type === 'audio')
-      .reverse();
-    setListArray(myPosts.filter((file) => file.user_id === user.user_id));
+      .filter((item) => item.media_type === 'audio') // Filter out the images
+      .reverse(); // Reverse the array to show the newest posts first
+    setListArray(myPosts.filter((file) => file.user_id === user.user_id)); // Filter out the posts that don't belong to the user
   };
 
+  // List the user's play history
   const listHistory = () => {
     setActive('history');
     if (JSON.parse(user.full_name).history) {
-      const history = JSON.parse(user.full_name).history;
+      const history = JSON.parse(user.full_name).history; // Get the user's history
       const myHistory = mediaArray.filter((file) =>
         history.includes(file.file_id)
-      );
+      ); // Filter the mediaArray for posts that are in the user's history
       setListArray(myHistory);
     }
   };
 
+  // List the user's liked songs
   const listLiked = async () => {
     setActive('liked');
     const myLikes = [];
+    // For each song in mediaArray, get the likes and check if the user has liked it
     for (let i = 0; i < mediaArray.length; i++) {
       const file = mediaArray[i];
       const likeInfo = await getFavourites(file.file_id);
@@ -92,6 +96,7 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    // List the user's posts when the component mounts
     const myPosts = mediaArray
       .filter((item) => item.media_type === 'audio')
       .reverse();
@@ -102,13 +107,14 @@ const Profile = () => {
   /* Settings */
   const [setting, setSetting] = useState(false);
 
+  // Show or hide the user settings
   const toggleSetting = () => {
     if (setting) {
       setSetting(!setting);
-      document.querySelector('body').style.overflow = 'visible';
+      document.querySelector('body').style.overflow = 'visible'; // Allow scrolling
     } else {
       setSetting(!setting);
-      document.querySelector('body').style.overflow = 'hidden';
+      document.querySelector('body').style.overflow = 'hidden'; // Prevent scrolling
     }
   };
 
@@ -117,10 +123,12 @@ const Profile = () => {
   const [image, setImage] = useState(null);
   const [selectedImage, setSelectedImage] = useState(defaultProfile);
 
+  // Show or hide the add profile picture
   const togglePicture = () => {
     setPicture(!picture);
   };
 
+  // Handle the file input change
   const handleFileChange = (event) => {
     event.persist();
     setImage(event.target.files[0]);
@@ -131,8 +139,11 @@ const Profile = () => {
     reader.readAsDataURL(event.target.files[0]);
   };
 
+  // Upload profile picture to api
   const doUpload = async () => {
     const userToken = localStorage.getItem('userToken');
+
+    // If the user already has a profile picture, delete it
     try {
       const avatars = await getTag('avatar_' + user.user_id);
       const ava = avatars.pop();
@@ -141,11 +152,11 @@ const Profile = () => {
       console.log('No profile picture');
     }
 
+    // Upload the new profile picture
     try {
       const dataImage = new FormData();
       dataImage.append('title', user.username);
       dataImage.append('file', image);
-
       const uploadResultImage = await postMedia(dataImage, userToken);
       await postTag(
         {
@@ -163,6 +174,8 @@ const Profile = () => {
   /* logout */
   const navigate = useNavigate();
   const {setUser} = useContext(MediaContext);
+
+  // Log the user out
   const logout = () => {
     setUser(null);
     localStorage.removeItem('userToken');
@@ -181,10 +194,12 @@ const Profile = () => {
   } = useContext(ColorContext);
   const [showColors, setShowColors] = useState(false);
 
+  // Show or hide the color picker
   const toggleColors = () => {
     setShowColors(!showColors);
   };
 
+  // Handle the color slider change
   const handleSlider = (event, newValue) => {
     if (event.target.name === 'hue') {
       setColorHue(newValue);

@@ -30,16 +30,19 @@ const Player = () => {
   const navigate = useNavigate();
   const [showSongInfo, setShowSongInfo] = useState(false);
 
+  // Go back to the home page
   const goToPreviousPage = () => {
     navigate(-1);
   };
 
+  // Fetch the user who made the post
   const fetchUser = async () => {
     const token = localStorage.getItem('userToken');
     const user = await getUser(currentSong.user_id, token);
     setPostMaker(user);
   };
 
+  // Toggle the audio between play and pause
   const toggleAudio = () => {
     if (audioRef.current.paused) {
       audioRef.current.play();
@@ -50,27 +53,30 @@ const Player = () => {
     }
   };
 
+  // Handle the slider change
   const handleChange = (event, newValue) => {
     audioRef.current.currentTime = newValue;
-    audioRef.current.pause();
+    audioRef.current.pause(); // Pause the audio while dragging the slider
   };
 
+  // Commit the slider change
   const commitChange = (event, newValue) => {
     if (!pausedByButton) {
-      audioRef.current.play();
+      audioRef.current.play(); // Resume the audio if it was playing before dragging the slider
     }
   };
 
+  // Show or hide the song info
   const toggleSongInfo = () => {
     setShowSongInfo(!showSongInfo);
   };
 
   useEffect(() => {
-    document.querySelector('body').style.backgroundColor = bgColor;
+    document.querySelector('body').style.backgroundColor = bgColor; // Set the background color according to the song image
     fetchUser();
 
     return () => {
-      document.querySelector('body').style.backgroundColor = null;
+      document.querySelector('body').style.backgroundColor = null; // Reset the background color
     };
   }, []);
 

@@ -5,6 +5,7 @@ import {useState} from 'react';
 const Home = () => {
   const [showedPosts, setShowedPosts] = useState('all');
 
+  // Show all posts or only the followed ones
   const handleChange = (event, newValue) => {
     setShowedPosts(newValue);
   };

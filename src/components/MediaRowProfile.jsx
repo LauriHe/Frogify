@@ -24,9 +24,12 @@ const MediaRowProfile = ({file, mediaArray}) => {
   const [postMaker, setPostMaker] = useState('');
   const {user} = useContext(MediaContext);
   const {deleteMedia} = useMedia();
-
   const [title, setTitle] = useState('');
+  const {setCurrentSong, setCurrentSongImage, setImageFilters} =
+    useContext(SongContext);
+  const [settingImg, setSettingImg] = useState(false);
 
+  // Show only the first 15 characters of the title
   const formatTitle = () => {
     setTitle(file.title);
     if (file.title.length > 15) {
@@ -34,23 +37,19 @@ const MediaRowProfile = ({file, mediaArray}) => {
     }
   };
 
+  // Get the id of the image that belongs to the post
   const image = mediaArray.find(
     (item) => item.file_id === JSON.parse(file.description).imageId
   );
 
+  // Fetch the user who made the post
   const fetchUser = async () => {
     const token = localStorage.getItem('userToken');
     const postMaker = await getUser(file.user_id, token);
     setPostMaker(postMaker);
   };
 
-  useEffect(() => {
-    fetchUser();
-    formatTitle();
-  }, []);
-
-  const {setCurrentSong, setCurrentSongImage, setImageFilters} =
-    useContext(SongContext);
+  // Play the song
   const playAudio = () => {
     setCurrentSong(file);
     setCurrentSongImage(image);
@@ -59,24 +58,29 @@ const MediaRowProfile = ({file, mediaArray}) => {
     }
   };
 
-  const [settingImg, setSettingImg] = useState(false);
-
+  // Toggle the image settings
   const toggleSettingImg = () => {
     if (settingImg) {
       setSettingImg(!settingImg);
-      document.querySelector('body').style.overflow = 'visible';
+      document.querySelector('body').style.overflow = 'visible'; // Enable scrolling
     } else {
       setSettingImg(!settingImg);
-      document.querySelector('body').style.overflow = 'hidden';
+      document.querySelector('body').style.overflow = 'hidden'; // Disable scrolling
     }
   };
 
+  // Delete the song and the corresponding image
   const deleteSong = () => {
     const userToken = localStorage.getItem('userToken');
     deleteMedia(file.file_id, userToken);
     deleteMedia(image.file_id, userToken);
     window.location.reload();
   };
+
+  useEffect(() => {
+    fetchUser();
+    formatTitle();
+  }, []);
 
   return (
     <Box>

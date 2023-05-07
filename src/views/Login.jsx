@@ -14,15 +14,22 @@ import {themeOptions} from '../theme/themeOptions';
 const Login = () => {
   const theme = createTheme(themeOptions);
   const [formToggle, setFormToggle] = useState(true);
+
+  // Toggle between sign in and sign up forms
   const toggle = () => {
     setFormToggle(!formToggle);
   };
+
+  // Set the form to sign in
   const setFormSignIn = () => {
     setFormToggle(true);
   };
+
+  // Set the form to sign up
   const setFormSignUp = () => {
     setFormToggle(false);
   };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

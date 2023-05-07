@@ -6,6 +6,8 @@ import playIcon from '../assets/play.svg';
 
 const MediaRowRadio = ({station}) => {
   const {setCurrentSong, setCurrentSongImage} = useContext(SongContext);
+
+  // Play the radio station
   const playAudio = () => {
     setCurrentSong(station);
     setCurrentSongImage(station.logo);

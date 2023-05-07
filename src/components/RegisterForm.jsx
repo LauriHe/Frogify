@@ -18,6 +18,7 @@ const RegisterForm = ({toggle}) => {
     email: '',
   };
 
+  // Call the register API to create a new user
   const doRegister = async () => {
     try {
       const withoutConfirm = {...inputs};
@@ -39,6 +40,7 @@ const RegisterForm = ({toggle}) => {
     initValues
   );
 
+  // Add custom validators for the form
   useEffect(() => {
     ValidatorForm.addValidationRule(
       'isPasswordMatch',

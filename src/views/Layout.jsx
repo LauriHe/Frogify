@@ -31,18 +31,15 @@ import {mediaUrl} from '../utils/variables';
 import {ColorContext} from '../contexts/ColorContext';
 
 const Layout = () => {
-  // const theme = createTheme(themeOptions);
   const {user, setUser, setUserStorage} = useContext(MediaContext);
   const {getUserByToken} = useUser();
   const navigate = useNavigate();
   const location = useLocation();
-
   const {currentSong, audioRef, progress, setProgress} =
     useContext(SongContext);
   const [audioUrl, setAudioUrl] = useState(null);
   const [audioReady, setAudioReady] = useState(false);
   const playAnimationRef = useRef();
-
   const {
     colorHue,
     colorSaturation,
@@ -64,10 +61,12 @@ const Layout = () => {
     },
   });
 
+  // Go back to the home page
   const navigateHome = () => {
     navigate('/');
   };
 
+  // Get the user's information from the api
   const getUserInfo = async () => {
     const userToken = localStorage.getItem('userToken');
     if (userToken) {
@@ -84,6 +83,7 @@ const Layout = () => {
     navigate('/');
   };
 
+  // Loop to update the audio player's progress
   const repeat = () => {
     setProgress(audioRef.current?.currentTime / audioRef.current?.duration);
     playAnimationRef.current = requestAnimationFrame(repeat);
@@ -92,28 +92,28 @@ const Layout = () => {
   useEffect(() => {
     if (currentSong) {
       if (currentSong.type) {
-        setAudioUrl(currentSong.url);
+        setAudioUrl(currentSong.url); // If the song is a radio stream, use the url instead of the filename
       } else {
-        setAudioUrl(currentSong ? mediaUrl + currentSong.filename : mediaUrl);
+        setAudioUrl(currentSong ? mediaUrl + currentSong.filename : mediaUrl); // If the song is a file, use the filename plus mediaUrl
       }
       setAudioReady(false);
-      audioRef.current?.load();
+      audioRef.current?.load(); // Load the audio element
       setTimeout(() => {
-        audioRef.current.play();
+        audioRef.current.play(); // Play the audio element
         if (currentSong.type) {
-          audioRef.current.volume = 0.2;
+          audioRef.current.volume = 0.2; // If the song is a radio stream, set the volume to 20%
         }
-        playAnimationRef.current = requestAnimationFrame(repeat);
+        playAnimationRef.current = requestAnimationFrame(repeat); // Start the progress loop
         setAudioReady(true);
-      }, 50);
+      }, 50); // Wait 50ms to allow the audio element to load
     } else {
-      cancelAnimationFrame(playAnimationRef.current);
+      cancelAnimationFrame(playAnimationRef.current); // Stop the progress loop
     }
   }, [currentSong]);
 
   useEffect(() => {
     if (progress === 1) {
-      audioRef.current.load();
+      audioRef.current.load(); // If the song is finished, reload the audio element
     }
   }, [progress]);
 
@@ -122,19 +122,21 @@ const Layout = () => {
   }, [user?.full_name]);
 
   useEffect(() => {
+    // Get the theme color from local storage
     const colors = localStorage.getItem('color');
     setColorHue(colors ? JSON.parse(colors).hue : 141);
     setColorSaturation(colors ? JSON.parse(colors).saturation : 76);
     setColorLuminance(colors ? JSON.parse(colors).luminance : 48);
   }, []);
 
-  /* logout */
+  // Log the user out
   const logout = () => {
     setUser(null);
     localStorage.removeItem('userToken');
     navigate('/');
   };
 
+  // Go to the login page
   const navigateLogin = () => {
     navigate('/login');
   };

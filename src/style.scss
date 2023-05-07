@@ -1,6 +1,9 @@
+/* Add border radius to certain input fields */
 .inputRounded .MuiOutlinedInput-root {
   border-radius: 10rem;
 }
+
+/* Disable default transition on the song progress bar */
 .MuiLinearProgress-bar {
   transition: none !important;
 }

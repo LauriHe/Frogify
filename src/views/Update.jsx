@@ -23,6 +23,8 @@ const Update = (props) => {
   const [selectedImage, setSelectedImage] = useState();
   const [editImg, setEditImg] = useState(true);
   const navigate = useNavigate();
+
+  // Show or hide the image filter sliders
   const toggleEditImg = () => {
     if (editImg) {
       setSelectedImage(mediaUrl + image.pop()?.filename);
@@ -31,10 +33,11 @@ const Update = (props) => {
       setEditImg(true);
     }
   };
-  console.log(selectedImage);
+
   useEffect(() => {
     setSelectedImage(mediaUrl + image.pop()?.filename);
   }, [image]);
+
   const initValues = {
     songTitle: file.title,
     genres: JSON.parse(file.description).genres,
@@ -49,6 +52,7 @@ const Update = (props) => {
     sepia: 0,
   };
 
+  // Upload the updated song info
   const doUpload = async () => {
     try {
       const userToken = localStorage.getItem('userToken');
@@ -60,7 +64,7 @@ const Update = (props) => {
         JSON.parse(file.description).imageId,
         dataImage,
         userToken
-      );
+      ); // Update the image filter values
 
       const allDataAudio = {
         genres: inputs.genres,
@@ -73,7 +77,7 @@ const Update = (props) => {
         description: JSON.stringify(allDataAudio),
       };
 
-      await putMedia(file.file_id, dataAudio, userToken);
+      await putMedia(file.file_id, dataAudio, userToken); // Update the song info
 
       navigate('/');
     } catch (error) {

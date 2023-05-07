@@ -8,7 +8,8 @@ const MediaTableRadio = ({radioList}) => {
   const windowSize = useWindowSize();
   const [cols, setCols] = useState(1);
 
-  useEffect(() => {
+  // Set the number of columns based on the window size
+  const adjustCols = () => {
     if (windowSize.width > 1300) {
       setCols(3);
     } else if (windowSize.width > 768) {
@@ -16,7 +17,12 @@ const MediaTableRadio = ({radioList}) => {
     } else {
       setCols(1);
     }
+  };
+
+  useEffect(() => {
+    adjustCols();
   }, [windowSize]);
+
   return (
     <ImageList cols={cols} gap={8} sx={{marginBottom: '7rem'}}>
       {radioList.map((item, index) => {
