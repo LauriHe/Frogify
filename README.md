@@ -1,13 +1,9 @@
 # Frogify
 
-Linkki sovellukseen: [https://users.metropolia.fi/~lauhei/Mediapalvelut-ja-kayttajakokemus/Project/](https://users.metropolia.fi/~lauhei/Mediapalvelut-ja-kayttajakokemus/Project/)
+Prototype for a social media platform aimed at music creators.
 
-Tekijät: Lauri Heikkinen, Sara Oksanen, Dominie Sihvola
+Contributors: Lauri Heikkinen, Sara Oksanen, Dominie Sihvola
 
-Kurssi: Mediapalvelut ja käyttäjäkokemus TX00CS26-3007
+Course: Mediapalvelut ja käyttäjäkokemus TX00CS26-3007
 
-Muutokset palautuksen jälkeen: 
- - Korjattu bugi listojen päivittymisessä
- - Korjattu submit nappulan jääminen navigaation alle uploadissa
- - Korjattu sovelluksen kaatuminen valitessa seuratut postaukset kirjautumattomana
- - Selkeytetty ja yhtenästetty nappuloiden ulkoasua
+![Näyttökuva 2024-01-10 181220](https://github.com/LauriHe/Frogify/assets/91128758/1b3869c6-8bdc-4e0b-8785-0cb8fc9b0b7d)
